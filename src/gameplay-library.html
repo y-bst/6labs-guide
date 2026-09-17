@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gameplay Library Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="story.css">
+<style>
+  .s-main{overflow:hidden}
+  .s-meta i{display:grid;place-items:center;font:600 7px/1 var(--display);font-style:normal;color:#fff}
+  .s-checkbox.mixed{background:#1770EF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12h12' stroke='white' stroke-width='3'/%3E%3C/svg%3E") center/12px no-repeat;border-color:#1770EF}
+
+  /* bulk tagging: floating card at the bottom */
+  .bulkdock{position:absolute;left:0;right:0;bottom:22px;margin:0 auto;width:max-content;display:flex;align-items:center;gap:14px;padding:10px 12px 10px 20px;background:#fff;border:1px solid #E6E7EA;border-radius:14px;box-shadow:0 18px 44px rgba(3,13,45,.2);font:600 15px/1 var(--display);z-index:3}
+  .bulkdock .n{color:#1770EF}
+  .bulkdock .sep{width:1px;height:26px;background:#E6E7EA}
+  .bulkdock .del{background:#C9392A;border-color:#C9392A;color:#fff}
+  .bulkdock .x{font-size:18px;color:#4F566C;padding:0 6px}
+
+  /* sources scene */
+  .srcscene{position:absolute;inset:0;background:#F5F6FA;background-image:radial-gradient(60% 70% at 12% 8%,rgba(123,76,255,.16) 0%,rgba(123,76,255,0) 70%),radial-gradient(60% 55% at 85% 95%,rgba(23,112,239,.16) 0%,rgba(23,112,239,0) 70%)}
+  .srcpanel{position:absolute;left:0;top:0;width:760px;height:680px;transform-origin:0 0;transition:transform .8s cubic-bezier(.2,.7,.2,1),opacity .5s;border-radius:22px;overflow:hidden;background:#fff;border:1px solid #E6E7EA;box-shadow:0 30px 70px rgba(3,13,45,.16)}
+  .srcpanel.eq1{transform:translate(27px,250px) scale(.47)}
+  .srcpanel.eq2{transform:translate(411px,250px) scale(.47)}
+  .srcpanel.eq3{transform:translate(795px,250px) scale(.47)}
+  .srcpanel.big{transform:translate(40px,78px) scale(1)}
+  .srcpanel.s1{transform:translate(842px,78px) scale(.41);opacity:.65}
+  .srcpanel.s2{transform:translate(842px,440px) scale(.41);opacity:.65}
+  .srclabel{position:absolute;left:0;top:0;display:inline-flex;align-items:center;gap:10px;height:38px;padding:0 16px 0 5px;border-radius:999px;background:#fff;border:1px solid #CDCFD5;font:600 17px/1 var(--display);color:#030D2D;white-space:nowrap;transition:transform .8s cubic-bezier(.2,.7,.2,1),background .3s,color .3s}
+  .srclabel i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#E6E7EA;font:600 13px/1 var(--mono);font-style:normal;color:#353D57}
+  .srclabel.eq1{transform:translate(27px,196px)}
+  .srclabel.eq2{transform:translate(411px,196px)}
+  .srclabel.eq3{transform:translate(795px,196px)}
+  .srclabel.big{transform:translate(40px,24px);background:#030D2D;border-color:#030D2D;color:#fff}
+  .srclabel.big i{background:#1770EF;color:#fff}
+  .srclabel.s1{transform:translate(842px,32px)}
+  .srclabel.s2{transform:translate(842px,394px)}
+  .soon{font:500 13px/1 var(--body);opacity:.7}
+  .wall{position:absolute;inset:0;background:linear-gradient(160deg,#2F5D50 0%,#6B8F5E 35%,#C9B77A 70%,#8A6A4A 100%)}
+  .wall::after{content:"";position:absolute;inset:0;background:radial-gradient(40% 30% at 20% 20%,rgba(255,255,255,.35),transparent 70%),radial-gradient(35% 25% at 80% 75%,rgba(0,0,0,.25),transparent 70%)}
+  .minipage{position:absolute;inset:0;padding:26px 28px;background-color:#F5F6FA;background-image:radial-gradient(60% 70% at 12% 8%,rgba(123,76,255,.22) 0%,rgba(123,76,255,0) 70%),radial-gradient(55% 60% at 88% 12%,rgba(22,163,74,.16) 0%,rgba(22,163,74,0) 70%)}
+  .minipage .s-head{margin-bottom:18px}
+  .minipage .s-grid{padding:14px;gap:12px}
+  .minipage .s-card-body{padding:10px 12px 12px;gap:4px}
+  .upmodal{position:absolute;left:80px;top:40px;width:600px}
+  .clitab{position:absolute;left:50px;top:14px;width:660px;padding:20px 24px}
+  .clitab p{font-size:13.5px}
+  .clitab .s-code pre{font-size:12.5px;line-height:1.5;padding:10px 12px}
+  .clitab .hint{font-size:12px;color:#4F566C;margin:0}
+  .s-code .help{font-size:12.5px;color:#4F566C}
+
+  /* 6labs Gameplay Recorder window */
+  .rwin2{position:absolute;left:155px;top:20px;width:450px;height:640px;background:#fff;border-radius:10px;box-shadow:0 24px 60px rgba(0,0,0,.4);display:flex;flex-direction:column;overflow:hidden;font-family:var(--body);color:#030D2D}
+  .rw-title{display:flex;align-items:center;gap:10px;height:48px;padding:0 18px;border-bottom:1px solid #EEF0F3;font:500 15px/1 var(--body);color:#353D57;flex:none}
+  .rw-title .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#1770EF,#0D5ED4);box-shadow:inset 0 0 0 5px rgba(255,255,255,.28)}
+  .rw-title .wc{margin-left:auto;display:flex;gap:20px;color:#9A9EAB;font-size:16px}
+  .rw-body{position:relative;flex:1;padding:22px 28px 22px;display:flex;flex-direction:column;min-height:0}
+  .rw-pill{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;height:26px;padding:0 12px;border-radius:999px;font:700 11px/1 var(--body);letter-spacing:.12em}
+  .rw-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+  .rw-pill.setup{background:#F1F2F4;color:#6B7280}
+  .rw-pill.ready{background:#EAF2FE;color:#1770EF}
+  .rw-pill.rec{background:#FDECEC;color:#E5484D}
+  .rw-pill.rec::before{animation:blink 1s steps(1) infinite}
+  .rw-pill.up{background:#FFF4DB;color:#B26B00}
+  @keyframes blink{50%{opacity:.2}}
+  .rw-h{font:700 22px/1.25 var(--body);margin:14px 0 4px}
+  .rw-sub{font-size:14px;color:#4F566C;margin:0}
+  .rw-lab{font:600 11px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;color:#9A9EAB;margin:16px 0 8px}
+  .rw-in{height:44px;border:1px solid #D9DCE2;border-radius:10px;display:flex;align-items:center;padding:0 16px;font-size:15px}
+  .rw-ok{font-size:12px;color:#16A34A;margin-top:6px}
+  .rw-yn{display:flex;gap:8px}
+  .rw-yn span{height:40px;padding:0 20px;border-radius:10px;border:1px solid #D9DCE2;display:grid;place-items:center;font-size:14px}
+  .rw-yn .on{border-color:#1770EF;background:#EAF2FE;color:#1770EF}
+  .rw-div{height:1px;background:#EEF0F3;margin:16px 0}
+  .rw-row{display:flex;align-items:center;justify-content:space-between;font-size:14px}
+  .rw-tog{width:38px;height:22px;border-radius:22px;background:#D9DCE2;position:relative}
+  .rw-tog::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff}
+  .rw-path{font-size:11px;color:#353D57;margin-top:8px}
+  .rw-kv{display:grid;grid-template-columns:90px minmax(0,1fr);gap:14px 0;font-size:14px}
+  .rw-kv span{font:600 11px/20px var(--body);letter-spacing:.06em;color:#9A9EAB}
+  .rw-link{align-self:flex-end;color:#1770EF;font-size:14px;margin-top:14px}
+  .rw-muted{font-size:13px;color:#9A9EAB;margin-top:16px}
+  .rw-foot{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:14px}
+  .rw-foot .v{font-size:11px;color:#C4C8D0;margin-right:auto}
+  .rw-btn{height:44px;padding:0 22px;border-radius:10px;border:1px solid #D9DCE2;display:grid;place-items:center;font:500 15px/1 var(--body);background:#fff}
+  .rw-btn.pri{background:#3B82F6;border-color:#3B82F6;color:#fff}
+  .rw-btn.stop{color:#E5484D;border-color:#F3C4C4}
+  .rw-timer{font:300 64px/1 var(--body);margin:18px 0 20px}
+  .rw-bar{height:4px;border-radius:4px;background:#EEF0F3;margin:16px 0 4px;overflow:hidden}
+  .rw-bar i{display:block;height:100%;width:38%;background:#22C55E;border-radius:inherit;animation:s-fill 2.4s cubic-bezier(.3,.6,.3,1) backwards .3s}
+  .rw-dim{position:absolute;inset:0;background:rgba(80,86,100,.45);display:grid;place-items:center}
+  .rw-dialog{width:300px;background:#fff;border-radius:14px;padding:22px;display:grid;gap:10px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+  .rw-dialog b{font:700 17px/1.3 var(--body);margin-bottom:6px}
+  .rw-dialog span{height:44px;border-radius:10px;display:grid;place-items:center;font-size:15px;border:1px solid #E6E7EA}
+  .rw-dialog .pri{background:#3B82F6;color:#fff;border-color:#3B82F6}
+  .rw-dialog .red{color:#E5484D}
+
+  /* video card anatomy */
+  .anat{position:absolute;inset:0;background:#F5F6FA;background-image:radial-gradient(60% 70% at 12% 8%,rgba(123,76,255,.16) 0%,rgba(123,76,255,0) 70%),radial-gradient(60% 55% at 85% 95%,rgba(23,112,239,.14) 0%,rgba(23,112,239,0) 70%)}
+  .anat-card{position:absolute;left:380px;top:110px;width:340px;transform:scale(1.55);transform-origin:0 0;box-shadow:0 10px 30px rgba(3,13,45,.14)}
+  .anat-card .s-title{white-space:normal}
+  .anat-card .titlerow{display:flex;gap:10px;align-items:flex-start}
+  .anat-card .titlerow .s-title{flex:1}
+  .anat-card .icons{display:flex;gap:10px;color:#4F566C;padding-top:2px}
+  .anat-card .s-tags{flex-direction:column;align-items:flex-start}
+  .anat-lines{position:absolute;inset:0;pointer-events:none}
+  .tagline{position:absolute;display:flex;flex-direction:column;gap:3px;width:290px}
+  .tagline.l{left:30px;text-align:right;align-items:flex-end}
+  .tagline.r{left:960px;width:210px;align-items:flex-start}
+  .tagline b{display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:9px;background:#030D2D;color:#fff;font:600 16px/1 var(--display);white-space:nowrap}
+  .tagline span{font-size:13px;color:#4F566C;line-height:1.35}
+
+  /* hand-off */
+  .ho{position:absolute;inset:0;display:grid;place-items:center}
+  .ho-row{display:flex;align-items:center;gap:26px}
+  .ho-lib{width:250px;display:grid;justify-items:center;gap:10px;text-align:center;background:#fff;border-radius:20px;padding:26px 22px;box-shadow:0 24px 60px rgba(3,13,45,.16)}
+  .ho-lib b{font:700 20px/1.2 var(--display)}
+  .ho-lib span{font-size:13px;color:#4F566C}
+  .ho-agents{display:grid;gap:14px;width:360px}
+  .ho-agent{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;align-items:center;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #E6E7EA;box-shadow:0 16px 40px rgba(3,13,45,.12)}
+  .ho-agent b{display:block;font:700 17px/1.2 var(--display)}
+  .ho-agent span{font-size:13px;color:#4F566C}
+  .ho-arrow{color:#1770EF}
+</style>
+</head>
+<body data-layout="scroll">
+
+<header class="topbar">
+  <a class="mark" href="index.html"><i></i>6labs Studio <span>Testing guides</span></a>
+  <nav class="navs" aria-label="Guides">
+    <a class="docpill" data-doc href="01-gameplay-library.html" aria-current="page"><span class="n">01</span>Gameplay Library</a>
+    <a class="docpill" data-doc href="02-user-test.html"><span class="n">02</span>User Test</a>
+  </nav>
+  <nav class="layswitch" aria-label="Layout">
+    <a data-lay="scroll" href="01-gameplay-library.html">Scroll</a>
+    <a data-lay="steps" href="01-gameplay-library-steps.html">Step by step</a>
+  </nav>
+</header>
+
+<section class="intro">
+  <div class="hero-icon lib" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M10 10.5v5l4-2.5z" fill="currentColor" stroke="none"/></svg></div>
+  <div class="label">Guide 01 · Human testing</div>
+  <h1>Gameplay Library</h1>
+  <p class="lede">Before any <b>human test</b> can run, the studio needs gameplay recordings. This guide shows how videos get into 6labs Studio and how they're organised — so tests can use them.</p>
+  <div class="hero-actions">
+    <span class="scrollcue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14m-6-6l6 6 6-6"/></svg>Scroll to start</span>
+  </div>
+</section>
+
+<section class="story" data-story aria-label="Gameplay Library walkthrough">
+  <div class="stage">
+    <div class="progress"><i></i></div>
+    <ol class="flow" aria-label="Where you are">
+      <li data-node="overview"><button type="button"><i>1</i>Overview</button></li>
+      <li data-node="sources"><button type="button"><i>2</i>Video sources</button></li>
+      <li data-node="recorder"><button type="button"><i>3</i>Gameplay Recorder</button></li>
+      <li data-node="upload"><button type="button"><i>4</i>Browser upload</button></li>
+      <li data-node="cli"><button type="button"><i>5</i>CLI</button></li>
+      <li data-node="card"><button type="button"><i>6</i>Video card</button></li>
+      <li data-node="bulk"><button type="button"><i>7</i>Bulk tagging</button></li>
+      <li data-node="find"><button type="button"><i>8</i>Find</button></li>
+      <li data-node="tests"><button type="button"><i>9</i>To tests</button></li>
+    </ol>
+
+    <div class="side">
+      <div class="cards">
+        <article class="card" data-node="overview">
+          <div class="count" data-chapter="Overview"></div>
+          <h2>One home for every gameplay video</h2>
+          <p>The Gameplay Library is a page in the <b>Testing</b> mode of 6labs Studio. Every gameplay video the studio has lives here.</p>
+          <ul>
+            <li><span><b>Comes in from:</b> the 6labs Gameplay Recorder App, browser upload and CLI</span></li>
+            <li><span><b>Not here:</b> BlueStacks recordings and SDK videos</span></li>
+          </ul>
+        </article>
+
+        <article class="card" data-node="sources">
+          <div class="count" data-chapter="Video sources"></div>
+          <h2>Three ways to bring videos in</h2>
+          <ul>
+            <li><span><b>Gameplay Recorder App</b> — records testers while they play, then uploads</span></li>
+            <li><span><b>Browser upload</b> — drop in videos you already have</span></li>
+            <li><span><b>CLI</b> — push hundreds of videos from a computer</span></li>
+          </ul>
+          <p>Next, each one up close.</p>
+        </article>
+
+        <article class="card" data-node="recorder">
+          <div class="count" data-chapter="Source 1 · Gameplay Recorder App"></div>
+          <h2>Set it up once</h2>
+          <p>Install the <b>6labs Gameplay Recorder App</b> on the PC testers play on, then enter:</p>
+          <ul>
+            <li><span><b>Work email</b> — optional</span></li>
+            <li><span><b>App ID</b> — tells the app which game to record</span></li>
+            <li><span><b>Region</b> — whether you're in mainland China</span></li>
+          </ul>
+          <p>Click <b>Save &amp; Start</b>.</p>
+          <div class="facts"><span>PC app</span><span>Android &amp; iOS coming soon</span></div>
+        </article>
+
+        <article class="card" data-node="recorder">
+          <div class="count" data-chapter="Source 1 · Gameplay Recorder App"></div>
+          <h2>It waits for the game</h2>
+          <p>The app shows <b>Waiting for</b> the game. When the tester launches the game, recording starts on its own — no button to press.</p>
+          <p><b>Pause</b> stops recording until they resume.</p>
+        </article>
+
+        <article class="card" data-node="recorder">
+          <div class="count" data-chapter="Source 1 · Gameplay Recorder App"></div>
+          <h2>Testers just play</h2>
+          <p>While the game runs, the app shows <b>REC</b> and a timer. The tester plays as normal.</p>
+        </article>
+
+        <article class="card" data-node="recorder">
+          <div class="count" data-chapter="Source 1 · Gameplay Recorder App"></div>
+          <h2>Close the game — it uploads</h2>
+          <p>When the tester closes the game, recording stops and the video starts uploading on its own.</p>
+          <p>To stop early, they can click <b>Stop recording</b>: <b>Stop &amp; upload</b> sends it, <b>Stop &amp; discard</b> throws it away.</p>
+        </article>
+
+        <article class="card" data-node="recorder">
+          <div class="count" data-chapter="Source 1 · Gameplay Recorder App"></div>
+          <h2>The video uploads itself</h2>
+          <p>The app uploads the session and shows its progress.</p>
+          <p>Once it's done, the video appears in the Gameplay Library with a <b>Recorder app</b> badge.</p>
+        </article>
+
+        <article class="card" data-node="upload">
+          <div class="count" data-chapter="Source 2 · Browser upload"></div>
+          <h2>Click Upload videos</h2>
+          <p>On the Gameplay Library page, click <b>Upload videos</b> in the top-right corner.</p>
+        </article>
+
+        <article class="card" data-node="upload">
+          <div class="count" data-chapter="Source 2 · Browser upload"></div>
+          <h2>Drop in files, add tags</h2>
+          <p>Drop videos in or click to browse. Tags are optional and apply to every video in the upload.</p>
+          <div class="facts"><span>MP4 · MOV · WEBM · AVI · MKV</span><span>Max 500 MB each</span><span>Up to 50 per upload</span></div>
+        </article>
+
+        <article class="card" data-node="cli">
+          <div class="count" data-chapter="Source 3 · CLI"></div>
+          <h2>Upload hundreds from the command line</h2>
+          <p>For big batches, open <b>Upload videos → Bulk via CLI</b> and follow three steps:</p>
+          <ul>
+            <li><span><b>Install</b> the 6labs CLI</span></li>
+            <li><span><b>Log in</b> — authorises the computer in the browser</span></li>
+            <li><span><b>Upload a folder</b> with tags, game name and App ID</span></li>
+          </ul>
+          <p>It runs in the background, retries failures and resumes interrupted uploads.</p>
+        </article>
+
+        <article class="card" data-node="card">
+          <div class="count" data-chapter="Video card"></div>
+          <h2>What a video card shows</h2>
+          <p>Every video, from any source, becomes a card like this:</p>
+          <ul>
+            <li><span><b>Source</b> — where the video came from</span></li>
+            <li><span><b>Username</b> — who added it</span></li>
+            <li><span><b>System tag</b> — added automatically, can't be edited</span></li>
+            <li><span><b>Your tags</b> — labels you add, up to 5</span></li>
+            <li><span><b>Edit &amp; delete</b> — appear when you hover</span></li>
+          </ul>
+        </article>
+
+        <article class="card" data-node="bulk" data-focus="706 560 1.12">
+          <div class="count" data-chapter="Bulk tagging"></div>
+          <h2>Tag many videos at once</h2>
+          <p>Tick the videos you want. A card appears at the bottom:</p>
+          <ul>
+            <li><span><b>Add tag</b> — adds a tag to every selected video</span></li>
+            <li><span><b>Delete</b> — removes them together</span></li>
+          </ul>
+        </article>
+
+        <article class="card" data-node="find" data-focus="706 300 1.15">
+          <div class="count" data-chapter="Find"></div>
+          <h2>Find the right batch</h2>
+          <p>Tap a tag like <b>Build V2.2</b> to show only those videos.</p>
+          <p>You can also filter by source, see the last 24 hours, or search by name or tag.</p>
+        </article>
+
+        <article class="card" data-node="tests">
+          <div class="count" data-chapter="What's next"></div>
+          <h2>Tests pick their videos from here</h2>
+          <p>To analyse videos, you open a test such as <b>User Test</b>. It lets you pick videos straight from this library.</p>
+          <a class="btn primary" data-doc href="02-user-test.html">Next guide: User Test →</a>
+        </article>
+      </div>
+      <div class="ctrl">
+        <button class="btn" type="button" data-prev aria-label="Previous">←</button>
+        <button class="btn primary grow" type="button" data-next>Next</button>
+      </div>
+    </div>
+
+    <div class="visual">
+      <div class="shot" style="--w:1180px;--h:780px">
+        <div class="shot-canvas">
+          <div class="cam">
+            <div class="s-frame" style="height:780px">
+              <div class="s-app" style="height:100%">
+                <aside class="s-side">
+                  <div class="s-logo"><i></i>6labs.ai</div>
+                  <div class="s-area"><span>Intelligence</span><span class="on">Testing</span></div>
+                  <nav class="s-nav">
+                    <a>Overview</a>
+                    <a class="on" data-fx="hl:0">Gameplay Library</a>
+                  </nav>
+                  <div>
+                    <div class="s-nav-h">Human testing</div>
+                    <nav class="s-nav">
+                      <a data-fx="hl:13">User test</a>
+                      <a data-fx="hl:13">Functional test</a>
+                      <a class="soon">External agency</a>
+                      <a class="soon">Beta · CBT / OBT</a>
+                    </nav>
+                    <div class="s-nav-h ai">AI player testing</div>
+                    <nav class="s-nav">
+                      <a>AI behavioural test</a>
+                      <a>AI functional test</a>
+                    </nav>
+                  </div>
+                </aside>
+
+                <div class="s-main">
+                  <div class="s-head">
+                    <div class="s-icon lib"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M10 10.5v5l4-2.5z" fill="currentColor" stroke="none"/></svg></div>
+                    <div class="grow"><h3 class="s-h1">Gameplay Library</h3><p class="s-sub">Every recording, from every source. Tests pick their batches from here.</p></div>
+                    <span class="s-btn primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m0 0L7 9m5-5l5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>Upload videos</span>
+                  </div>
+
+                  <div class="s-panel">
+                    <div class="s-panel-top">
+                      <span class="s-label">Select by tag</span>
+                      <span class="s-pill" data-fx="on:12 hl:12">Build V2.2 <span class="n">5</span></span>
+                      <span class="s-pill">Build V2.1 <span class="n">3</span></span>
+                      <span class="s-pill">onboarding <span class="n">2</span></span>
+                      <span class="s-pill">Last 24h <span class="n">4</span></span>
+                      <span class="s-sep"></span>
+                      <span class="s-pill plain">+10 more ▾</span>
+                    </div>
+                    <div class="s-panel-bar">
+                      <span class="s-row" style="gap:8px;font-size:14px"><span class="s-checkbox" data-fx="mixed:11"></span><span data-at="-11,13-">Select all 14</span><span data-at="12">Select all 5</span></span>
+                      <span class="s-sep"></span>
+                      <span style="font-size:14px;color:#4F566C">Source</span>
+                      <span class="s-seg"><span class="on">All</span><span>Recorder app</span><span>CLI</span><span>Browser upload</span></span>
+                      <span style="flex:1"></span>
+                      <span class="s-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search sessions</span>
+                    </div>
+
+                    <div class="s-grid">
+                      <div class="s-card" data-fx="sel:11"><div class="s-thumb g1"><span class="s-checkbox"></span><span class="s-src">Recorder app</span><span class="s-dur">12:04</span></div><div class="s-card-body"><div class="s-title">ut-0912 — first session walkthrough.mp4</div><div class="s-meta"><i>ER</i>Elena Roth <span>· Sep 17, 2026</span></div><div class="s-tags"><span class="s-batch"><b>Batch</b> · Build V2.2</span><span class="s-utag">onboarding</span></div></div></div>
+                      <div class="s-card" data-fx="sel:11"><div class="s-thumb g4"><span class="s-checkbox"></span><span class="s-src">Recorder app</span><span class="s-dur">9:41</span></div><div class="s-card-body"><div class="s-title">ut-0911 — first session.mp4</div><div class="s-meta"><i>AM</i>Arjun Mehta <span>· Sep 17, 2026</span></div><div class="s-tags"><span class="s-batch"><b>Batch</b> · Build V2.2</span><span class="s-addtag">+ Add tags</span></div></div></div>
+                      <div class="s-card"><div class="s-thumb g3"><span class="s-checkbox"></span><span class="s-src">Browser upload</span><span class="s-dur">8:20</span></div><div class="s-card-body"><div class="s-title">ut-0910 — tutorial complete.mp4</div><div class="s-meta"><i>JW</i>You <span>· Sep 17, 2026</span></div><div class="s-tags"><span class="s-batch"><b>Batch</b> · Build V2.2</span><span class="s-utag">onboarding</span></div></div></div>
+                      <div class="s-card" data-at="-11,13-"><div class="s-thumb g2"><span class="s-checkbox"></span><span class="s-src">CLI</span><span class="s-dur">15:22</span></div><div class="s-card-body"><div class="s-title">ut-0908 — returning player.mp4</div><div class="s-meta"><i>DW</i>Dan Whitfield <span>· Sep 16, 2026</span></div><div class="s-tags"><span class="s-batch"><b>Batch</b> · Build V2.1</span><span class="s-utag">frost-festival</span></div></div></div>
+                      <div class="s-card"><div class="s-thumb g6"><span class="s-checkbox"></span><span class="s-src">Recorder app</span><span class="s-dur">11:18</span></div><div class="s-card-body"><div class="s-title">ut-0904 — first session.mp4</div><div class="s-meta"><i>ER</i>Elena Roth <span>· Sep 16, 2026</span></div><div class="s-tags"><span class="s-batch"><b>Batch</b> · Build V2.2</span></div></div></div>
+                      <div class="s-card" data-at="-11,13-"><div class="s-thumb g5"><span class="s-checkbox"></span><span class="s-src">CLI</span><span class="s-dur">7:52</span></div><div class="s-card-body"><div class="s-title">ut-0899 — tutorial exit.mp4</div><div class="s-meta"><i>MS</i>Mohit Sharma <span>· Sep 16, 2026</span></div><div class="s-tags"><span class="s-batch"><b>Batch</b> · Build V2.1</span></div></div></div>
+                    </div>
+                  </div>
+
+                  <div class="bulkdock" data-at="11">
+                    <span class="n">2 selected</span><span class="sep"></span>
+                    <span class="s-btn ghost sm">+ Add tag</span>
+                    <span class="s-btn sm del"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>Delete</span>
+                    <span class="x">✕</span>
+                  </div>
+
+                  <!-- hand-off to tests -->
+                  <div class="layer" data-at="13">
+                    <div class="backdrop" style="background:rgba(245,246,250,.8)"></div>
+                    <div class="ho">
+                      <div class="ho-row">
+                        <div class="ho-lib">
+                          <div class="s-icon lib"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M10 10.5v5l4-2.5z" fill="currentColor" stroke="none"/></svg></div>
+                          <b>Gameplay Library</b>
+                          <span>Stores &amp; organises videos.<br>No tests run here.</span>
+                        </div>
+                        <svg class="ho-arrow" width="70" height="24" viewBox="0 0 70 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M2 12h62m-9-9l9 9-9 9"/></svg>
+                        <div class="ho-agents">
+                          <div class="ho-agent"><div class="s-icon ut sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.8-3.2 3.2-5 6-5s5.2 1.8 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16.5 14c2.3.2 4 1.8 4.5 4.5"/></svg></div><div><b>User Test</b><span>Picks videos, finds where players struggle</span></div></div>
+                          <div class="ho-agent"><div class="s-icon sm" style="background:linear-gradient(135deg,#0E8F6B,#22B58A)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 9l2 2 4-4M8 16h8"/></svg></div><div><b>Functional Test</b><span>Picks videos, checks each test case</span></div></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 10 · video card anatomy -->
+            <div class="layer anat" data-at="10">
+              <div class="s-card anat-card">
+                <div class="s-thumb g1"><span class="s-checkbox"></span><span class="s-src">Recorder app</span><span class="s-dur">12:04</span></div>
+                <div class="s-card-body">
+                  <div class="titlerow"><div class="s-title">ut-0912 — first session walkthrough.mp4</div><span class="icons"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></span></div>
+                  <div class="s-meta"><i>ER</i>Elena Roth <span>· Sep 17, 2026</span></div>
+                  <div class="s-tags"><span class="s-batch"><b>Batch</b> · Build V2.2</span><span class="s-utag">onboarding</span></div>
+                </div>
+              </div>
+              <svg class="anat-lines" width="1180" height="780" viewBox="0 0 1180 780" fill="none" stroke="#030D2D" stroke-width="2">
+                <path d="M326 373H396"/><circle cx="400" cy="373" r="5" fill="#1770EF" stroke="none"/>
+                <path d="M326 511H400"/><circle cx="404" cy="511" r="5" fill="#1770EF" stroke="none"/>
+                <path d="M326 601H400"/><circle cx="404" cy="601" r="5" fill="#1770EF" stroke="none"/>
+                <path d="M954 445H892"/><circle cx="888" cy="445" r="5" fill="#1770EF" stroke="none"/>
+                <path d="M954 555H592"/><circle cx="588" cy="555" r="5" fill="#1770EF" stroke="none"/>
+              </svg>
+              <div class="tagline l" style="top:356px"><b>Source</b><span>Recorder app · Browser upload · CLI</span></div>
+              <div class="tagline l" style="top:494px"><b>Username</b><span>Who added the video</span></div>
+              <div class="tagline l" style="top:584px"><b>Your tag</b><span>Added by you · editable</span></div>
+              <div class="tagline r" style="top:428px"><b>Edit &amp; delete</b><span>Show when you hover</span></div>
+              <div class="tagline r" style="top:538px"><b>System tag</b><span>Added automatically · locked</span></div>
+            </div>
+
+            <!-- 1-9 · video sources -->
+            <div class="layer srcscene" data-at="1-9">
+
+              <!-- source 1: 6labs Gameplay Recorder App -->
+              <div class="srcpanel" data-fx="eq1:-1 big:2-6 s1:7-">
+                <div class="wall"></div>
+                <div class="rwin2">
+                  <div class="rw-title"><span class="logo"></span>6labs Gameplay Recorder<span class="wc"><span>—</span><span>✕</span></span></div>
+
+                  <div class="rw-body" data-at="-2">
+                    <span class="rw-pill setup">SETUP</span>
+                    <div class="rw-h">Enter your details</div>
+                    <p class="rw-sub">Auto-records gameplay and uploads to your 6labs Gameplay Library.</p>
+                    <div class="rw-lab">Work email (optional)</div>
+                    <div class="rw-in">elena@studio.com</div>
+                    <div class="rw-lab">App ID</div>
+                    <div class="rw-in">10007</div>
+                    <div class="rw-ok">Don't Let it Die</div>
+                    <div class="rw-lab">Are you in mainland China?</div>
+                    <div class="rw-yn"><span>Yes</span><span class="on">No</span></div>
+                    <div class="rw-div"></div>
+                    <div class="rw-lab" style="margin-top:0">On this device</div>
+                    <div class="rw-row">Keep local copies<span class="rw-tog"></span></div>
+                    <div class="rw-path">C:\Users\admin\AppData\Local\6Labs\GameLibrary\recordings ↗</div>
+                    <div class="rw-foot"><span class="v">v1.4.0</span><span class="rw-btn">Clear</span><span class="rw-btn pri" data-fx="hl:2">Save &amp; Start</span></div>
+                  </div>
+
+                  <div class="rw-body" data-at="3">
+                    <span class="rw-pill ready">READY</span>
+                    <div class="rw-h">Waiting for Don't Let it Die</div>
+                    <p class="rw-sub">Launch the game — recording starts on its own.</p>
+                    <div class="rw-div"></div>
+                    <div class="rw-kv"><span>USER</span>elena@studio.com<span>GAME</span>Don't Let it Die</div>
+                    <span class="rw-link">Settings</span>
+                    <div class="rw-muted">Uploaded 4 min ago</div>
+                    <div class="rw-foot"><span class="v">v1.4.0</span><span class="rw-btn">Pause</span></div>
+                  </div>
+
+                  <div class="rw-body" data-at="4-5">
+                    <span class="rw-pill rec">REC</span>
+                    <div class="rw-timer" id="rec-time">0:00</div>
+                    <div class="rw-div" style="margin-top:0"></div>
+                    <div class="rw-kv"><span>USER</span>elena@studio.com<span>GAME</span>Don't Let it Die</div>
+                    <div class="rw-foot"><span class="v">v1.4.0</span><span class="rw-btn stop" data-fx="hl:5">Stop recording</span></div>
+                  </div>
+
+                  <div class="rw-body" data-at="6-">
+                    <span class="rw-pill up">UPLOADING</span>
+                    <div class="rw-h">Uploading session</div>
+                    <p class="rw-sub">84 MB · 38%</p>
+                    <div class="rw-bar"><i></i></div>
+                    <div class="rw-div"></div>
+                    <div class="rw-kv"><span>USER</span>elena@studio.com<span>GAME</span>Don't Let it Die</div>
+                    <div class="rw-muted">Uploaded 5 min ago</div>
+                    <div class="rw-foot"><span class="v">v1.4.0</span></div>
+                  </div>
+
+                  <div class="rw-dim" data-at="5">
+                    <div class="rw-dialog"><b>Stop recording?</b><span class="pri">Stop &amp; upload</span><span class="red">Stop &amp; discard</span><span>Cancel</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- source 2: browser upload -->
+              <div class="srcpanel" data-fx="eq2:-1 s1:2-6 big:7-8 s2:9-">
+                <div class="minipage">
+                  <div class="s-head">
+                    <div class="s-icon lib"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M10 10.5v5l4-2.5z" fill="currentColor" stroke="none"/></svg></div>
+                    <div class="grow"><h3 class="s-h1" style="font-size:26px">Gameplay Library</h3><p class="s-sub">Every recording, from every source.</p></div>
+                    <span class="s-btn primary" data-fx="hl:7"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m0 0L7 9m5-5l5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>Upload videos</span>
+                  </div>
+                  <div class="s-panel">
+                    <div class="s-panel-top"><span class="s-pill">Build V2.2 <span class="n">5</span></span><span class="s-pill">Build V2.1 <span class="n">3</span></span><span class="s-pill">Last 24h <span class="n">4</span></span></div>
+                    <div class="s-grid">
+                      <div class="s-card"><div class="s-thumb g1"><span class="s-src">Recorder app</span></div><div class="s-card-body"><div class="s-title">ut-0912 — first session.mp4</div><div class="s-meta"><i>ER</i>Elena Roth</div></div></div>
+                      <div class="s-card"><div class="s-thumb g4"><span class="s-src">Recorder app</span></div><div class="s-card-body"><div class="s-title">ut-0911 — first session.mp4</div><div class="s-meta"><i>AM</i>Arjun Mehta</div></div></div>
+                      <div class="s-card"><div class="s-thumb g3"><span class="s-src">Browser upload</span></div><div class="s-card-body"><div class="s-title">ut-0910 — tutorial.mp4</div><div class="s-meta"><i>JW</i>You</div></div></div>
+                      <div class="s-card"><div class="s-thumb g2"><span class="s-src">CLI</span></div><div class="s-card-body"><div class="s-title">ut-0908 — returning player.mp4</div><div class="s-meta"><i>DW</i>Dan Whitfield</div></div></div>
+                      <div class="s-card"><div class="s-thumb g6"><span class="s-src">Recorder app</span></div><div class="s-card-body"><div class="s-title">ut-0904 — first session.mp4</div><div class="s-meta"><i>ER</i>Elena Roth</div></div></div>
+                      <div class="s-card"><div class="s-thumb g5"><span class="s-src">CLI</span></div><div class="s-card-body"><div class="s-title">ut-0899 — tutorial exit.mp4</div><div class="s-meta"><i>MS</i>Mohit Sharma</div></div></div>
+                    </div>
+                  </div>
+                  <div class="layer" data-at="8-">
+                    <div class="backdrop"></div>
+                    <div class="s-modal upmodal">
+                      <span class="s-x">✕</span>
+                      <h2>Upload videos</h2>
+                      <p>Add gameplay clips for your agents to reference. Tag them so they're easy to find later.</p>
+                      <div class="s-seg" style="margin:16px 0"><span class="on">Upload files</span><span>Bulk via CLI</span></div>
+                      <div class="s-drop" data-fx="hl:8"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1770EF" stroke-width="1.8"><path d="M12 16V4m0 0L7 9m5-5l5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><b>Drop videos here or click to browse</b><span>MP4, MOV, WEBM, AVI, MKV · max 500 MB each · select many at once</span></div>
+                      <div class="s-label" style="margin:20px 0 10px">Tags for all videos</div>
+                      <div class="s-input" style="gap:6px"><span class="s-utag">Build V2.2</span><span class="s-utag">onboarding</span><span style="color:#9A9EAB;font-size:14px">e.g. tutorial, boss-fight</span></div>
+                      <p style="font-size:13px;margin-top:8px">Press Enter or comma to add. Tags apply to every video in this upload.</p>
+                      <div class="s-row" style="justify-content:flex-end;margin-top:16px"><span class="s-btn ghost sm">Cancel</span><span class="s-btn primary sm">Upload videos</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- source 3: CLI -->
+              <div class="srcpanel" data-fx="eq3:-1 s2:2-8 big:9-">
+                <div class="minipage">
+                  <div class="s-head">
+                    <div class="s-icon lib"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M10 10.5v5l4-2.5z" fill="currentColor" stroke="none"/></svg></div>
+                    <div class="grow"><h3 class="s-h1" style="font-size:26px">Gameplay Library</h3></div>
+                  </div>
+                  <div class="backdrop"></div>
+                  <div class="s-modal clitab">
+                    <span class="s-x">✕</span>
+                    <h2>Upload videos</h2>
+                    <div class="s-seg" style="margin:12px 0"><span>Upload files</span><span class="on">Bulk via CLI</span></div>
+                    <p style="margin:0 0 12px">Uploading hundreds of clips? Push them straight from your machine with the 6labs CLI — it runs in the background, retries on failure, and resumes interrupted uploads.</p>
+                    <div class="s-col" style="gap:10px">
+                      <div class="s-code"><span class="s-label">1 · Install</span><pre>npm install -g @6labs/cli</pre></div>
+                      <div class="s-code"><span class="s-label">2 · Authenticate</span><span class="help">Opens your browser to authorize this machine.</span><pre>6labs login</pre></div>
+                      <div class="s-code"><span class="s-label">3 · Upload a folder</span><pre>6labs videos upload ./gameplay/*.mp4 \
+  --tags "Build V2.2,onboarding" \
+  --game-name "Don't Let it Die" \
+  --app-id "10007" \
+  --concurrency 4</pre></div>
+                      <p class="hint">Globs like ./gameplay/**/*.mp4 upload nested folders. --concurrency controls parallel uploads. Clips appear in the library as each one finishes.</p>
+                    </div>
+                    <div class="s-row" style="justify-content:flex-end;margin-top:12px"><span class="s-btn primary sm">Done</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <span class="srclabel" data-fx="eq1:-1 big:2-6 s1:7-"><i>1</i>Gameplay Recorder App <span class="soon">· PC</span></span>
+              <span class="srclabel" data-fx="eq2:-1 s1:2-6 big:7-8 s2:9-"><i>2</i>Browser upload</span>
+              <span class="srclabel" data-fx="eq3:-1 s2:2-8 big:9-"><i>3</i>CLI</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+
+<section class="recap">
+  <div class="recap-head">
+    <div class="label">Recap</div>
+    <h2>Three ways in. One library. Tests pick from there.</h2>
+    <div class="recap-flow" aria-label="The flow">
+      <span class="rf-group"><span class="rf">Gameplay Recorder App</span><span class="rf">Browser upload</span><span class="rf">CLI</span></span>
+      <span class="rf-arrow" aria-hidden="true">→</span>
+      <span class="rf strong">Gameplay Library</span>
+      <span class="rf-arrow" aria-hidden="true">→</span>
+      <span class="rf-group"><span class="rf">User Test</span><span class="rf">Functional Test</span></span>
+    </div>
+  </div>
+  <div class="recap-grid">
+    <div class="panel">
+      <h3>Say it to a client</h3>
+      <ul class="quotes">
+        <li>Your testers just play — recording starts on its own.</li>
+        <li>Already have recordings? Upload them, or push hundreds with one command.</li>
+        <li>Tag by build or feature, and pull the right batch in one tap.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Questions clients ask</h3>
+      <details><summary>Do testers have to press record?</summary><p>No. Recording starts when the game launches and uploads when they close it. They can also stop and upload manually.</p></details>
+      <details><summary>Does the recorder work on phones?</summary><p>Not yet. The 6labs Gameplay Recorder App is for PC. Android and iOS are coming soon.</p></details>
+      <details><summary>Can we use recordings we already have?</summary><p>Yes. Upload up to 50 at a time in the browser, or any number with the CLI.</p></details>
+      <details><summary>Which video formats work?</summary><p>MP4, MOV, WEBM, AVI and MKV, up to 500 MB each.</p></details>
+      <details><summary>Do BlueStacks or SDK recordings show up here?</summary><p>No. The library holds videos from the Gameplay Recorder App, browser uploads and the CLI.</p></details>
+    </div>
+  </div>
+  <div class="nextdoc"><a data-doc href="02-user-test.html"><span><small>Next guide</small><b>User Test — from videos to a report</b></span><span aria-hidden="true">→</span></a></div>
+</section>
+
+<script src="story.js"></script>
+<script>
+(() => {
+  const story = Guide.stories[0];
+  const time = document.getElementById('rec-time');
+  let timer = null;
+  story.root.addEventListener('beat', e => {
+    const b = e.detail.beat;
+    if (b === 5) { clearInterval(timer); timer = null; if (time.textContent === '0:00') time.textContent = '0:12'; return; }
+    clearInterval(timer);
+    timer = null;
+    if (b !== 4) return;
+    let s = 0;
+    time.textContent = '0:00';
+    timer = setInterval(() => {
+      s++;
+      time.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    }, 1000);
+  });
+})();
+</script>
+</body>
+</html>
