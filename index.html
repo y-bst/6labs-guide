@@ -247,21 +247,30 @@ dialog.sheet::backdrop{background:rgba(3,13,45,.55);backdrop-filter:blur(3px)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 <style>
-  .guides{max-width:980px;margin:0 auto;padding:0 var(--gut) 80px;display:grid;gap:16px}
-  .guide{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:20px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px 24px;box-shadow:0 1px 2px rgba(3,13,45,.04),0 16px 40px rgba(3,13,45,.06)}
+  .guides{max-width:1040px;margin:0 auto;padding:0 var(--gut) 80px}
+  .group+.group{margin-top:44px}
+  .group-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:14px}
+  .group-h h2{font-size:24px;font-weight:700}
+  .group-h p{margin:0;font-size:14px;color:var(--ink-3)}
+  .group.lib .group-h h2{color:#6431E0}
+  .group.human .group-h h2{color:var(--brand)}
+  .group.ai .group-h h2{color:var(--green)}
+  .cards2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .guide{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px 20px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px 24px;box-shadow:0 1px 2px rgba(3,13,45,.04),0 16px 40px rgba(3,13,45,.06)}
+  .cards2 .guide{grid-template-columns:auto minmax(0,1fr)}
+  .cards2 .guide .open{grid-column:2}
   .guide .hero-icon{width:56px;height:56px;border-radius:12px;margin:0}
-  .guide .n{font:500 12px/1 var(--mono);color:var(--ink-4)}
-  .guide h2{font-size:24px;margin-top:6px}
-  .guide p{margin:6px 0 0;color:var(--ink-2)}
-  .guide .open{display:flex;gap:8px}
-  .guide.later{background:transparent;box-shadow:none;border-style:dashed}
-  .guide.later h2{color:var(--ink-3)}
-  .later-icon{width:56px;height:56px;border-radius:12px;background:#E6E7EA}
-  .order{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 8px;font:600 14px/1 var(--display);color:var(--ink-4)}
-  @media (max-width:720px){
+  .guide h3{font-size:22px;margin-top:4px}
+  .guide p{margin:6px 0 0;color:var(--ink-2);font-size:15px}
+  .tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#E6E7EA;font:600 11px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+  .guide.later{background:rgba(255,255,255,.5);box-shadow:none;border-style:dashed}
+  .guide.later h3{color:var(--ink-3)}
+  .guide.later .hero-icon{background:#E6E7EA;color:var(--ink-4)}
+  @media (max-width:760px){
     .guide{grid-template-columns:auto minmax(0,1fr)}
     .guide .open{grid-column:1 / -1}
-    .guide .open .btn{flex:1}
+    .guide .open .btn{width:100%}
+    .cards2{grid-template-columns:minmax(0,1fr)}
   }
 </style>
 </head>
@@ -270,45 +279,62 @@ dialog.sheet::backdrop{background:rgba(3,13,45,.55);backdrop-filter:blur(3px)}
 <section class="intro">
   <div class="label">6labs Studio · Testing</div>
   <h1>Testing guides</h1>
-  <p class="lede">How gameplay videos get into 6labs Studio, and how User Test turns them into a report. Start with guide 01.</p>
+  <p class="lede">How gameplay videos get into 6labs Studio, and how the testing agents turn them into results. Start with the Gameplay Library — every test uses it.</p>
 </section>
 
 <main class="guides">
-  <p class="order">Read in order: 01 → 02</p>
+  <section class="group lib" aria-labelledby="h-lib">
+    <div class="group-h"><h2 id="h-lib">Gameplay Library</h2><p>Where every test gets its videos — start here</p></div>
+    <article class="guide">
+      <div class="hero-icon lib" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M10 10.5v5l4-2.5z" fill="currentColor" stroke="none"/></svg></div>
+      <div>
+        <h3>Gameplay Library</h3>
+        <p>How videos come in — Gameplay Recorder App, browser upload, CLI — and how they're organised.</p>
+      </div>
+      <div class="open"><a class="btn primary" href="01-gameplay-library.html">Open guide</a></div>
+    </article>
+  </section>
 
-  <article class="guide">
-    <div class="hero-icon lib" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M10 10.5v5l4-2.5z" fill="currentColor" stroke="none"/></svg></div>
-    <div>
-      <span class="n">Guide 01</span>
-      <h2>Gameplay Library</h2>
-      <p>How videos come in — Gameplay Recorder App, browser upload, CLI — and how they're organised.</p>
+  <section class="group human" aria-labelledby="h-human">
+    <div class="group-h"><h2 id="h-human">Human testing</h2><p>Tests on videos recorded by real players</p></div>
+    <div class="cards2">
+      <article class="guide">
+        <div class="hero-icon ut" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.8-3.2 3.2-5 6-5s5.2 1.8 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16.5 14c2.3.2 4 1.8 4.5 4.5"/></svg></div>
+        <div>
+          <h3>User Test</h3>
+          <p>Pick videos, get a report or ask a question — every finding backed by clips.</p>
+        </div>
+        <div class="open"><a class="btn primary" href="02-user-test.html">Open guide</a></div>
+      </article>
+      <article class="guide later">
+        <div class="hero-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 9l2 2 4-4M8 16h8"/></svg></div>
+        <div>
+          <span class="tag">Coming soon</span>
+          <h3>Functional Test</h3>
+        </div>
+      </article>
     </div>
-    <div class="open">
-      <a class="btn primary" href="01-gameplay-library.html">Scroll</a>
-      <a class="btn" href="01-gameplay-library-steps.html">Step by step</a>
-    </div>
-  </article>
+  </section>
 
-  <article class="guide">
-    <div class="hero-icon ut" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.8-3.2 3.2-5 6-5s5.2 1.8 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16.5 14c2.3.2 4 1.8 4.5 4.5"/></svg></div>
-    <div>
-      <span class="n">Guide 02</span>
-      <h2>User Test</h2>
-      <p>One run from start to finish: pick videos, get a report, check the clips.</p>
+  <section class="group ai" aria-labelledby="h-ai">
+    <div class="group-h"><h2 id="h-ai">AI player testing</h2><p>Tests where 6labs AI agents play the build</p></div>
+    <div class="cards2">
+      <article class="guide later">
+        <div class="hero-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9.5 13h.01M14.5 13h.01"/></svg></div>
+        <div>
+          <span class="tag">Coming soon</span>
+          <h3>AI Behavioural Test</h3>
+        </div>
+      </article>
+      <article class="guide later">
+        <div class="hero-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9 14l2 2 4-4"/></svg></div>
+        <div>
+          <span class="tag">Coming soon</span>
+          <h3>AI Functional Test</h3>
+        </div>
+      </article>
     </div>
-    <div class="open">
-      <a class="btn primary" href="02-user-test.html">Scroll</a>
-      <a class="btn" href="02-user-test-steps.html">Step by step</a>
-    </div>
-  </article>
-
-  <article class="guide later">
-    <div class="later-icon" aria-hidden="true"></div>
-    <div>
-      <span class="n">Coming later</span>
-      <h2>Functional Test · AI Behavioural Test · AI Functional Test</h2>
-    </div>
-  </article>
+  </section>
 </main>
 
 </body>

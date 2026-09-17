@@ -1,5 +1,5 @@
-// Builds each guide twice from one source — a scroll story and a step-by-step
-// version — inlining the shared CSS/JS so every output is one shareable file.
+// Builds each guide as a scroll story, inlining the shared CSS/JS so every
+// output is one shareable file.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -35,10 +35,6 @@ for (const [from, name] of pages) {
 
   writeFileSync(join(root, `${name}.html`), html);
 
-  const steps = html
-    .replace('<body data-layout="scroll">', '<body data-layout="steps">')
-    .replace(/(data-doc[^>]*?href=")([\w-]+)\.html"/g, '$1$2-steps.html"');
-  writeFileSync(join(root, `${name}-steps.html`), steps);
 
-  console.log(`built ${name}.html + ${name}-steps.html (${(html.length / 1024).toFixed(0)} KB)`);
+  console.log(`built ${name}.html (${(html.length / 1024).toFixed(0)} KB)`);
 }
