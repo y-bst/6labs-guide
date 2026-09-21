@@ -13,8 +13,7 @@ import { CaseFilters, CaseModal, CaseTable, Scorecard, VerifiedAgainst, VerifyHe
 import { Click } from '../../ui/Click';
 
 const TAGS = [['Build V2.2', FT_RUN.videos], ['Build V2.1', 12], ['Tutorial', 8], ['Last 24h', 4]] as const;
-const INTRO = 'Select the recordings and the test cases they were intended to cover. 6labs verifies each case against the footage and reports it as passed, failed, or not verifiable. No tests are re-run.';
-const DETAILS_SUB = 'A descriptive name makes the run easy to find later.';
+const INTRO = 'Every session is checked against your test cases — pass, fail, or never attempted — with the clip for each result. Analysis runs in the background; the report lands in Run history when it is done.';
 
 const Recordings = ({ show }: { show?: string }) => (
   <FilledTile label="Recordings" show={show} links={<a>Change selection</a>}>
@@ -39,24 +38,23 @@ export function NewRun() {
       <Scroller stops={[['name', 120]]}>
         <PageHeader page="functional" />
         <RunTabs runs={2} />
-        <p className="s-intro">{INTRO}</p>
         <TileRow
           left={<>
-            <InputTile icon="play" title="Select the recordings" show="..videos" click="open">Recordings of tests your team has already run. Select a batch by tag.</InputTile>
+            <InputTile icon="play" title="Select the sessions" show="..videos" click="open">Sessions of tests your team has already run. Select a batch by tag.</InputTile>
             <Recordings show="cases.." />
           </>}
           right={<>
-            <InputTile icon="upload" title="Add the test cases" formats={['CSV', 'XLSX']} show="..cases" hl="cases" click="videos" note={<ColumnsNote />}>
-              The test cases these recordings were intended to cover — as a spreadsheet of cases.
+            <InputTile icon="upload" title="Add the test cases" formats={['CSV', 'XLSX']} show="..cases" hl="cases" click="videos">
+              The test cases these sessions were intended to cover — as a spreadsheet of cases.
             </InputTile>
             <TestCases show="name" />
           </>}
         />
+        <ColumnsNote />
         <RunDetails
-          sub={DETAILS_SUB}
           name={{ placeholder: 'e.g. Build V2.2 — tutorial regression', value: FT_RUN.name, empty: '..cases', typed: 'name' }}
           hlName="name"
-          summary={<><span {...at('..cases')}>Select the recordings and add the test cases to run.</span><span {...at('name')}>{FT_RUN.videos} videos · 1 file</span></>}
+          summary={<><span {...at('..cases')}>Select the sessions and add the test cases to run.</span><span {...at('name')}>{FT_RUN.videos} sessions · {VERIFY.file}</span></>}
           submit={<><Button tone="dis" show="..cases">Verify test cases</Button><Button tone="primary" show="name">Verify test cases</Button></>}
         />
       </Scroller>
@@ -86,7 +84,6 @@ export function Submit() {
           <p className="s-intro">{INTRO}</p>
           <TileRow left={<Recordings />} right={<TestCases />} />
           <RunDetails
-            sub={DETAILS_SUB}
             name={{ placeholder: '', value: FT_RUN.name }}
             summary={`${FT_RUN.videos} videos · 1 file`}
             submit={<ClickTarget><Button tone="primary">Verify test cases</Button></ClickTarget>}
@@ -96,7 +93,7 @@ export function Submit() {
           <PageHeader page="functional" />
           <RunTabs history runs={3} />
           <HistoryTable cols={['Run', 'Tags', 'Result', 'Date']} variant="counts">
-            <RunRow state="submitted" name={FT_RUN.name} sub={`${FT_RUN.videos} videos · ${VERIFY.file}`} tags={[FT_RUN.tag]} result={{ outcomes: VERIFY.chips }} date="Sep 18" />
+            <RunRow state="submitted" name={FT_RUN.name} sub={`${FT_RUN.videos} sessions · ${VERIFY.file}`} tags={[FT_RUN.tag]} result={{ outcomes: VERIFY.chips }} date="Sep 18" click="submit" />
             <RunRow name="Tutorial regression" sub="8 videos · tutorial-cases.xlsx" tags={['Build V2.1', 'Tutorial']} result={{ outcomes: [42, 3, 2, 1] }} date="Sep 5" />
             <RunRow name="Store smoke check" sub="6 videos · store-cases.csv" tags={['Build V2.1']} result={{ outcomes: [22, 1, 0, 2] }} date="Aug 28" />
           </HistoryTable>
@@ -112,7 +109,7 @@ export function Report() {
   return (
     <PageLayer show="result..export">
       <Crumb back trail="Functional test ·" name={FT_RUN.name}><Click on="export"><GhostButton download hl="export">Export CSV</GhostButton></Click></Crumb>
-      <Scroller stops={[['list..steps', 300]]}>
+      <Scroller stops={[['list..steps', 380]]}>
         <div className="s-vcard">
           <VerifyHeader kind="Functional test report" name={FT_RUN.name} />
           <Scorecard hlResult="result" hlCoverage="coverage" />

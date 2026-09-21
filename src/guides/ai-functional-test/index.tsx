@@ -62,7 +62,7 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'cases', step: 'cases', focus: [930, 400, 1.2],
+      id: 'cases', step: 'cases',
       title: 'Add the test case sheet',
       body: <>
         <p>The same sheet as Functional Test: a <b>CSV or XLSX</b> file, one row per case.</p>
@@ -86,7 +86,7 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'report', step: 'report', focus: [560, 300, 1.2],
+      id: 'report', step: 'report', focus: [717, 300, 1.28],
       title: 'Read the result',
       body: <>
         <p><b>{VERIFY.passRate}%</b> of the {VERIFY.ran} cases that ran passed; the AI players reached <b>{VERIFY.coverage}%</b> of the sheet.</p>
@@ -108,7 +108,7 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'export', step: 'export', focus: [1000, 200, 1.15],
+      id: 'export', step: 'export', focus: [717, 250, 1.28],
       title: 'Export as CSV',
       body: <>
         <p><b>Export CSV</b> gives every case with your IDs, the status, the reason, the steps with their timestamps, and the clip.</p>

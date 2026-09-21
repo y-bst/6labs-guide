@@ -23,6 +23,8 @@ export const VERIFY = {
   chips: [1186, 31, 12, 18] as [number, number, number, number],
   /** Stacked bar widths, % of the cases that ran. */
   bar: [95.1, 2.5, 1, 1.4],
+  /** What the case list under the scores holds — a page of the run, not all of it. */
+  list: { all: '22', pass: '8', failed: '7', review: '5', nv: '2', pages: 2, shown: '1–12' },
 };
 
 export interface Case {

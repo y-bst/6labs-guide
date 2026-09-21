@@ -96,12 +96,11 @@ export function ColumnsNote({ hl }: { hl?: Toggle }) {
 export interface FieldText { placeholder: string; value?: string; empty?: SceneSpec; typed?: SceneSpec }
 
 /** "Name this run": run name, optional instructions, and the bar with the submit button. */
-export function RunDetails({ sub, name, instructions, summary, submit, hlName, hlInstructions }: {
-  sub: string;
+export function RunDetails({ name, instructions, summary, submit, hlName, hlInstructions }: {
   name: FieldText;
   /** Only AI Functional Test has instructions. */
   instructions?: FieldText;
-  /** Left side of the submit bar, e.g. "18 videos · 1 file". */
+  /** Left side of the submit bar, e.g. "18 sessions · regression-suite.xlsx". */
   summary: ReactNode;
   /** The submit button (wrap it in <ClickTarget> to animate a click). */
   submit: ReactNode;
@@ -118,8 +117,6 @@ export function RunDetails({ sub, name, instructions, summary, submit, hlName, h
   };
   return (
     <div className="s-details">
-      <b className="s-details-h">Name this run</b>
-      <p>{sub}</p>
       <span className="s-label">Run name <small>optional</small></span>
       {field(name, false, hlName)}
       {instructions && <>

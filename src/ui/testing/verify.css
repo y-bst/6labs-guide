@@ -4,12 +4,14 @@
 .s-tiles2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .s-slot{display:grid}
 .s-slot>*{grid-area:1 / 1}
-.s-intile{border:1.5px dashed var(--line-2);border-radius:16px;background:rgba(255,255,255,.65);padding:20px 18px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;min-height:232px}
+/* both tiles fill the row, so the one carrying more text cannot make the pair uneven */
+.s-intile{height:100%;border:1.5px dashed var(--line-2);border-radius:16px;background:rgba(255,255,255,.65);padding:20px 18px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;min-height:232px}
 .s-intile-ic{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;background:rgba(22,163,74,.1);color:var(--green)}
 .s-intile>b{font:600 15px/1.3 var(--display);margin-top:6px}
 .s-intile>p{margin:0;font-size:13px;line-height:1.5;color:var(--ink-3);max-width:300px}
 .s-formats{font:500 11px/1 var(--mono);letter-spacing:.12em;color:var(--ink-4);margin-top:6px}
 .s-req{font:600 10px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4);margin-top:4px}
+.s-tiles2+.s-colnote{margin-top:12px}
 .s-colnote{display:flex;gap:8px;align-items:flex-start;text-align:left;margin-top:8px;padding:9px 11px;border-radius:10px;background:var(--inset);border:1px solid var(--line);font-size:11.5px;line-height:1.5;color:var(--ink-3)}
 .s-colnote svg{flex:none;margin-top:1px}
 .s-colnote b{color:var(--ink);font-weight:600}
@@ -43,8 +45,8 @@
 .s-details-f{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
 
 /* report: result and coverage */
-.s-vcard{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
-.s-vhead{background:#EEF0F4;padding:16px 20px}
+.s-vcard{background:#fff;border:1px solid var(--line);border-radius:18px}
+.s-vhead{background:#EEF0F4;padding:16px 20px;border-radius:17px 17px 0 0}
 .s-vhead h3{margin:6px 0 0;font:700 22px/1.2 var(--display)}
 .s-score{display:grid;grid-template-columns:1fr 1fr}
 .s-score-p{padding:16px 20px 18px;display:flex;flex-direction:column;gap:10px;border-radius:4px}
@@ -125,9 +127,8 @@
 .s-case .s-spec p,.s-case .s-observed p{margin:2px 0 0;font-size:13.5px;line-height:1.45;color:var(--ink)}
 .s-observed-col{padding:14px 16px;min-width:0}
 .s-steps{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:2px;border-radius:8px}
-.s-steps li{display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:8px 6px;border-radius:8px;font-size:13px;line-height:1.4}
+.s-steps li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:8px;align-items:baseline;padding:8px 6px;border-radius:8px;font-size:13px;line-height:1.4}
 .s-steps li i{font:500 11px/1 var(--mono);font-style:normal;color:var(--ink-4)}
-.s-steps time{font:500 11.5px/1 var(--mono);color:var(--ink-4)}
 .s-steps li.on{background:var(--tint-l);color:var(--brand);box-shadow:0 0 0 2px var(--brand)}
 .s-steps li.on time,.s-steps li.on i{color:var(--brand)}
 .s-case-f{display:flex;align-items:center;gap:10px;padding:12px 22px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}

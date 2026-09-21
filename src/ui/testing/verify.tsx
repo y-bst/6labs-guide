@@ -22,7 +22,7 @@ export function Scorecard({ hlResult, hlCoverage }: { hlResult?: Toggle; hlCover
   return (
     <div className="s-score">
       <div {...cls('s-score-p', { hl: hlResult })}>
-        <span className="s-label">Result <small>of the {VERIFY.ran} cases that ran</small></span>
+        <span className="s-label">Result <small>of the {VERIFY.inFile} cases in the file</small></span>
         <div className="s-big"><b>{VERIFY.passRate}%</b>passed</div>
         <div className="s-stackbar">{VERIFY.bar.map((w, i) => <i key={i} style={{ width: `${w}%` }} />)}</div>
         <div className="s-otiles">
@@ -31,9 +31,9 @@ export function Scorecard({ hlResult, hlCoverage }: { hlResult?: Toggle; hlCover
       </div>
       <div {...cls('s-score-p', { hl: hlCoverage })}>
         <span className="s-label">Coverage <small>of the {VERIFY.inFile} cases in the file</small></span>
-        <div className="s-big"><b>{VERIFY.coverage}%</b>reached across {VERIFY.recordings} recordings</div>
+        <div className="s-big"><b>{VERIFY.coverage}%</b>reached across {VERIFY.recordings} sessions</div>
         <div className="s-covbar"><i style={{ width: `${VERIFY.coverage}%` }} /></div>
-        <p>{VERIFY.unreached} cases never appeared in this footage.</p>
+        <p>{VERIFY.unreached} cases were never exercised in these sessions.</p>
       </div>
     </div>
   );
@@ -48,8 +48,8 @@ export function VerifiedAgainst({ build }: { build?: string }) {
 export function CaseFilters({ tab = 'all', hl }: { tab?: Outcome | 'all'; hl?: Toggle }) {
   const { cls } = useScenes();
   const tabs: [Outcome | 'all', string, string][] = [
-    ['all', 'All', VERIFY.ran],
-    ...(['pass', 'failed', 'review', 'nv'] as Outcome[]).map(o => [o, OUTCOME[o].label, VERIFY.counts[o]] as [Outcome, string, string]),
+    ['all', 'All', VERIFY.list.all],
+    ...(['pass', 'failed', 'review', 'nv'] as Outcome[]).map(o => [o, OUTCOME[o].label, VERIFY.list[o]] as [Outcome, string, string]),
   ];
   return (
     <div {...cls('s-cfilters', { hl })}>
@@ -89,9 +89,9 @@ export function CaseTable({ cases, open, hl }: {
       ))}
       <div className="s-pager">
         <Button tone="ghost" sm className="dim"><TIcon name="chevLeft" size={13} width={2} />Previous</Button>
-        <span>Page 1 of 104</span>
+        <span>Page 1 of {VERIFY.list.pages}</span>
         <Button tone="ghost" sm>Next<TIcon name="chevRight" size={13} width={2} /></Button>
-        <small>1–12 of {VERIFY.ran}</small>
+        <small>{VERIFY.list.shown} of {VERIFY.list.all}</small>
       </div>
     </div>
   );
@@ -153,7 +153,7 @@ export function CaseModal({ detail: d, ai, hlSteps, hlStep, hlSpecified, hlObser
             <small>Steps</small>
             <ol {...cls('s-steps', { hl: hlSteps })}>
               {d.steps.map(([step, time], i) => (
-                <li key={time} {...cls('', { on: i === 0 ? hlStep : undefined })}><i>{i + 1}</i><span>{step}</span><time>{time}</time></li>
+                <li key={time} {...cls('', { on: i === 0 ? hlStep : undefined })}><i>{i + 1}</i><span>{step}</span></li>
               ))}
             </ol>
           </div>

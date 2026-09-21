@@ -51,19 +51,19 @@ export default defineGuide({
       title: 'Check the tests your team already ran',
       body: <>
         <p>Your testers played the build following a list of <b>test cases</b>, and their sessions were recorded. Functional Test checks each case against that footage.</p>
-        <p>It needs two things: the <b>recordings</b> and the <b>test case sheet</b>. Nothing is played again.</p>
+        <p>It needs two things: the <b>sessions</b> and the <b>test case sheet</b>. Nothing is played again.</p>
       </>,
     },
     {
       id: 'videos', step: 'videos',
-      title: 'Pick the recordings',
+      title: 'Pick the sessions',
       body: <>
-        <p>Click <b>Select the recordings</b> and the Gameplay Library opens inside Functional Test, the same picker User Test uses.</p>
+        <p>Click <b>Select the sessions</b> and the Gameplay Library opens inside Functional Test, the same picker User Test uses.</p>
         <p>Tap a tag to select the whole batch: here, all {FT_RUN.videos} <b>{FT_RUN.tag}</b> sessions. Then click <b>Use {FT_RUN.videos} videos</b>.</p>
       </>,
     },
     {
-      id: 'cases', step: 'cases', focus: [930, 420, 1.2],
+      id: 'cases', step: 'cases',
       title: 'Add the test case sheet',
       body: <>
         <p>Upload your test cases as one spreadsheet, <b>one row per case</b>.</p>
@@ -76,7 +76,7 @@ export default defineGuide({
       title: 'Name it, then verify',
       body: <>
         <p>The run name is <b>optional</b>. Leave it empty and 6labs names the run from the video tag and the file name.</p>
-        <p><b>Verify test cases</b> stays greyed out until both the recordings and the sheet are in.</p>
+        <p><b>Verify test cases</b> stays greyed out until both the sessions and the sheet are in.</p>
       </>,
     },
     {
@@ -88,7 +88,7 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'result', step: 'result', focus: [560, 300, 1.2],
+      id: 'result', step: 'result', focus: [717, 300, 1.28],
       title: 'Read the result',
       body: <>
         <p><b>{VERIFY.passRate}%</b> of the {VERIFY.ran} cases that ran passed. Each case gets one of four outcomes:</p>
@@ -101,15 +101,15 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'coverage', step: 'coverage', focus: [930, 300, 1.2],
+      id: 'coverage', step: 'coverage', focus: [717, 300, 1.28],
       title: 'See how much of the sheet was reached',
       body: <>
-        <p>Coverage is the share of the sheet's cases that appear in the recordings: <b>{VERIFY.coverage}%</b> of {VERIFY.inFile}, across {VERIFY.recordings} recordings.</p>
+        <p>Coverage is the share of the sheet's cases that appear in the sessions: <b>{VERIFY.coverage}%</b> of {VERIFY.inFile}, across {VERIFY.recordings} sessions.</p>
         <p>The other <b>{VERIFY.unreached}</b> cases never appeared in this footage. To check them, record sessions that play those parts of the game.</p>
       </>,
     },
     {
-      id: 'list', step: 'list',
+      id: 'list', step: 'list', focus: [717, 470, 1.28],
       title: 'Find any case',
       body: <>
         <p>Under the scores is every case that ran, one row each: <b>your own ID</b>, the case, its category, the <b>reason</b> for the outcome and the status.</p>
@@ -137,11 +137,11 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'export', step: 'export', focus: [1000, 200, 1.15],
+      id: 'export', step: 'export', focus: [717, 250, 1.28],
       title: 'Export as CSV',
       body: <>
         <p><b>Export CSV</b> gives one row per case in your sheet, with your IDs, the status, the reason and what was observed.</p>
-        <p>Cases the recordings never reached are listed as <b>not verified</b>.</p>
+        <p>Cases the sessions never reached are listed as <b>not verified</b>.</p>
         <TextLink to="#recap">See the recap ↓</TextLink>
       </>,
     },
@@ -158,7 +158,7 @@ export default defineGuide({
       'Every failed case links to the moment it broke.',
     ],
     faqs: [
-      ['Do we have to run the tests again?', 'No. 6labs checks the recordings you already have. Nothing is played again.'],
+      ['Do we have to run the tests again?', 'No. 6labs checks the sessions you already have. Nothing is played again.'],
       ['What format do the test cases need?', 'A CSV or XLSX file, one row per case. Each case needs a Precondition, an Expected result and Steps; without them it can only be marked not verified. A sample sheet is on the page.'],
       ['How is this different from User Test?', 'User Test finds problems in free play. Functional Test checks a list of cases you wrote, one by one.'],
       ['What does "not verified" mean?', 'No video covers the case, or the sheet is missing its details. It is not a failure, and it is counted apart from failures.'],

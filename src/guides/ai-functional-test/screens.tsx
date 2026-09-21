@@ -13,7 +13,6 @@ import { Click } from '../../ui/Click';
 
 const b = AIF_RUN.build;
 const INTRO = 'Each run keeps its own build, test cases and report.';
-const DETAILS_SUB = 'A clear name makes the run easy to find later.';
 const NAME_PH = 'e.g. Season 9 — core loop';
 const INSTRUCTIONS_PH = 'e.g. Start from a fresh install. Skip the tutorial for cases TC-10 onward. Use the test account bp_tester_03.';
 
@@ -41,18 +40,18 @@ export function NewRun() {
         <p className="s-intro">{INTRO}</p>
         <TileRow
           left={<>
-            <InputTile icon="uploadTray" title="Choose a build" formats={['APK']} show="..build">Upload an APK, or pick one you uploaded before.</InputTile>
+            <InputTile icon="uploadTray" title="Choose a build" formats={['APK']} show="..build" click="open">Upload an APK, or pick one you uploaded before.</InputTile>
             <Build show="cases.." />
           </>}
           right={<>
-            <InputTile icon="upload" title="Add your test cases" formats={['CSV', 'XLSX']} show="..cases" hl="cases" click="build" note={<ColumnsNote />}>
+            <InputTile icon="upload" title="Add your test cases" formats={['CSV', 'XLSX']} show="..cases" hl="cases" click="build">
               Upload a spreadsheet of test cases — one row per case.
             </InputTile>
             <TestCases show="details" />
           </>}
         />
+        <ColumnsNote />
         <RunDetails
-          sub={DETAILS_SUB}
           name={{ placeholder: NAME_PH, value: AIF_RUN.name, empty: '..cases', typed: 'details' }}
           instructions={{ placeholder: INSTRUCTIONS_PH, value: AIF_RUN.instructions, empty: '..cases', typed: 'details' }}
           hlInstructions="details"
@@ -69,7 +68,7 @@ export function BuildPicker() {
   return (
     <Layer show="build">
       <div className="backdrop" />
-      <BuildDialog hlList="build" />
+      <BuildDialog hlList="build" click="build" />
     </Layer>
   );
 }
@@ -86,7 +85,6 @@ export function Submit() {
           <p className="s-intro">{INTRO}</p>
           <TileRow left={<Build />} right={<TestCases />} />
           <RunDetails
-            sub={DETAILS_SUB}
             name={{ placeholder: NAME_PH, value: AIF_RUN.name }}
             instructions={{ placeholder: INSTRUCTIONS_PH, value: AIF_RUN.instructions }}
             summary={`1 file · ${b.version}`}
@@ -97,7 +95,7 @@ export function Submit() {
           <PageHeader page="aiFunctional" />
           <RunTabs history runs={3} />
           <HistoryTable cols={['Run', 'Build', 'Result', 'Date']} variant="counts">
-            <RunRow state="submitted" name={AIF_RUN.name} sub={`${VERIFY.inFile} cases · ${VERIFY.file}`} third={<span className="s-plain">{b.version}</span>} result={{ outcomes: VERIFY.chips }} date="Sep 18" />
+            <RunRow state="submitted" name={AIF_RUN.name} sub={`${VERIFY.inFile} cases · ${VERIFY.file}`} third={<span className="s-plain">{b.version}</span>} result={{ outcomes: VERIFY.chips }} date="Sep 18" click="submit" />
             <RunRow name="Season 8 — core loop" sub={`1,904 cases · ${VERIFY.file}`} third={<span className="s-plain">v2.2.9</span>} result={{ outcomes: [1102, 44, 20, 31] }} date="Aug 29" />
             <RunRow name="Battle Pass v2 — store" sub="5 cases · battlepass-cases.csv" third={<span className="s-plain">v2.3.0</span>} result={{ outcomes: [4, 1, 0, 0] }} date="Aug 28" />
           </HistoryTable>

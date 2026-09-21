@@ -149,7 +149,7 @@
 }
 
 .s-tap{position:relative;display:inline-flex}
-.s-tap-ring,.s-tap-cursor{position:absolute;opacity:0;pointer-events:none;z-index:9}
+.s-tap-ring,.s-tap-cursor{position:absolute;opacity:0;pointer-events:none;z-index:3}
 .s-tap-ring{left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:var(--brand)}
 .s-tap-cursor{left:56%;top:54%;filter:drop-shadow(0 2px 5px rgba(3,13,45,.3))}
 .s-tap.tapping .s-tap-ring{animation:s-tap-ring 1.6s ease-out var(--tap-wait,0s) both}
@@ -585,7 +585,9 @@ p{text-wrap:pretty}
 
 /* beat-driven states inside screens */
 .shot [data-at].off{display:none!important}
-.shot .layer{position:absolute;inset:0}
+/* each layer is its own stacking context, so a z-index inside one (the tap cursor, a
+   highlight ring) cannot paint over a layer that comes later, such as an open modal */
+.shot .layer{position:absolute;inset:0;isolation:isolate}
 .shot .layer.off{display:block!important;opacity:0;visibility:hidden;pointer-events:none}
 .shot .layer{transition:opacity .35s ease}
 .shot [data-at]:not(.off):not(.layer){animation:beat-in .45s cubic-bezier(.2,.7,.2,1) backwards}

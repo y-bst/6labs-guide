@@ -12,7 +12,12 @@ import { Click } from '../Click';
 /* ---------- builds ---------- */
 
 /** "Select a build": drop an APK, or pick one uploaded before (the newest is picked). */
-export function BuildDialog({ hlDrop, hlList }: { hlDrop?: Toggle; hlList?: Toggle }) {
+export function BuildDialog({ hlDrop, hlList, click }: {
+  hlDrop?: Toggle;
+  hlList?: Toggle;
+  /** Scenes in which a cursor taps "Use <build>", which closes the picker. */
+  click?: SceneSpec;
+}) {
   const { cls } = useScenes();
   return (
     <div className="s-modal s-builds">
@@ -38,7 +43,9 @@ export function BuildDialog({ hlDrop, hlList }: { hlDrop?: Toggle; hlList?: Togg
           </div>
         ))}
       </div>
-      <div className="s-builds-f"><span>The players will install {BUILDS[0].version}.</span><Button tone="ghost" sm>Cancel</Button><Button tone="primary" sm>Use {BUILDS[0].version}</Button></div>
+      <div className="s-builds-f"><span>The players will install {BUILDS[0].version}.</span><Button tone="ghost" sm>Cancel</Button>{click
+        ? <Click on={click}><Button tone="primary" sm>Use {BUILDS[0].version}</Button></Click>
+        : <Button tone="primary" sm>Use {BUILDS[0].version}</Button>}</div>
     </div>
   );
 }

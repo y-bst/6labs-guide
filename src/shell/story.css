@@ -168,7 +168,9 @@ p{text-wrap:pretty}
 
 /* beat-driven states inside screens */
 .shot [data-at].off{display:none!important}
-.shot .layer{position:absolute;inset:0}
+/* each layer is its own stacking context, so a z-index inside one (the tap cursor, a
+   highlight ring) cannot paint over a layer that comes later, such as an open modal */
+.shot .layer{position:absolute;inset:0;isolation:isolate}
 .shot .layer.off{display:block!important;opacity:0;visibility:hidden;pointer-events:none}
 .shot .layer{transition:opacity .35s ease}
 .shot [data-at]:not(.off):not(.layer){animation:beat-in .45s cubic-bezier(.2,.7,.2,1) backwards}
