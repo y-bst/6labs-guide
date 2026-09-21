@@ -1,0 +1,37 @@
+/* The cursor that taps a control, from ui/Click.tsx.
+
+   Scene-driven: story.js adds "tapping" while the scene runs, which starts the animation, and
+   takes it off again after, so the tap replays every time the reader comes back to that scene.
+   Both animations end invisible, so a frozen screenshot never catches a cursor mid-flight. */
+
+.s-tap{position:relative;display:inline-flex}
+.s-tap.block{display:block}
+.s-tap-ring,.s-tap-cursor{position:absolute;opacity:0;pointer-events:none;z-index:9}
+.s-tap-ring{left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:var(--brand)}
+.s-tap-cursor{left:56%;top:54%;filter:drop-shadow(0 2px 5px rgba(3,13,45,.3))}
+
+.s-tap.tapping .s-tap-ring{animation:s-tap-ring 1.6s ease-out both}
+.s-tap.tapping .s-tap-cursor{animation:s-tap-cursor 1.6s cubic-bezier(.25,.8,.35,1) both}
+
+/* where the cursor starts its travel */
+.s-tap.below .s-tap-cursor{--fx:-34px;--fy:58px}
+.s-tap.above .s-tap-cursor{--fx:-30px;--fy:-54px}
+.s-tap.left .s-tap-cursor{--fx:-74px;--fy:16px}
+.s-tap.right .s-tap-cursor{--fx:74px;--fy:16px}
+
+@keyframes s-tap-cursor{
+  0%{transform:translate(var(--fx),var(--fy));opacity:0}
+  14%{opacity:1}
+  46%,54%{transform:translate(0,0);opacity:1}
+  50%{transform:translate(1.5px,1.5px)}
+  74%,100%{transform:translate(0,0);opacity:0}
+}
+@keyframes s-tap-ring{
+  0%,46%{transform:scale(.2);opacity:0}
+  54%{transform:scale(1);opacity:.32}
+  100%{transform:scale(2.1);opacity:0}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .s-tap.tapping .s-tap-ring,.s-tap.tapping .s-tap-cursor{animation:none}
+}

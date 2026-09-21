@@ -1,24 +1,35 @@
 // Documents (the Uploads page): drop zone, add bar, and files moving through upload → describe → saved.
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { FileKind, UploadFile } from '../../data/intel';
 import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
+import { Click } from '../Click';
 import { Icon } from '../Icon';
 
 const FORMATS: [string, string][] = [['PDF', 'var(--red-2)'], ['DOC', 'var(--brand)'], ['CSV', 'var(--green)'], ['Images', 'var(--violet)'], ['TXT', 'var(--ink-4)']];
 
+/** Wraps the zone in a cursor tap when the guide asks for one. */
+const Tap = ({ click, children }: { click?: SceneSpec; children: ReactNode }) =>
+  (click ? <Click on={click} block>{children}</Click> : <>{children}</>);
+
 /** The empty page: heading, explanation and the big drop zone. */
-export function DropZone({ hl }: { hl?: Toggle }) {
+export function DropZone({ hl, click }: {
+  hl?: Toggle;
+  /** Scenes in which a cursor taps the zone, so the files do not just appear. */
+  click?: SceneSpec;
+}) {
   const { cls } = useScenes();
   return (
     <>
       <h4 className="d-h2">Help your agents think like your team</h4>
       <p className="d-sub">Share GDDs, live-ops plans, player research, balance logs, strategy docs, or anything that gives them deeper context about your game.</p>
-      <div {...cls('d-drop', { hl })}>
+      <Tap click={click}>
+        <div {...cls('d-drop', { hl })}>
         <b>Drop files here or click to upload</b>
         <p>Any format our agents can learn from</p>
         <div className="d-fmts">{FORMATS.map(([f, c]) => <span key={f}><i style={{ '--c': c } as CSSProperties} />{f}</span>)}</div>
         <div className="d-max">MAX 30MB</div>
-      </div>
+        </div>
+      </Tap>
     </>
   );
 }

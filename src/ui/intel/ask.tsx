@@ -2,6 +2,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { PLACEHOLDERS, PROMPTS } from '../../data/intel';
 import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
+import { Click } from '../Click';
 import { Icon } from '../Icon';
 import { BrandMark } from './brands';
 
@@ -26,12 +27,18 @@ export function SendButton({ on, hl, style }: { on?: Toggle; hl?: Toggle; style?
 
 export interface ControlHighlights { plus?: Toggle; source?: Toggle; send?: Toggle }
 
-export function AskControls({ hl = {}, send }: { hl?: ControlHighlights; send?: Toggle }) {
+export function AskControls({ hl = {}, send, click }: {
+  hl?: ControlHighlights;
+  send?: Toggle;
+  /** Scenes in which a cursor taps Send, so the answer does not just appear. */
+  click?: SceneSpec;
+}) {
+  const go = <SendButton on={send} hl={hl.send} />;
   return (
     <div className="i-ctl">
       <PlusButton hl={hl.plus} />
       <SourceChip hl={hl.source} />
-      <SendButton on={send} hl={hl.send} />
+      {click ? <Click on={click} from="below">{go}</Click> : go}
     </div>
   );
 }
@@ -44,13 +51,15 @@ export function Query({ show, typed, children }: { show?: SceneSpec; typed?: boo
   return <div className={typed ? 'q typed' : 'q'} {...at(show)}>{children}</div>;
 }
 
-export function AskBox({ hl, controls, send, style, menus, children }: {
+export function AskBox({ hl, controls, send, click, style, menus, children }: {
   /** Pulse the whole box. */
   hl?: Toggle;
   /** Pulse single controls. */
   controls?: ControlHighlights;
   /** When the send button turns blue. */
   send?: Toggle;
+  /** Scenes in which a cursor taps Send. */
+  click?: SceneSpec;
   style?: CSSProperties;
   /** Dropdowns anchored to the box (SourceMenu, AddMenu). */
   menus?: ReactNode;
@@ -61,7 +70,7 @@ export function AskBox({ hl, controls, send, style, menus, children }: {
   return (
     <div {...cls('i-ask', { hl })} style={style}>
       {children}
-      <AskControls hl={controls} send={send} />
+      <AskControls hl={controls} send={send} click={click} />
       {menus}
     </div>
   );

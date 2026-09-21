@@ -57,7 +57,7 @@ function Screen() {
       {/* Documents */}
       <Layer show="drop..saved" className="i-pg">
         <PageHead page="uploads" />
-        <Show when="drop"><DropZone hl="drop" /></Show>
+        <Show when="drop"><DropZone hl="drop" click="drop" /></Show>
         <Show when="uploading..saved">
           <AddFilesBar />
           <FileListHeading count={FILES.length} />

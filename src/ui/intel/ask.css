@@ -20,7 +20,10 @@
 .i-plus{width:32px;height:32px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;color:var(--ink-2);background:#fff}
 .i-src{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);background:#fff;font:600 12.5px/1 var(--display);white-space:nowrap}
 .i-src::after{content:"";border:4px solid transparent;border-top:5px solid var(--ink);margin:5px 0 0 2px}
-.i-go{margin-left:auto;width:40px;height:40px;border-radius:50%;background:var(--line-2);display:grid;place-items:center;color:#fff}
+/* Send sits at the far right. When a <Click> wraps it, the wrapper is the flex item, so
+   the margin has to sit on whichever of the two is actually in the row. */
+.i-ctl>.i-go,.i-ctl>.s-tap{margin-left:auto}
+.i-go{width:40px;height:40px;border-radius:50%;background:var(--line-2);display:grid;place-items:center;color:#fff}
 .i-go.on{background:var(--brand)}
 
 /* suggested prompts */

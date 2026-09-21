@@ -6,6 +6,7 @@ import { TIcon } from '../../ui/testing/icons';
 import { LibraryPicker, Pill, VideoGrid } from '../../ui/testing/library';
 import { Crumb, GhostButton, ReportHeader, SectionHead } from '../../ui/testing/report';
 import { ClickTarget, GameContextButton, HistoryTable, ModeSwitch, RunRow, RunTabs, SelectedVideos, SubmitSequence as RunSubmit } from '../../ui/testing/run';
+import { Click } from '../../ui/Click';
 
 const TAGS = [['Build V2.2', 10], ['Build V2.1', 3], ['onboarding', 6], ['Last 24h', 4]] as const;
 
@@ -42,7 +43,7 @@ export function NewRunPage() {
       <div className="s-runcard runwrap">
         <ModeSwitch report="..mode-report, pick.." ask="mode-ask" hl="mode-report..mode-ask" />
         <Divider />
-        <div className="s-dz" {...at('..mode-ask')}><Button tone="primary" hl="open">+ Add videos</Button>Select sessions from your Gameplay Library by tag, source, or date.</div>
+        <div className="s-dz" {...at('..mode-ask')}><Click on="mode-ask"><Button tone="primary" hl="open">+ Add videos</Button></Click>Select sessions from your Gameplay Library by tag, source, or date.</div>
         <SelectedVideos show="context.." />
         <Show when={reportForm}>
           <div className="s-col" style={{ gap: '8px', marginTop: '20px' }}>
@@ -143,7 +144,7 @@ export function ExportPage() {
   const { at } = useScenes();
   return (
     <PageLayer show="export">
-      <Crumb trail="User Test · Full report · "><GhostButton download hl="export">Export PDF</GhostButton></Crumb>
+      <Crumb trail="User Test · Full report · "><Click on="export"><GhostButton download hl="export">Export PDF</GhostButton></Click></Crumb>
       <div className="s-rep">
         <ReportHeader />
         <div className="s-rep-body">

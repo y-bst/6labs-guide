@@ -4,6 +4,7 @@ import { Layer, useScenes, type Fx } from '../../shell/scenes';
 import { Button, Input, Label, PageHeader, Row, UploadButton } from '../../ui/testing/app';
 import { TIcon } from '../../ui/testing/icons';
 import { Pill, VideoGrid } from '../../ui/testing/library';
+import { Click } from '../../ui/Click';
 
 /** Where each panel sits per scene: eq = three equal columns, big = in focus, s1/s2 = shrunk aside. */
 const PLACE: Fx[] = [
@@ -152,7 +153,7 @@ export function Sources() {
 
       <div className="srcpanel" {...fx(PLACE[1])}>
         <div className="minipage">
-          <PageHeader page="library" small sub="Every recording, from every source." action={<UploadButton hl="up-open" />} />
+          <PageHeader page="library" small sub="Every recording, from every source." action={<Click on="up-open"><UploadButton hl="up-open" /></Click>} />
           <div className="s-panel">
             <div className="s-panel-top">
               <Pill label="Build V2.2" n={5} />

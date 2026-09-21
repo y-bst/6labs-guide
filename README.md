@@ -31,6 +31,9 @@ src/
     tokens.css            the palette and the fonts, on :root so the shell can use them too
     base.css              app frame, shared sidebar shell
     Icon.tsx, icons.svg   icon sprite for Intelligence screens
+    Logo.tsx, logo.svg    the 6labs.ai mark and wordmark
+    Click.tsx, click.css  the cursor that taps a control before its scene changes
+    GlanceMap.tsx, map.css  the "at a glance" flow map at the top of a guide
     intel/                Oracle, Radiologist, Documents, Connectors
     testing/              every Testing screen, by part (.tsx, and .css of the same name):
       app                   frame, tree sidebar, page header, top bar, page scroll
@@ -41,7 +44,7 @@ src/
       composer              two-tile new run (build or videos + test cases), run name; styled in verify.css
       verify                result, coverage, case list, case detail popup
       ai                    build picker, personas, agents, live sessions, agent video
-      TestingMap.tsx        "Testing at a glance" diagram, current guide boxed
+      TestingMap.tsx        "Testing at a glance" diagram, this guide's flow in colour
   data/                 sample data shown on the screens (testing, verify, behavioural, intel)
   pages/Index.tsx       the landing page, generated from the registry
 scripts/
@@ -113,6 +116,27 @@ which classes it reaches for, then drops every kit rule for a class the page nev
 about half of the area's kit, since one guide carries the screens of all of them. If a class is
 only ever added by a script at runtime, add it to `RUNTIME` in `build.tsx` or its rules will be
 purged. `npm run check` is what catches a mistake here.
+
+## Clicks
+
+A scene that shows the *result* of clicking something should show the click first, or the
+screen looks like it jumped. Wrap the control that causes the next scene in `<Click>`
+(`ui/Click.tsx`), with `on` set to the scene **before** the result:
+
+```tsx
+<Click on="ask"><SendButton /></Click>        cursor taps Send during "ask"; the answer is the next scene
+<Click on="list" from="right">…</Click>       cursor comes in from the right
+<Click on="drop" block>…</Click>              for a block control, e.g. a drop zone
+```
+
+A cursor slides in, taps, and a ring spreads; both end invisible, so a frozen screenshot never
+catches one mid-flight. The wrapper is an inline-flex `<span>`, so it becomes the flex or grid
+item in its parent — if the control carried a margin or an `auto` offset, move that onto
+`.s-tap` too (see `.i-ctl>.s-tap`). It cannot wrap a control whose parent styles bare
+`span` children, such as the agent switch.
+
+The long submit choreography (form → click → run history) is separate: `SubmitSequence` in
+`ui/testing/run.tsx`.
 
 ## Primitives
 

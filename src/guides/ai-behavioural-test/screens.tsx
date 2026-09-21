@@ -146,7 +146,7 @@ export function Report() {
             </Row>
             <div className="s-agent">
               <div className="s-band"><b>Stability &amp; functional defects</b><span>2 findings</span></div>
-              <AgentFindingCard finding={AIB_FINDING} of={r.sessions} hlSplit="finding" hlEvidence="finding" />
+              <AgentFindingCard finding={AIB_FINDING} of={r.sessions} hlSplit="finding" hlEvidence="finding" clipClick="finding" />
             </div>
           </div>
         </div>

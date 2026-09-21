@@ -3,10 +3,11 @@
 import type { ReactNode } from 'react';
 import { AGENT, PERSONAS, type AgentFinding, type Persona } from '../../data/behavioural';
 import { BUILDS, type Build } from '../../data/verify';
-import { useScenes, type Toggle } from '../../shell/scenes';
+import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
 import { Apk } from './composer';
 import { TIcon } from './icons';
 import { Button } from './app';
+import { Click } from '../Click';
 
 /* ---------- builds ---------- */
 
@@ -151,7 +152,7 @@ export function PersonaSplit({ split }: { split: AgentFinding['split'] }) {
 }
 
 /** A finding from AI players: severity, persona split, what happened, clips coloured by persona, fix. */
-export function AgentFindingCard({ finding: f, of, hlSplit, hlEvidence, clip }: {
+export function AgentFindingCard({ finding: f, of, hlSplit, hlEvidence, clip, clipClick }: {
   finding: AgentFinding;
   /** Agents in the run. */
   of: number;
@@ -159,6 +160,8 @@ export function AgentFindingCard({ finding: f, of, hlSplit, hlEvidence, clip }: 
   hlEvidence?: Toggle;
   /** Mark the first clip as opened. */
   clip?: Toggle;
+  /** Scenes in which a cursor taps that clip, which opens the agent's video next. */
+  clipClick?: SceneSpec;
 }) {
   const { cls } = useScenes();
   const chips = f.split.flatMap(([p, hit]) => Array.from({ length: hit }, () => p));
@@ -171,7 +174,10 @@ export function AgentFindingCard({ finding: f, of, hlSplit, hlEvidence, clip }: 
       <p>{f.text}</p>
       <div {...cls('s-evi s-pevi', { hl: hlEvidence })} style={{ borderRadius: '8px' }}>
         <span className="s-label" style={{ marginRight: '4px' }}>Evidence</span>
-        {chips.map((p, i) => <button key={i} {...cls('', { on: i === 0 ? clip : undefined })} style={{ ['--pc' as string]: p.color }}>{i + 1}</button>)}
+        {chips.map((p, i) => {
+          const chip = <button {...cls('', { on: i === 0 ? clip : undefined })} style={{ ['--pc' as string]: p.color }}>{i + 1}</button>;
+          return i === 0 && clipClick ? <Click key={i} on={clipClick}>{chip}</Click> : <span key={i} style={{ display: 'contents' }}>{chip}</span>;
+        })}
       </div>
       <div className="s-reco"><span className="s-label">Recommendation</span>{f.recommendation}</div>
     </div>

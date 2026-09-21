@@ -6,6 +6,7 @@ import { Layer, useScenes, type Fx } from '../../shell/scenes';
 import { AgentHeader, CategoryTable, Crumb, FullReportCta, GhostButton, QuitAnswer, ReportHeader, ReportTiles, SectionHead, SourcesBar, TopFinding } from '../../ui/testing/report';
 import { ModeSwitch, SelectedVideos } from '../../ui/testing/run';
 import { Button, Divider, Input, Label, PageLayer, Row } from '../../ui/testing/app';
+import { Click } from '../../ui/Click';
 
 const PLACE: Fx[] = [
   { eq1: 'results', big: 'summary..top-problems', s1: 'full-open..' },
@@ -73,7 +74,7 @@ function FullReportPanel() {
           <FullReportCta button={
             <span className="btnwrap">
               <span className="pointer">Click to open<svg width="26" height="18" viewBox="0 0 26 18" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"><path d="M2 9h20m-7-7l7 7-7 7" /></svg></span>
-              <Button tone="primary" sm hl="full-open">Open the full report</Button>
+              <Click on="full-open"><Button tone="primary" sm hl="full-open">Open the full report</Button></Click>
             </span>
           } />
         </div>

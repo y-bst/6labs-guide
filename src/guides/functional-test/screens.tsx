@@ -10,6 +10,7 @@ import { LibraryPicker } from '../../ui/testing/library';
 import { Crumb, GhostButton } from '../../ui/testing/report';
 import { ClickTarget, HistoryTable, RunRow, RunTabs, SubmitSequence } from '../../ui/testing/run';
 import { CaseFilters, CaseModal, CaseTable, Scorecard, VerifiedAgainst, VerifyHeader } from '../../ui/testing/verify';
+import { Click } from '../../ui/Click';
 
 const TAGS = [['Build V2.2', FT_RUN.videos], ['Build V2.1', 12], ['Tutorial', 8], ['Last 24h', 4]] as const;
 const INTRO = 'Select the recordings and the test cases they were intended to cover. 6labs verifies each case against the footage and reports it as passed, failed, or not verifiable. No tests are re-run.';
@@ -110,7 +111,7 @@ export function Report() {
   const { at } = useScenes();
   return (
     <PageLayer show="result..export">
-      <Crumb back trail="Functional test ·" name={FT_RUN.name}><GhostButton download hl="export">Export CSV</GhostButton></Crumb>
+      <Crumb back trail="Functional test ·" name={FT_RUN.name}><Click on="export"><GhostButton download hl="export">Export CSV</GhostButton></Click></Crumb>
       <Scroller stops={[['list..steps', 300]]}>
         <div className="s-vcard">
           <VerifyHeader kind="Functional test report" name={FT_RUN.name} />
@@ -118,7 +119,7 @@ export function Report() {
         </div>
         <VerifiedAgainst />
         <CaseFilters hl="list" />
-        <CaseTable cases={CASES} />
+        <CaseTable cases={CASES} open={{ id: CASE_FT.id, when: 'list', click: 'list' }} />
       </Scroller>
       <div className="toast" {...at('export')} style={{ top: '78px', right: '28px' }}>
         <TIcon name="check" stroke="#5BD08A" width={2.4} />CSV ready — {VERIFY.file.replace('.xlsx', '')}-results.csv

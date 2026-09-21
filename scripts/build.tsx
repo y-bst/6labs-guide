@@ -20,8 +20,8 @@ const readIf = (f: string) => (existsSync(join(root, 'src', f)) ? read(f) : '');
 /** Stylesheets per area, in cascade order. Guide pages add shell/story.css and guides/<slug>.css after these. */
 const STYLES: Record<'base' | AreaId, string[]> = {
   base: ['ui/tokens.css', 'ui/base.css'],
-  testing: ['ui/map.css', ...['app', 'library', 'run', 'report', 'verify', 'ai'].map(f => `ui/testing/${f}.css`)],
-  intel: ['ui/map.css', ...['app', 'ask', 'chat', 'sessions', 'filters', 'panel', 'detail', 'documents', 'connectors', 'concept'].map(f => `ui/intel/${f}.css`)],
+  testing: ['ui/map.css', 'ui/click.css', ...['app', 'library', 'run', 'report', 'verify', 'ai'].map(f => `ui/testing/${f}.css`)],
+  intel: ['ui/map.css', 'ui/click.css', ...['app', 'ask', 'chat', 'sessions', 'filters', 'panel', 'detail', 'documents', 'connectors', 'concept'].map(f => `ui/intel/${f}.css`)],
 };
 
 /** Always shipped: the tokens and the app frame every screen sits in. */

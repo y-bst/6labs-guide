@@ -8,6 +8,7 @@ import { IntelScreen, PageHead, ScreenBar } from '../ui/intel/app';
 import { AddMenu, AskBox, HomeLauncher, Query, SourceMenu, SuggestedPrompts } from '../ui/intel/ask';
 import { AnswerCard, Conversation, ExportButton, ExportMenu, FollowUpBox, QuestionBubble, ThinkingSteps } from '../ui/intel/chat';
 import { IntelMap } from '../ui/intel/IntelMap';
+import { Click } from '../ui/Click';
 
 function BooyahAnswer() {
   return (
@@ -42,7 +43,7 @@ function Screen() {
 
       <Layer show="oracle..ask" className="i-pg">
         <PageHead page="oracle" />
-        <AskBox controls={{ plus: 'add', source: 'source', send: 'ask' }} send="ask" menus={<><SourceMenu show="source" /><AddMenu show="add" /></>}>
+        <AskBox controls={{ plus: 'add', source: 'source', send: 'ask' }} send="ask" click="ask" menus={<><SourceMenu show="source" /><AddMenu show="add" /></>}>
           <Query show="oracle..add">{PLACEHOLDERS.oracle}</Query>
           <Query show="ask" typed>{BOOYAH.question}</Query>
         </AskBox>
@@ -50,7 +51,7 @@ function Screen() {
       </Layer>
 
       <Layer show="thinking..">
-        <ScreenBar title={BOOYAH.question}><ExportButton hl="export" /></ScreenBar>
+        <ScreenBar title={BOOYAH.question}><Click on="export"><ExportButton hl="export" /></Click></ScreenBar>
         <Conversation scrollDown="more">
           <QuestionBubble>{BOOYAH.question}</QuestionBubble>
           <ThinkingSteps steps={BOOYAH.steps} show="thinking..radiologist" play="thinking..radiologist" focus={{ steps: [3, 4], during: 'radiologist' }} />

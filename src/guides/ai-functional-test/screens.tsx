@@ -9,6 +9,7 @@ import { TIcon } from '../../ui/testing/icons';
 import { Crumb, GhostButton } from '../../ui/testing/report';
 import { ClickTarget, HistoryTable, RunRow, RunTabs, SubmitSequence } from '../../ui/testing/run';
 import { CaseFilters, CaseModal, CaseTable, Scorecard, VerifiedAgainst, VerifyHeader } from '../../ui/testing/verify';
+import { Click } from '../../ui/Click';
 
 const b = AIF_RUN.build;
 const INTRO = 'Each run keeps its own build, test cases and report.';
@@ -111,7 +112,7 @@ export function Report() {
   const { at } = useScenes();
   return (
     <PageLayer show="report..export">
-      <Crumb back trail="AI functional test ·" name={AIF_RUN.name}><GhostButton download hl="export">Export CSV</GhostButton></Crumb>
+      <Crumb back trail="AI functional test ·" name={AIF_RUN.name}><Click on="export"><GhostButton download hl="export">Export CSV</GhostButton></Click></Crumb>
       <Scroller stops={[['case', 300]]}>
         <div className="s-vcard">
           <VerifyHeader kind="AI functional test report" name={AIF_RUN.name} />
@@ -119,7 +120,7 @@ export function Report() {
         </div>
         <VerifiedAgainst build={b.version} />
         <CaseFilters />
-        <CaseTable cases={CASES} />
+        <CaseTable cases={CASES} open={{ id: CASE_AIF.id, when: 'report', click: 'report' }} />
       </Scroller>
       <div className="toast" {...at('export')} style={{ top: '78px', right: '28px' }}>
         <TIcon name="check" stroke="#5BD08A" width={2.4} />CSV ready — {AIF_RUN.name.replace(' — ', '-').replace(/ /g, '-').toLowerCase()}.csv

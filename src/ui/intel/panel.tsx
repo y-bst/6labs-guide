@@ -5,6 +5,7 @@ import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
 import { Icon, type IconName } from '../Icon';
 import { Btn } from './app';
 import { Duration, SourceBadge } from './sessions';
+import { Click } from '../Click';
 
 /** Coloured dots on the progress bar, one per detected event. */
 export function Timeline({ events = EVENTS, hl }: { events?: GameEvent[]; hl?: Toggle }) {
@@ -110,7 +111,9 @@ export function SidePanel({ show, session, detailHl, scroll = {}, children }: {
     <div className="r-panel" {...at(show)}>
       <div className="r-panel-h">
         <span className="grow">Session #{session.id}</span>
-        <Btn hl={detailHl}>View in detail</Btn>
+        {detailHl
+          ? <Click on={detailHl}><Btn hl={detailHl}>View in detail</Btn></Click>
+          : <Btn>View in detail</Btn>}
         <span className="r-x"><Icon name="x" size={16} /></span>
       </div>
       <div className="r-panel-b">

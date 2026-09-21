@@ -1,9 +1,10 @@
 // Test-case verification report (Functional Test, AI Functional Test): result and coverage,
 // the file it was checked against, the case list, and the case detail popup.
 import { OUTCOME, RAIL, VERIFY, type Case, type CaseDetail, type Outcome } from '../../data/verify';
-import { useScenes, type Toggle } from '../../shell/scenes';
+import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
 import { TIcon } from './icons';
 import { Button } from './app';
+import { Click } from '../Click';
 
 export function StatusPill({ outcome }: { outcome: Outcome }) {
   return <span className={`s-status ${OUTCOME[outcome].tone}`}>{OUTCOME[outcome].label}</span>;
@@ -64,7 +65,12 @@ export function CaseFilters({ tab = 'all', hl }: { tab?: Outcome | 'all'; hl?: T
 }
 
 /** One row per case: ID, case, category with its path, reason, status. */
-export function CaseTable({ cases, open, hl }: { cases: Case[]; open?: { id: string; when: Toggle }; hl?: Toggle }) {
+export function CaseTable({ cases, open, hl }: {
+  cases: Case[];
+  /** The row this guide opens: highlighted, and tapped if `click` is set. */
+  open?: { id: string; when: Toggle; click?: SceneSpec };
+  hl?: Toggle;
+}) {
   const { cls } = useScenes();
   return (
     <div {...cls('s-ctable', { hl })}>
@@ -76,7 +82,9 @@ export function CaseTable({ cases, open, hl }: { cases: Case[]; open?: { id: str
           <span>{c.category}<small>{c.path}</small></span>
           <span>{c.reason}</span>
           <span><StatusPill outcome={c.outcome} /></span>
-          <TIcon name="chevRight" size={14} width={2} />
+          {open?.id === c.id && open.click
+            ? <Click on={open.click} from="right"><TIcon name="chevRight" size={14} width={2} /></Click>
+            : <TIcon name="chevRight" size={14} width={2} />}
         </div>
       ))}
       <div className="s-pager">
