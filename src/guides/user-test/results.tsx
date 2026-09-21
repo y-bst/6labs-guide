@@ -14,14 +14,15 @@ const PLACE: Fx[] = [
   { eq3: 'results', s2: 'summary..clip', big: 'ask..' },
 ];
 
-function AskBox({ text, typed, hl, style, textStyle, sendOff = true, sendStyle }: {
-  text: string; typed?: boolean; hl?: string; style: CSSProperties; textStyle?: CSSProperties; sendOff?: boolean; sendStyle?: CSSProperties;
+function AskBox({ text, typed, hl, click, style, textStyle, sendOff = true, sendStyle }: {
+  text: string; typed?: boolean; hl?: string; click?: string; style: CSSProperties; textStyle?: CSSProperties; sendOff?: boolean; sendStyle?: CSSProperties;
 }) {
   const { cls } = useScenes();
+  const send = <span className={sendOff ? 's-send dis' : 's-send'} style={sendStyle}>↑</span>;
   return (
     <div {...cls('s-askbox', { hl })} style={style}>
       <div className={typed ? 'typed' : 'ph'} style={textStyle}>{text}</div>
-      <div className="ctl"><span className="s-round">+</span><span className={sendOff ? 's-send dis' : 's-send'} style={sendStyle}>↑</span></div>
+      <div className="ctl"><span className="s-round">+</span>{click ? <Click on={click}>{send}</Click> : send}</div>
     </div>
   );
 }
@@ -103,7 +104,10 @@ function FullReportPanel() {
                   <p>At tutorial step 4 the hint overlay covers the Upgrade Furnace button, so taps do nothing until the hint fades. Testers tapped 3 to 7 times before it worked, and one closed the game right there.</p>
                   <div {...cls('s-evi', { hl: 'findings' })} style={{ borderRadius: '8px' }}>
                     <Label style={{ marginRight: '4px' }}>Evidence</Label>
-                    {evidence.map(n => <button key={n} {...cls('', { on: n === 3 ? 'clip' : undefined })}>{n}</button>)}
+                    {evidence.map(n => {
+                      const b = <button {...cls('', { on: n === 3 ? 'clip' : undefined })}>{n}</button>;
+                      return n === 3 ? <Click key={n} on="findings">{b}</Click> : <span key={n} style={{ display: 'contents' }}>{b}</span>;
+                    })}
                   </div>
                   <div className="s-reco"><Label>Recommendation</Label>Let taps pass through the hint to the highlighted button, or close the hint on the first tap. Check tall-screen layouts where the hint covers the whole button.</div>
                 </div>
@@ -149,7 +153,7 @@ function AskPanel() {
           <FullReportCta />
         </div>
         <div className="askdock">
-          <AskBox text={RUN.question} typed hl="ask" style={{ padding: '12px 18px' }} sendOff={false} />
+          <AskBox text={RUN.question} typed hl="ask" click="ask" style={{ padding: '12px 18px' }} sendOff={false} />
         </div>
       </PageLayer>
 

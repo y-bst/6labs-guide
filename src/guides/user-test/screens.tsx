@@ -41,7 +41,7 @@ export function NewRunPage() {
       <PageHeader page="userTest" />
       <RunTabs runs={4} />
       <div className="s-runcard runwrap">
-        <ModeSwitch report="..mode-report, pick.." ask="mode-ask" hl="mode-report..mode-ask" />
+        <ModeSwitch report="..mode-report, pick.." ask="mode-ask" hl="mode-report..mode-ask" clickAsk="mode-report" />
         <Divider />
         <div className="s-dz" {...at('..mode-ask')}><Click on="mode-ask"><Button tone="primary" hl="open">+ Add videos</Button></Click>Select sessions from your Gameplay Library by tag, source, or date.</div>
         <SelectedVideos show="context.." />
@@ -67,11 +67,14 @@ export function NewRunPage() {
           </Row>
         </Show>
         <div className="dd" {...at('context')}>
-          {CONTEXT_DOCS.map(([ext, name, note], i) => (
-            <div key={name} className={i === 0 ? 'dd-item sel' : 'dd-item'}>
-              <span className="ext">{ext}</span><span><b>{name}</b><span>{note}</span></span>{i === 0 ? <span className="tick">✓</span> : <span />}
-            </div>
-          ))}
+          {CONTEXT_DOCS.map(([ext, name, note], i) => {
+            const row = (
+              <div className={i === 0 ? 'dd-item sel' : 'dd-item'}>
+                <span className="ext">{ext}</span><span><b>{name}</b><span>{note}</span></span>{i === 0 ? <span className="tick">✓</span> : <span />}
+              </div>
+            );
+            return i === 0 ? <Click key={name} on="context" from="right" block>{row}</Click> : <span key={name} style={{ display: 'contents' }}>{row}</span>;
+          })}
           <div className="dd-sep" />
           <div {...cls('dd-item up', { hl: 'context' })}>
             <span className="ext">↑</span><span><b>Upload new</b><span>PDF, DOCX, or image</span></span><span />
@@ -96,7 +99,7 @@ export function Picker() {
   return (
     <Layer show="pick">
       <div className="backdrop" />
-      <LibraryPicker tags={TAGS} videos={PLAYTEST} selected={RUN.videos} playTime="2h 14m" hl="pick" />
+      <LibraryPicker tags={TAGS} videos={PLAYTEST} selected={RUN.videos} playTime="2h 14m" hl="pick" click="pick" />
     </Layer>
   );
 }
@@ -129,7 +132,7 @@ export function SubmitSequence() {
           <PageHeader page="userTest" />
           <RunTabs history runs={5} />
           <HistoryTable cols={['Report or question', 'Tags', 'Result', 'Date']}>
-            <RunRow state="submitted" name={RUN.name} sub={`${RUN.videos} videos`} tags={['Build V2.2']} result={{ findings: 7 }} date="Sep 17" />
+            <RunRow state="submitted" name={RUN.name} sub={`${RUN.videos} videos`} tags={['Build V2.2']} result={{ findings: 7 }} date="Sep 17" click="submit" />
             <RunRow icon="question" name={RUN.question} sub="6 videos · 3 follow-ups" tags={['Build V2.2']} result={{ text: 'Answered' }} date="Sep 8" action="View answer" />
             <RunRow name="Onboarding flow v3" sub="10 videos" tags={['Build V2.1']} result={{ findings: 7 }} date="Aug 26" />
           </HistoryTable>

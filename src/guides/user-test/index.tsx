@@ -3,9 +3,10 @@ import { Bullets, GuideLink, TextLink } from '../../shell/content';
 import { defineGuide } from '../../shell/guide';
 import { TestingScreen } from '../../ui/testing/app';
 import { TIcon } from '../../ui/testing/icons';
-import { FlowMap, RecapMap } from './maps';
+import { RecapMap } from './maps';
 import { AskMode, Results } from './results';
 import { ExportPage, LibraryPage, NewRunPage, Picker, SubmitSequence } from './screens';
+import { TestingMap } from '../../ui/testing/TestingMap';
 
 function Screen() {
   return (
@@ -31,7 +32,7 @@ export default defineGuide({
   glance: {
     title: 'The whole flow at a glance',
     note: <>Getting videos in is covered in <GuideLink to="gameplay-library">Guide 01</GuideLink>. This guide covers the highlighted part.</>,
-    map: <FlowMap />,
+    map: <TestingMap highlight="userTest" />,
   },
 
   steps: [

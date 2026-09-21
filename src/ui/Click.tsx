@@ -6,22 +6,27 @@
 //
 //   <Click on="ask"><SendButton /></Click>        clicked during "ask", result lands in the next scene
 //   <Click on="pick" from="left">…</Click>        cursor comes in from the left
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { useScenes, type SceneSpec } from '../shell/scenes';
 
 /** Where the cursor travels in from. Pick the side with room, so it does not cross the control. */
 export type ClickFrom = 'below' | 'left' | 'right' | 'above';
 
-export function Click({ on, from = 'below', block, children }: {
+export function Click({ on, from = 'below', block, delay, children }: {
   on: SceneSpec;
   from?: ClickFrom;
   /** For a control that is a block, e.g. a drop zone or a card, not an inline button. */
   block?: boolean;
+  /** Seconds to wait before the cursor sets off, for a control that appears partway in. */
+  delay?: number;
   children: ReactNode;
 }) {
   const { cls } = useScenes();
   return (
-    <span {...cls(`s-tap ${from}${block ? ' block' : ''}`, { tapping: on })}>
+    <span
+      {...cls(`s-tap ${from}${block ? ' block' : ''}`, { tapping: on })}
+      style={delay ? ({ ['--tap-wait']: `${delay}s` } as CSSProperties) : undefined}
+    >
       {children}
       <span className="s-tap-ring" aria-hidden="true" />
       <svg className="s-tap-cursor" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">

@@ -3,6 +3,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
 import { TIcon, type TIconName } from './icons';
+import { Click } from '../Click';
 
 /** Two tiles side by side. Each side can hold an empty and a filled tile shown in different scenes. */
 export function TileRow({ left, right }: { left: ReactNode; right: ReactNode }) {
@@ -10,17 +11,19 @@ export function TileRow({ left, right }: { left: ReactNode; right: ReactNode }) 
 }
 
 /** An empty, dashed tile: what goes in, which formats, REQUIRED, and an optional note under it. */
-export function InputTile({ icon, title, formats, note, show, hl, children }: {
+export function InputTile({ icon, title, formats, note, show, hl, click, children }: {
   icon: TIconName;
   title: string;
   formats?: string[];
   note?: ReactNode;
   show?: SceneSpec;
   hl?: Toggle;
+  /** Scenes in which a cursor taps the tile, which opens its picker. */
+  click?: SceneSpec;
   children: ReactNode;
 }) {
   const { at, cls } = useScenes();
-  return (
+  const tile = (
     <div {...cls('s-intile', { hl })} {...at(show)}>
       <span className="s-intile-ic"><TIcon name={icon} size={18} width={1.8} /></span>
       <b>{title}</b>
@@ -30,6 +33,7 @@ export function InputTile({ icon, title, formats, note, show, hl, children }: {
       {note}
     </div>
   );
+  return click ? <Click on={click} block>{tile}</Click> : tile;
 }
 
 /** The same tile once filled: a label, what was picked, and links along the bottom. */

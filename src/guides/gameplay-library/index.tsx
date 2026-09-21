@@ -66,8 +66,8 @@ function Screen() {
           </div>
           <div className="s-panel-bar">
             <Row style={{ gap: '8px', fontSize: '14px' }}>
-              <span {...cls('s-checkbox', { mixed: 'bulk' })} />
-              <span {...at('..bulk, tests')}>Select all 14</span>
+              <span {...cls('s-checkbox', { mixed: 'bulk..bulk-2' })} />
+              <span {...at('..bulk-2, tests')}>Select all 14</span>
               <span {...at('find')}>Select all 5</span>
             </Row>
             <span className="s-sep" />
@@ -78,13 +78,13 @@ function Screen() {
           </div>
           <div className="s-grid">
             {LIBRARY.map((v, i) => (
-              <VideoCard key={v.title} video={v} checkbox sel={i < 2 ? 'bulk' : undefined} show={v.batch === 'Build V2.1' ? '..bulk, tests' : undefined} />
+              <VideoCard key={v.title} video={v} checkbox sel={i === 0 ? 'bulk..bulk-2' : i === 1 ? 'bulk-2' : undefined} show={v.batch === 'Build V2.1' ? '..bulk-2, tests' : undefined} tick={i === 0 ? 'bulk' : i === 1 ? 'bulk-2' : undefined} />
             ))}
           </div>
         </div>
 
-        <div className="bulkdock" {...at('bulk')}>
-          <span className="n">2 selected</span>
+        <div className="bulkdock" {...at('bulk..bulk-2')}>
+          <span className="n"><span {...at('bulk')}>1 selected</span><span {...at('bulk-2')}>2 selected</span></span>
           <span className="sep" />
           <Button tone="ghost" sm>+ Add tag</Button>
           <Button sm className="del"><TIcon name="trash" size={15} width={2} />Delete</Button>
@@ -233,9 +233,14 @@ export default defineGuide({
     },
     {
       id: 'bulk', step: 'bulk', chapter: 'Bulk tagging', focus: [706, 560, 1.12],
+      title: 'Tick one, the bar appears',
+      body: <p>Tick a video's checkbox. A bar slides in at the bottom showing how many are selected — it stays while you keep picking.</p>,
+    },
+    {
+      id: 'bulk-2', step: 'bulk', chapter: 'Bulk tagging', focus: [706, 560, 1.12],
       title: 'Tag many videos at once',
       body: <>
-        <p>Tick the videos you want. A card appears at the bottom:</p>
+        <p>Tick as many as you want, then use the bar:</p>
         <Bullets items={[
           <><b>Add tag</b> — adds a tag to every selected video</>,
           <><b>Delete</b> — removes them together</>,

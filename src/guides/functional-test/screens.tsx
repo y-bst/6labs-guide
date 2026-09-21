@@ -42,11 +42,11 @@ export function NewRun() {
         <p className="s-intro">{INTRO}</p>
         <TileRow
           left={<>
-            <InputTile icon="play" title="Select the recordings" show="..videos">Recordings of tests your team has already run. Select a batch by tag.</InputTile>
+            <InputTile icon="play" title="Select the recordings" show="..videos" click="open">Recordings of tests your team has already run. Select a batch by tag.</InputTile>
             <Recordings show="cases.." />
           </>}
           right={<>
-            <InputTile icon="upload" title="Add the test cases" formats={['CSV', 'XLSX']} show="..cases" hl="cases" note={<ColumnsNote />}>
+            <InputTile icon="upload" title="Add the test cases" formats={['CSV', 'XLSX']} show="..cases" hl="cases" click="videos" note={<ColumnsNote />}>
               The test cases these recordings were intended to cover — as a spreadsheet of cases.
             </InputTile>
             <TestCases show="name" />
@@ -69,7 +69,7 @@ export function Picker() {
   return (
     <Layer show="videos">
       <div className="backdrop" />
-      <LibraryPicker tags={TAGS} videos={PLAYTEST} selected={FT_RUN.videos} playTime="3h 41m" hl="videos" />
+      <LibraryPicker tags={TAGS} videos={PLAYTEST} selected={FT_RUN.videos} playTime="3h 41m" hl="videos" click="videos" />
     </Layer>
   );
 }

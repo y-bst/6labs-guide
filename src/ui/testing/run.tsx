@@ -5,6 +5,7 @@ import { RUN } from '../../data/testing';
 import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
 import { TIcon } from './icons';
 import { Button } from './app';
+import { Click } from '../Click';
 
 export function RunTabs({ history, runs }: { history?: boolean; runs: number }) {
   return (
@@ -16,12 +17,19 @@ export function RunTabs({ history, runs }: { history?: boolean; runs: number }) 
 }
 
 /** Report or ask. `report`/`ask` say when each is selected. */
-export function ModeSwitch({ report, ask, hl }: { report?: Toggle; ask?: Toggle; hl?: Toggle }) {
+export function ModeSwitch({ report, ask, hl, clickAsk }: {
+  report?: Toggle;
+  ask?: Toggle;
+  hl?: Toggle;
+  /** Scenes in which a cursor taps "Ask questions", which swaps the form. */
+  clickAsk?: SceneSpec;
+}) {
   const { cls } = useScenes();
+  const askChip = <span {...cls('', { on: ask })}><TIcon name="chat" />Ask questions</span>;
   return (
     <div {...cls('s-mode', { hl })}>
       <span {...cls('', { on: report })}><TIcon name="report" />Generate report</span>
-      <span {...cls('', { on: ask })}><TIcon name="chat" />Ask questions</span>
+      {clickAsk ? <Click on={clickAsk}>{askChip}</Click> : askChip}
     </div>
   );
 }
@@ -101,10 +109,12 @@ export interface RunRowProps {
   action?: string;
   /** Button while running. Defaults to a disabled "Analysing…". */
   running?: ReactNode;
+  /** Scenes in which a cursor taps the finished run's button, which opens the report next. */
+  click?: SceneSpec;
   className?: string;
 }
 
-export function RunRow({ state = 'ready', icon = 'doc', name, sub, tags, third, result, date, action = 'View report', running, className }: RunRowProps) {
+export function RunRow({ state = 'ready', icon = 'doc', name, sub, tags, third, result, date, action = 'View report', running, click, className }: RunRowProps) {
   const cell3 = third ?? <span>{tags?.map(t => <span key={t} className="s-mtag">{t}</span>)}</span>;
   const title = <span><b>{name}</b><small>{sub}</small></span>;
   const ticon = <span className={icon === 'question' ? 's-ticon q' : 's-ticon'}><TIcon name={icon} /></span>;
@@ -127,7 +137,9 @@ export function RunRow({ state = 'ready', icon = 'doc', name, sub, tags, third, 
         <span className="s-date">{date}</span>
         <span className="s-stack">
           <Button tone="dis" sm className="s-st-prog">Analysing…</Button>
-          <Button tone="primary" sm className="s-st-ready s-viewbtn">{action}</Button>
+          {click
+            ? <Click on={click} delay={5.4}><Button tone="primary" sm className="s-st-ready s-viewbtn">{action}</Button></Click>
+            : <Button tone="primary" sm className="s-st-ready s-viewbtn">{action}</Button>}
         </span>
       </div>
     );

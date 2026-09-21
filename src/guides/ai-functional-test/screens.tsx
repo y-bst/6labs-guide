@@ -45,7 +45,7 @@ export function NewRun() {
             <Build show="cases.." />
           </>}
           right={<>
-            <InputTile icon="upload" title="Add your test cases" formats={['CSV', 'XLSX']} show="..cases" hl="cases" note={<ColumnsNote />}>
+            <InputTile icon="upload" title="Add your test cases" formats={['CSV', 'XLSX']} show="..cases" hl="cases" click="build" note={<ColumnsNote />}>
               Upload a spreadsheet of test cases — one row per case.
             </InputTile>
             <TestCases show="details" />

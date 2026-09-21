@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import type { Video } from '../../data/testing';
 import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
 import { Button } from './app';
+import { Click } from '../Click';
 
 /** Tag filter pill with its count. */
 export function Pill({ label, n, on, hl }: { label: string; n: number; on?: Toggle; hl?: Toggle }) {
@@ -16,6 +17,8 @@ export interface VideoCardProps {
   checkbox?: boolean;
   /** Selected look (blue outline, ticked box). */
   sel?: Toggle;
+  /** Scenes in which a cursor taps this card's checkbox. */
+  tick?: SceneSpec;
   /** Hide parts for smaller cards. */
   hide?: ('duration' | 'date' | 'tags')[];
   /** Show only during some scenes. */
@@ -25,13 +28,14 @@ export interface VideoCardProps {
   style?: CSSProperties;
 }
 
-export function VideoCard({ video: v, checkbox, sel, hide = [], show, className, style }: VideoCardProps) {
+export function VideoCard({ video: v, checkbox, sel, tick, hide = [], show, className, style }: VideoCardProps) {
   const { at, cls } = useScenes();
   const has = (part: 'duration' | 'date' | 'tags') => !hide.includes(part);
+  const box = <span className="s-checkbox" />;
   return (
     <div {...cls(className ? `s-card ${className}` : 's-card', { sel })} {...at(show)} style={style}>
       <div className={`s-thumb g${v.g}`}>
-        {checkbox && <span className="s-checkbox" />}
+        {checkbox && (tick ? <Click on={tick} from="left">{box}</Click> : box)}
         <span className="s-src">{v.source}</span>
         {has('duration') && v.duration && <span className="s-dur">{v.duration}</span>}
       </div>
@@ -58,7 +62,7 @@ export function VideoGrid({ videos, ...card }: { videos: Video[] } & Omit<VideoC
  * The Gameplay Library opened inside a test ("Pick sessions"), with the first tag tapped and its
  * whole batch selected. Put it in a layer after a <div className="backdrop" />.
  */
-export function LibraryPicker({ tags, videos, selected, playTime, hl }: {
+export function LibraryPicker({ tags, videos, selected, playTime, hl, click }: {
   tags: readonly (readonly [label: string, count: number])[];
   /** Cards shown in the grid, all selected. */
   videos: Video[];
@@ -68,6 +72,8 @@ export function LibraryPicker({ tags, videos, selected, playTime, hl }: {
   playTime: string;
   /** Highlight the tapped tag. */
   hl?: Toggle;
+  /** Scenes in which a cursor taps "Use N videos", which closes the picker. */
+  click?: SceneSpec;
 }) {
   return (
     <div className="s-modal s-picker">
@@ -95,7 +101,9 @@ export function LibraryPicker({ tags, videos, selected, playTime, hl }: {
         <span><b>{selected}</b> selected · {playTime} of play · {tags[0][0]}</span>
         <span style={{ flex: '1' }} />
         <Button tone="ghost" sm>Clear all</Button>
-        <Button tone="primary" sm>Use {selected} videos</Button>
+        {click
+          ? <Click on={click}><Button tone="primary" sm>Use {selected} videos</Button></Click>
+          : <Button tone="primary" sm>Use {selected} videos</Button>}
       </div>
     </div>
   );

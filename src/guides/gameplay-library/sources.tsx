@@ -40,7 +40,7 @@ function RecorderApp() {
         <div className="rw-foot">
           <span className="v">v1.4.0</span>
           <span className="rw-btn">Clear</span>
-          <span {...cls('rw-btn pri', { hl: 'rec-setup' })}>Save &amp; Start</span>
+          <Click on="rec-setup"><span {...cls('rw-btn pri', { hl: 'rec-setup' })}>Save &amp; Start</span></Click>
         </div>
       </div>
 
@@ -61,11 +61,17 @@ function RecorderApp() {
         <div className="rw-timer" id="rec-time">0:00</div>
         <div className="rw-div" style={{ marginTop: '0' }} />
         {USER}
+        {/* the app notices the game and says so, then the timer runs */}
+        <div className="rw-toast" {...at('rec-play')}>
+          <span className="tick">✓</span>
+          <span><b>Don&rsquo;t Let it Die started</b>Recording this session</span>
+        </div>
         <div className="rw-foot">
           <span className="v">v1.4.0</span>
-          <span {...cls('rw-btn stop', { hl: 'rec-close' })}>Stop recording</span>
+          <Click on="rec-play"><span {...cls('rw-btn stop', { hl: 'rec-close' })}>Stop recording</span></Click>
         </div>
       </div>
+
 
       <div className="rw-body" {...at('rec-upload..')}>
         <span className="rw-pill up">UPLOADING</span>
@@ -81,7 +87,8 @@ function RecorderApp() {
       <div className="rw-dim" {...at('rec-close')}>
         <div className="rw-dialog">
           <b>Stop recording?</b>
-          <span className="pri">Stop &amp; upload</span>
+          <small>0:12 captured &middot; 84 MB</small>
+          <Click on="rec-close" block><span className="pri">Stop &amp; upload</span></Click>
           <span className="red">Stop &amp; discard</span>
           <span>Cancel</span>
         </div>
