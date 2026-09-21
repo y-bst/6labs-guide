@@ -5,14 +5,16 @@ import { defineGuide } from '../../shell/guide';
 import { TestingScreen } from '../../ui/testing/app';
 import { TIcon } from '../../ui/testing/icons';
 import { TestingMap } from '../../ui/testing/TestingMap';
-import { AgentPage, Live, Report, Setup, Submit } from './screens';
+import { AgentPage, BuildPicker, Live, LiveAgent, Report, Setup, Submit } from './screens';
 
 function Screen() {
   return (
     <TestingScreen sidebar={{ active: { aiBehavioural: true } }}>
       <Setup />
+      <BuildPicker />
       <Submit />
       <Live />
+      <LiveAgent />
       <Report />
       <AgentPage />
     </TestingScreen>
@@ -34,12 +36,14 @@ export default defineGuide({
 
   steps: [
     { id: 'open', label: 'Open AI Behavioural Test' },
+    { id: 'name', label: 'Name the run' },
     { id: 'build', label: 'Build' },
     { id: 'personas', label: 'Personas' },
     { id: 'agents', label: 'Agents' },
     { id: 'length', label: 'Length & instructions' },
     { id: 'submit', label: 'Submit' },
     { id: 'live', label: 'Watch live' },
+    { id: 'live-agent', label: 'A live agent' },
     { id: 'report', label: 'Report' },
     { id: 'finding', label: 'Findings' },
     { id: 'video', label: 'Agent video' },
@@ -52,6 +56,14 @@ export default defineGuide({
       body: <>
         <p>Pick a build and the kinds of players you want. 6labs <b>AI players</b> install the build and play it the way those players would.</p>
         <p>Then 6labs reports where the game blocked, confused or lost them. It's all set up on one form.</p>
+      </>,
+    },
+    {
+      id: 'name', step: 'name',
+      title: 'Name the run',
+      body: <>
+        <p>The form asks for a <b>run name</b> first. It is optional, but it is what you will look for in Run history later.</p>
+        <p>Nothing else is filled in yet: the build says <b>Choose a build…</b>, and Agents waits until personas are picked.</p>
       </>,
     },
     {
@@ -101,6 +113,14 @@ export default defineGuide({
       body: <>
         <p>While the run plays, the <b>Videos</b> tab shows every session, split into <b>Live</b> and <b>Finished</b>. Open a live one to watch the agent play.</p>
         <p>The report is written once the last session finishes, so there are no partial results.</p>
+      </>,
+    },
+    {
+      id: 'live-agent', step: 'live-agent',
+      title: 'Open one and watch it play',
+      body: <>
+        <p>Open a live session and you see the newest screen 6labs has captured, with what the agent <b>saw</b>, what it <b>reasoned</b>, and what it <b>did</b>.</p>
+        <p>It fills in as the agent plays. <b>Report</b> takes you back to the run once the agents finish.</p>
       </>,
     },
     {

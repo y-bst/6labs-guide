@@ -126,3 +126,12 @@
 /* instructions quoted under an agent's video */
 .s-instr{margin-top:12px;padding:12px 16px;border-radius:12px;background:var(--tint-l);border:1px solid rgba(23,112,239,.12)}
 .s-instr p{margin:4px 0 0;font-size:14px;color:var(--ink-2)}
+
+/* the live agent screen: the frame is the latest one captured, not a finished recording */
+.s-playing{position:absolute;left:10px;top:10px;z-index:2}
+.s-phone-scr .s-live{background:var(--red-2);color:#fff;border-color:transparent}
+.s-lastscreen{margin:10px 0 0;font-size:12px;line-height:1.45;color:var(--ink-4)}
+/* the empty states of the setup form, before anything is chosen */
+.s-field.empty{color:var(--ph)}
+.s-field.empty b{font-weight:400;color:var(--ph)}
+.s-fnote{display:flex;align-items:center;height:44px;font-size:13.5px;color:var(--ph)}

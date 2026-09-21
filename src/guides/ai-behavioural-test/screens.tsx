@@ -4,13 +4,14 @@ import type { ReactNode } from 'react';
 import { AIB_CATEGORIES, AIB_FINDING, AIB_RUN, AIB_SUMMARY, AIB_TILES, NEW_PLAYER, PERSONAS, WHALE, type Persona } from '../../data/behavioural';
 import { BUILDS } from '../../data/verify';
 import { Layer, Show, useScenes } from '../../shell/scenes';
-import { AgentCounts, AgentFindingCard, AgentVideo, BuildField, FormRow, LengthChoice, PersonaChips, PersonaMenu, RunPageTabs, SessionCard, WatchLive } from '../../ui/testing/ai';
+import { AgentCounts, AgentFindingCard, AgentVideo, BuildDialog, BuildField, FormRow, LengthChoice, PersonaChips, PersonaMenu, RunPageTabs, SessionCard, WatchLive } from '../../ui/testing/ai';
 import { Button, Input, Label, PageHeader, PageLayer, Row } from '../../ui/testing/app';
 import { Scroller } from '../../ui/testing/composer';
 import { TIcon } from '../../ui/testing/icons';
 import { Pill } from '../../ui/testing/library';
 import { CategoryTable, Crumb, GhostButton, ReportTiles, RunState, SectionHead } from '../../ui/testing/report';
 import { ClickTarget, HistoryTable, RunRow, RunTabs, SubmitSequence } from '../../ui/testing/run';
+import { Click } from '../../ui/Click';
 
 const r = AIB_RUN;
 const GENERIC = PERSONAS[0];
@@ -28,18 +29,24 @@ function SetupForm({ still, submit }: { still?: boolean; submit: ReactNode }) {
   return (
     <div className="s-setup">
       <div className="s-setup-h"><b>Set up a session</b><span>{SETUP_NOTE}</span></div>
-      <FormRow label="Run name">
-        <div {...when('..agents', false)}><Input placeholder="e.g. Frost Festival — new player & whale" /></div>
-        <div {...when('length..', true)}><Input value={r.name} /></div>
+      <FormRow label="Run name" hl={hl('name')}>
+        <div {...when('open', false)}><Input placeholder="e.g. Frost Festival — new player & whale" /></div>
+        <div {...when('name..', true)}><Input value={r.name} /></div>
       </FormRow>
-      <FormRow label="Build" hl={hl('build')}><BuildField build={BUILDS[0]} /></FormRow>
+      <FormRow label="Build" hl={hl('build')}>
+        <div className="s-field empty" {...when('..name', false)}>
+          <b>Choose a build…</b><span className="grow" />
+          {still ? <Button tone="ghost" sm>Select</Button> : <Click on="name"><Button tone="ghost" sm>Select</Button></Click>}
+        </div>
+        <div {...when('personas..', true)}><BuildField build={BUILDS[0]} /></div>
+      </FormRow>
       <FormRow label="Personas" hl={hl('personas')}>
-        <div className="s-field" {...when('..build', false)}><span style={{ color: 'var(--ink)' }}>Generic</span><span className="grow" /><TIcon name="chevDown" size={13} width={2} /></div>
+        <div className="s-field empty" {...when('..build', false)}><b>Choose personas…</b><span className="grow" /><TIcon name="chevDown" size={13} width={2} /></div>
         <div className="s-field" {...when('personas..', true)}><span style={{ color: 'var(--ink)' }}>New player, Whale</span><span className="grow" /><TIcon name="chevDown" size={13} width={2} /></div>
-        {!still && <Show when="personas"><PersonaMenu checked={['New player', 'Whale']} about={{ name: 'New player', text: 'Day 0–3, first sessions with no prior knowledge. Follows the tutorial and the highlighted actions.' }} /></Show>}
+        {!still && <Show when="personas"><PersonaMenu checked={['New player', 'Whale']} click="personas" about={{ name: 'New player', text: 'Day 0–3, first sessions with no prior knowledge. Follows the tutorial and the highlighted actions.' }} /></Show>}
       </FormRow>
       <FormRow label="Agents">
-        {counts('..build', [[GENERIC, 1]])}
+        <div className="s-fnote" {...when('..build', false)}>Choose personas first.</div>
         {counts('personas', [[NEW_PLAYER, 1], [WHALE, 1]])}
         {counts('agents..', r.mix, 'agents')}
       </FormRow>
@@ -67,6 +74,27 @@ export function Setup() {
   );
 }
 
+/** "Select a build", opened from the Select button on the form. */
+export function BuildPicker() {
+  return (
+    <Layer show="build">
+      <div className="backdrop" />
+      <BuildDialog hlList="build" click="build" />
+    </Layer>
+  );
+}
+
+/** One agent while it is still playing: the latest frame, and what it saw, thought and did. */
+export function LiveAgent() {
+  return (
+    <PageLayer show="live-agent">
+      <Crumb back trail={`${r.name} ·`} name="New player · agent 1"><RunState state="progress" /></Crumb>
+      <RunPageTabs on="videos" videos={r.sessions} clickReport="live-agent" />
+      <AgentVideo persona={WHALE} build={r.build} length={r.length} live="4m so far" hlSaw="live-agent" />
+    </PageLayer>
+  );
+}
+
 /** Submit → Run history, where the new run plays: In progress, with Watch live. */
 export function Submit() {
   return (
@@ -82,7 +110,7 @@ export function Submit() {
           <PageHeader page="aiBehavioural" />
           <RunTabs history runs={5} />
           <HistoryTable cols={['Run', 'Personas', 'Result', 'Date']} variant="wide">
-            <RunRow state="progress" name={r.name} sub={`${r.sessions} sessions · ${r.length} · ${r.build}`} third={<PersonaChips mix={r.mix} />} date="Sep 18" running={<WatchLive />} />
+            <RunRow state="progress" name={r.name} sub={`${r.sessions} sessions · ${r.length} · ${r.build}`} third={<PersonaChips mix={r.mix} />} date="Sep 18" running={<WatchLive click="submit" />} />
             <RunRow name="Store smoke check" sub="1 session · 10 min · v2.3.2" third={<PersonaChips mix={[[GENERIC, 1]]} />} result={{ findings: 2 }} date="Sep 8" />
             <RunRow name="Season 9 — full sweep" sub="32 sessions · 60 min · v2.3.1" third={<span><span className="s-mtag">Generic ×8</span><span className="s-mtag">+3</span></span>} result={{ findings: 14 }} date="Sep 4" />
             <RunRow name="Onboarding" sub="10 sessions · 15 min · v2.3.0" third={<PersonaChips mix={[[NEW_PLAYER, 10]]} />} result={{ findings: 6 }} date="Aug 30" />
@@ -113,7 +141,7 @@ export function Live() {
       </div>
       <div className="s-vpanel">
         <div className="s-vpanel-h">All sessions <small>20 of 20</small></div>
-        <div className="s-sgrid">{LIVE.map(([p, n, t]) => <SessionCard key={`${p.name}${n}`} persona={p} n={n} live={t} />)}</div>
+        <div className="s-sgrid">{LIVE.map(([p, n, t], i) => <SessionCard key={`${p.name}${n}`} persona={p} n={n} live={t} click={i === 0 ? 'live' : undefined} />)}</div>
       </div>
     </PageLayer>
   );

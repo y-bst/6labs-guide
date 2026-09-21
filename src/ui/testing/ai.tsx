@@ -71,15 +71,23 @@ export function FormRow({ label, optional, hl, children }: { label: string; opti
 const dot = (p: Persona) => <i className="s-pdot" style={{ background: p.color }} />;
 
 /** The persona list, open: every persona with its one-line description; `checked` are ticked. */
-export function PersonaMenu({ checked, about }: { checked: string[]; about: { name: string; text: string } }) {
+export function PersonaMenu({ checked, about, click }: {
+  checked: string[];
+  about: { name: string; text: string };
+  /** Scenes in which a cursor ticks the first persona. */
+  click?: SceneSpec;
+}) {
   return (
     <div className="s-pmenu">
       <span className="s-search sm">Search 14 personas…</span>
-      {PERSONAS.map(p => (
-        <div key={p.name} className={checked.includes(p.name) ? 's-pitem on' : 's-pitem'}>
-          <span className={checked.includes(p.name) ? 's-checkbox on' : 's-checkbox'} /><b>{p.name}</b><small>{p.note}</small>
+      {PERSONAS.map(p => {
+        const on = checked.includes(p.name);
+        const box = <span className={on ? 's-checkbox on' : 's-checkbox'} />;
+        return (
+        <div key={p.name} className={on ? 's-pitem on' : 's-pitem'}>
+          {click && p.name === checked[0] ? <Click on={click} from="left">{box}</Click> : box}<b>{p.name}</b><small>{p.note}</small>
         </div>
-      ))}
+      ); })}
       <div className="s-pabout"><span className="s-label">{about.name}</span><p>{about.text}</p></div>
     </div>
   );
@@ -113,23 +121,38 @@ export function PersonaChips({ mix }: { mix: [Persona, number][] }) {
 }
 
 /** "● Watch live" button of a playing run. */
-export const WatchLive = () => <Button tone="ghost" sm className="s-watch"><i />Watch live</Button>;
+export function WatchLive({ click }: { click?: SceneSpec }) {
+  const btn = <Button tone="ghost" sm className="s-watch"><i />Watch live</Button>;
+  return click ? <Click on={click} delay={5.4}>{btn}</Click> : btn;
+}
 
 /* ---------- a run's page ---------- */
 
 /** Report / Videos tabs of a run. */
-export function RunPageTabs({ on, videos }: { on: 'report' | 'videos'; videos: number }) {
+export function RunPageTabs({ on, videos, clickReport }: {
+  on: 'report' | 'videos';
+  videos: number;
+  /** Scenes in which a cursor taps Report, which is how the reader leaves the live view. */
+  clickReport?: SceneSpec;
+}) {
+  const report = <span className={on === 'report' ? 'on' : undefined}>Report</span>;
   return (
     <div className="s-tabs">
-      <span className={on === 'report' ? 'on' : undefined}>Report</span>
+      {clickReport ? <Click on={clickReport}>{report}</Click> : report}
       <span className={on === 'videos' ? 'on' : undefined}>Videos <span className="n">{videos}</span></span>
     </div>
   );
 }
 
 /** One agent's session: LIVE with the time so far while it plays, or its length once finished. */
-export function SessionCard({ persona, n, live }: { persona: Persona; n: number; live?: string }) {
-  return (
+export function SessionCard({ persona, n, live, click }: {
+  persona: Persona;
+  n: number;
+  live?: string;
+  /** Scenes in which a cursor taps this card, which opens the agent next. */
+  click?: SceneSpec;
+}) {
+  const card = (
     <div className="s-scard">
       <div className="s-scard-t">
         {live ? <span className="s-live">Live</span> : null}
@@ -138,6 +161,7 @@ export function SessionCard({ persona, n, live }: { persona: Persona; n: number;
       <b>{dot(persona)}{persona.name} · agent {n}</b>
     </div>
   );
+  return click ? <Click on={click} block>{card}</Click> : card;
 }
 
 /* ---------- findings ---------- */
@@ -197,10 +221,12 @@ export function AgentFindingCard({ finding: f, of, hlSplit, hlEvidence, clip, cl
  * An agent's session: the captured screen with the action as a caption, a frame strip, and
  * what the agent saw, its reasoning in its own words, and what it did.
  */
-export function AgentVideo({ persona, build, length, hlSaw, hlReasoning, hlDid }: {
+export function AgentVideo({ persona, build, length, live, hlSaw, hlReasoning, hlDid }: {
   persona: Persona;
   build: string;
   length: string;
+  /** Still playing: the frame is the latest one 6labs has, not the end of a finished session. */
+  live?: string;
   hlSaw?: Toggle;
   hlReasoning?: Toggle;
   hlDid?: Toggle;
@@ -213,11 +239,12 @@ export function AgentVideo({ persona, build, length, hlSaw, hlReasoning, hlDid }
         <div className="s-icon ai sm"><TIcon name="aiPerson" size={20} width={1.5} /></div>
         <div className="grow"><b>{a.title}</b><span>{a.about}</span></div>
         <div className="s-kv"><span className="s-label">Build</span><b>{build}</b></div>
-        <div className="s-kv"><span className="s-label">Session length</span><b>{length}</b></div>
+        <div className="s-kv"><span className="s-label">{live ? 'Playing for' : 'Session length'}</span><b>{live ?? length}</b></div>
       </div>
       <div className="s-avideo-b">
         <div className="s-phone">
           <div className="s-phone-scr" style={{ ['--pc' as string]: persona.color }}>
+            {live && <span className="s-live s-playing">AI playing · Live</span>}
             <span className="s-dur">{a.time}</span>
             <span className="s-phone-cap">{a.did}</span>
           </div>
@@ -230,6 +257,7 @@ export function AgentVideo({ persona, build, length, hlSaw, hlReasoning, hlDid }
           <div {...cls('s-sp', { hl: hlSaw })}><span className="s-label">Saw</span><p>{a.saw}</p></div>
           <div {...cls('s-sp s-reason', { hl: hlReasoning })}><span className="s-label">Reasoning</span><p>“{a.reasoning}”</p></div>
           <div {...cls('s-sp', { hl: hlDid })}><span className="s-label">Did</span><p className="did"><TIcon name="arrowRight" size={14} width={2} />{a.did}</p><small>{a.observed}</small></div>
+          {live && <p className="s-lastscreen">This is the last screen 6labs has captured for this agent.</p>}
           <div className="s-sp-f"><Button tone="ghost" sm><TIcon name="chevLeft" size={13} width={2} />Previous</Button><Button tone="ghost" sm>Next screen<TIcon name="chevRight" size={13} width={2} /></Button></div>
         </div>
       </div>
