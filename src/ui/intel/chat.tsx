@@ -106,8 +106,8 @@ export function AnswerSection({ n, kicker, tone = 'blue', hl, children }: {
   );
 }
 
-/** A labelled block inside an answer: an insight drawn from the numbers, or a plain fact. */
-export function AnswerNote({ kind, title, children }: { kind: 'insight' | 'fact'; title: string; children: ReactNode }) {
+/** A labelled block inside an answer: something odd, something it concluded, or a plain fact. */
+export function AnswerNote({ kind, title, children }: { kind: 'anomaly' | 'insight' | 'fact'; title: string; children: ReactNode }) {
   return (
     <div className={`i-note ${kind}`}>
       <span className="i-note-k">{kind}</span>
@@ -130,13 +130,37 @@ export function AnswerTable({ head, rows, footnote }: { head: string[]; rows: (s
   );
 }
 
+/** Each recommendation is a named action with its reasoning. */
+export function AnswerActions({ items }: { items: [title: string, text: ReactNode][] }) {
+  return (
+    <ol className="i-acts">
+      {items.map(([title, text]) => <li key={title}><b>{title}</b><p>{text}</p></li>)}
+    </ol>
+  );
+}
+
+/** What the answer cannot settle, which Oracle states before it stops. */
+export const AnswerCaveat = ({ children }: { children: ReactNode }) => (
+  <p className="i-caveat"><b>What this does not establish:</b> {children}</p>
+);
+
+/** Questions Oracle offers to take next. */
+export function ExploreNext({ kicker, items }: { kicker: string; items: string[] }) {
+  return (
+    <div className="i-explore">
+      <span className="i-label">{kicker}</span>
+      {items.map(q => <span key={q} className="i-q">{q}</span>)}
+    </div>
+  );
+}
+
 /** The offer to go and watch the sessions behind the numbers. */
 export function VideoAnalysisCta({ hl, click }: { hl?: Toggle; click?: SceneSpec }) {
   const { cls } = useScenes();
-  const btn = <span className="i-btn pri">Run video analysis</span>;
+  const btn = <span className="i-btn pri">Show me insights from videos</span>;
   return (
     <div {...cls('i-vacta', { hl })}>
-      <div><b>The analytics located the drop-off. The sessions can show why.</b><span>Oracle will watch the matching gameplay and come back with what players actually did.</span></div>
+      <div><b>This is as far as the numbers go.</b><span>The recorded sessions have not been watched yet.</span></div>
       {click ? <Click on={click}>{btn}</Click> : btn}
     </div>
   );

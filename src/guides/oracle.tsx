@@ -6,11 +6,11 @@ import { Layer } from '../shell/scenes';
 import { Icon } from '../ui/Icon';
 import { IntelScreen, PageHead, ScreenBar } from '../ui/intel/app';
 import { AddMenu, AskBox, HomeLauncher, Query, SourceMenu, SuggestedPrompts } from '../ui/intel/ask';
-import { AnswerCard, AnswerNote, AnswerSection, AnswerTable, Cites, Conversation, ExportButton, ExportMenu, FollowUpBox, QuestionBubble, ThinkingSteps, VideoAnalysisCta } from '../ui/intel/chat';
+import { AnswerActions, AnswerCard, AnswerCaveat, AnswerNote, AnswerSection, AnswerTable, Cites, Conversation, ExploreNext, ExportButton, ExportMenu, FollowUpBox, QuestionBubble, ThinkingSteps, VideoAnalysisCta } from '../ui/intel/chat';
 import { IntelMap } from '../ui/intel/IntelMap';
 import { Click } from '../ui/Click';
 
-/** The answer as Oracle writes it: what happened, what it means, what to do about it. */
+/** The answer in the three sections Oracle writes: what happened, what it found, what to do. */
 function BooyahAnswer() {
   return (
     <>
@@ -27,30 +27,62 @@ function BooyahAnswer() {
         ]}
         footnote="% of matches in which the squad landed outside the three busiest drops, and held high ground entering the final circle. Counted per match."
       />
+      <AnswerSection n="02" kicker="What Oracle found">
+        Winners are separated by rotation, not by kills — and the gap opens before the final circle.
+      </AnswerSection>
+      <AnswerNote kind="anomaly" title="Early kill count barely differs between the two groups">
+        Winning squads average 6.1 eliminations before the third circle; squads that placed without winning average 5.8. The measure most teams optimise for is almost flat across the outcome.
+      </AnswerNote>
       <AnswerNote kind="insight" title="Rotation discipline predicts a win better than early kills">
-        Winning squads land away from the crowd in 78% of finishes and rotate in on the second circle. Early kill count is almost flat between the two groups.
+        Winning squads land away from the crowd in 78% of finishes and rotate in on the second circle. The losing group is still contesting its landing zone at the same point.
       </AnswerNote>
       <AnswerNote kind="fact" title="Winners carry one utility slot, not a second rifle">
         81% of booyah squads held a mid-range weapon plus one utility item. The figure is 46% among squads that placed without winning.
       </AnswerNote>
-      <AnswerSection n="02" kicker="What to do next" tone="green">
+      <AnswerSection n="03" kicker="What to do next" tone="green">
         The numbers say <em>where</em> squads win it. The sessions can show <em>how</em> they play the final circle.
       </AnswerSection>
       <p>Two of the findings above — the rotation gap and the utility-slot split — need the footage to settle. The numbers show what squads carried, not how they used it.</p>
+      <AnswerActions items={[
+        ['Watch the second circle in losing squads', 'Look for whether they choose to contest the landing zone or are pinned there. That separates a decision problem from a map-pressure problem.'],
+        ['Check what the utility slot is actually used for', 'The numbers show squads carried one. The sessions show whether it is thrown on rotation, held for the final fight, or never used.'],
+        ['Compare who opens the final engagement', 'Winners open first in 7 of 10 finishes. Confirm whether that is position or initiative.'],
+      ]} />
+      <AnswerCaveat>These figures come from ranked squad matches on BlueStacks sessions, not your full player base. No session recordings were read this turn, so the behaviour behind the rotation gap is still open.</AnswerCaveat>
     </>
   );
 }
 
-/** What the video analysis comes back with: patterns, each backed by the clips it came from. */
+/** What the footage adds: patterns, each carrying the clips it came from. */
 function BooyahVideo() {
   return (
     <>
+      <AnswerSection n="01" kicker="What happened">
+        Winning squads commit to a rotation early and hold it; the losing pattern is a squad still deciding.
+      </AnswerSection>
       <h4>Pattern A · Winners open the final fight first</h4>
-      <p>In 7 of 10 final circles, the winning squad initiates rather than holding. The average final-zone engagement lasts 38 seconds <Cites ids={[12, 41, 67]} />, and the squad that opens takes the high ground before the last rotation <Cites ids={[86, 94]} />.</p>
+      <p>In 7 of 10 final circles the winning squad initiates rather than holding. The average final-zone engagement lasts 38 seconds <Cites ids={[12, 41, 67]} />, and the squad that opens has taken the high ground before the last rotation <Cites ids={[86, 94]} />.</p>
       <h4>Pattern B · The second circle is where the gap opens</h4>
       <p>Squads that land off the hot drop spend the second circle moving, not looting <Cites ids={[5, 24]} />. Squads that placed without winning are still contesting their landing zone at the same point <Cites ids={[17, 55, 69]} />.</p>
       <h4>Pattern C · Revives happen mid-rotation, not mid-fight</h4>
       <p>Winning squads revive while moving between circles <Cites ids={[7, 12, 19]} />. The losing pattern is a revive attempted inside an active fight, which costs a second player <Cites ids={[56, 70, 95]} />.</p>
+      <AnswerSection n="02" kicker="What Oracle found">
+        The utility slot is a rotation tool, not a fighting one — which is why carrying it correlates with winning.
+      </AnswerSection>
+      <AnswerNote kind="insight" title="Smokes are thrown to move, not to fight">
+        In the winning sessions the utility item is used crossing open ground between circles <Cites ids={[24, 41]} />. In the losing sessions it is thrown inside a fight already underway, where it hides both squads equally.
+      </AnswerNote>
+      <AnswerNote kind="anomaly" title="Squads that revive mid-fight lose a second player in 8 of 10 clips">
+        The revive itself is not the cost. Standing still to perform it inside an active engagement is <Cites ids={[56, 70]} />.
+      </AnswerNote>
+      <AnswerSection n="03" kicker="What to do next" tone="green">
+        This reads as a <em>timing</em> problem, not a loadout one.
+      </AnswerSection>
+      <AnswerActions items={[
+        ['Surface rotation timing in the match summary', 'Players who lose are not choosing the wrong items. They are committing to the move too late.'],
+        ['Test a circle-warning cue at the second circle', 'That is where the behaviour splits in every clip above.'],
+      ]} />
+      <AnswerCaveat>These patterns come from a sample of ranked squad sessions, not a population measurement. Any change would need an A/B test against your full player base.</AnswerCaveat>
     </>
   );
 }
@@ -88,9 +120,14 @@ function Screen() {
           >
             <BooyahAnswer />
             <VideoAnalysisCta hl="footer" click="footer" />
+            <ExploreNext kicker="or explore the following directions" items={BOOYAH.related} />
           </AnswerCard>
-          <AnswerCard show="more..">
+          <AnswerCard show="more.." meta={[['BlueStacks sessions'], ['videos read', '200']]}>
             <BooyahVideo />
+            <ExploreNext kicker="What to explore next" items={[
+              'Do squads that hold the second circle win more often on smaller maps?',
+              'How often does the squad that opens the final fight also hold high ground?',
+            ]} />
           </AnswerCard>
         </Conversation>
         <FollowUpBox hl="more" />
@@ -203,10 +240,11 @@ export default defineGuide({
       title: 'An answer you can check',
       body: <>
         <p>The answer opens with what it had to work with — which sessions, how many players, and whether your own data warehouse was connected.</p>
+        <p>Every answer comes in the same three sections:</p>
         <Bullets items={[
-          <><b>01 What happened</b>: the headline figure first</>,
-          <><b>The table</b>: the numbers behind it, so you can check the claim</>,
-          <><b>Insight</b> and <b>Fact</b>: what the numbers mean, and what they simply say</>,
+          <><b>01 What happened</b> — the headline figure, and the table behind it</>,
+          <><b>02 What Oracle found</b> — the blocks: an <b>anomaly</b> it noticed, an <b>insight</b> it drew, a <b>fact</b> it simply states</>,
+          <><b>03 What to do next</b> — named actions, and what the answer cannot settle</>,
         ]} />
       </>,
     },
@@ -214,8 +252,8 @@ export default defineGuide({
       id: 'footer', step: 'answer', focus: [712, 560, 1.3],
       title: 'Then watch the sessions',
       body: <>
-        <p>The numbers say <b>where</b> something happens. To see <b>why</b>, Oracle offers to run a <b>video analysis</b> over the matching gameplay.</p>
-        <p>That is the second half of an answer, and it is a separate step because it reads the footage rather than the figures.</p>
+        <p>Oracle says plainly when the figures stop: <b>“This is as far as the numbers go.”</b></p>
+        <p><b>Show me insights from videos</b> sends it to the footage. Under it are the questions it offers to take next.</p>
       </>,
     },
     {
