@@ -1,6 +1,7 @@
 // The landing page: every area, its groups and guide cards, straight from the registry.
 import { AREAS, CATALOG, guide, guideFile, type CatalogItem } from '../registry';
 import { Page } from '../shell/layout';
+import { Logo } from '../ui/Logo';
 
 function Card({ item }: { item: CatalogItem }) {
   if (typeof item !== 'string') {
@@ -31,7 +32,7 @@ export function IndexPage({ css }: { css: string }) {
   return (
     <Page title="6labs Studio Guides" css={css} fonts="light" layout={null}>
       <section className="intro">
-        <div className="label">6labs Studio</div>
+        <Logo height={34} title="6labs Studio" className="intrologo" />
         <h1>Guides</h1>
         <p className="lede">How 6labs Studio works, one flow at a time. <b>Testing</b> checks your builds with real players and AI players. <b>Intelligence</b> answers questions about your game.</p>
       </section>

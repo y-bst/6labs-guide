@@ -30,15 +30,6 @@
 .s-crumb span{color:var(--ink-4);font-weight:500}
 
 /* sidebar: the Testing navigation, as a tree */
-.s-nav a>span:not(.s-soon){min-width:0;overflow:hidden;text-overflow:ellipsis}
-.s-nav a.s-off,.s-nav a.s-off svg{color:var(--ph)}
-.s-soon{flex:none;margin-left:auto;font:600 8px/1 var(--body);letter-spacing:.08em;padding:3px 4px;border-radius:4px;background:var(--subtle);color:var(--ink-4)}
-.s-tree{display:flex;flex-direction:column;gap:2px;margin-left:8px}
-.s-tree a{margin-left:12px;gap:8px;padding:0 8px;font-size:13px}
-.s-tree a::before{content:"";position:absolute;left:-12px;top:0;width:9px;height:50%;border-left:1.5px solid var(--line);border-bottom:1.5px solid var(--line);border-bottom-left-radius:7px}
-.s-tree a::after{content:"";position:absolute;left:-12px;top:50%;bottom:-2px;border-left:1.5px solid var(--line)}
-.s-tree a:last-child::after{display:none}
-.s-tree a.on::before{border-color:var(--brand)}
 
 /* page header tones */
 .s-icon.ft{background:linear-gradient(135deg,#2BB7A0 0%,#178F7C 100%)}

@@ -218,5 +218,24 @@
     else if (e.target.matches('dialog.sheet')) e.target.close();
   });
 
+  /* ---------- reveal on view ---------- */
+  // A [data-reveal] block plays its entrance the first time it scrolls into view. It is armed
+  // here rather than in the CSS, so without JS the block is simply there, already settled.
+  const reveals = $$('[data-reveal]');
+  if (reveals.length) {
+    reveals.forEach(el => el.classList.add('armed'));
+    const seen = new IntersectionObserver((entries, obs) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        e.target.classList.remove('armed');
+        e.target.classList.add('play');
+        obs.unobserve(e.target);
+      }
+      // Plays as soon as any of it is on screen: a guide's map sits right at the fold on a
+      // laptop, and a block that is visible but still armed reads as an empty card.
+    }, { threshold: 0 });
+    reveals.forEach(el => seen.observe(el));
+  }
+
   window.Guide = { stories, $, $$ };
 })();

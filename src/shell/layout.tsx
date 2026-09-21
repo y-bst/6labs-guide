@@ -1,6 +1,7 @@
 // The page around a guide: document head, top bar, intro and the "at a glance" section.
 import type { ReactNode } from 'react';
 import { AREAS, guideFile, guidesIn, type AreaId, type GuideMeta } from '../registry';
+import { LogoMark } from '../ui/Logo';
 
 const FONTS_FULL = 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@500;600&display=swap';
 const FONTS_LIGHT = 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@500;600&display=swap';
@@ -37,7 +38,7 @@ export function Page({ title, css, js, fonts = 'full', layout = 'scroll', childr
 export function TopBar({ area, current }: { area: AreaId; current: string }) {
   return (
     <header className="topbar">
-      <a className="mark" href="index.html"><i />6labs Studio <span>{AREAS[area].guidesLabel}</span></a>
+      <a className="mark" href="index.html"><LogoMark size={26} />6labs Studio <span>{AREAS[area].guidesLabel}</span></a>
       <nav className="navs" aria-label="Guides">
         {guidesIn(area).map(g => (
           <a key={g.slug} className="docpill" data-doc="" href={guideFile(g)} aria-current={g.slug === current ? 'page' : undefined}>

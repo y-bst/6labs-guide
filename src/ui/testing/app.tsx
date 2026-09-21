@@ -1,6 +1,7 @@
 // The Testing app frame: sidebar, main area, page header.
 import type { CSSProperties, ReactNode } from 'react';
 import { Layer, useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
+import { Logo } from '../Logo';
 import { TIcon, type TIconName } from './icons';
 
 type NavId = 'library' | 'userTest' | 'functional' | 'aiBehavioural' | 'aiFunctional';
@@ -27,7 +28,7 @@ export function TestingSidebar({ active = {}, highlight = {} }: TestingSidebarPr
   );
   return (
     <aside className="s-side">
-      <div className="s-logo"><i />6labs.ai</div>
+      <div className="s-logo"><Logo height={28} /></div>
       <div className="s-area"><span>Intelligence</span><span className="on">Testing</span></div>
       <div className="s-rule" />
       <nav className="s-nav">

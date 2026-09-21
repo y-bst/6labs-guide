@@ -20,7 +20,7 @@ p{text-wrap:pretty}
 /* ---------- top bar ---------- */
 .topbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:16px var(--gut)}
 .mark{display:flex;align-items:center;gap:10px;font:700 18px/1 var(--display);color:var(--ink);text-decoration:none}
-.mark i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#0D5ED4);box-shadow:inset 0 0 0 6px rgba(255,255,255,.28)}
+.mark svg{flex:none}
 .mark span{font:500 14px/1 var(--body);color:var(--ink-3)}
 .navs{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .docpill{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:9999px;border:1px solid var(--line-2);background:var(--paper);font:600 14px/1 var(--display);color:var(--ink);text-decoration:none;white-space:nowrap}
@@ -79,7 +79,7 @@ p{text-wrap:pretty}
 .glance-head p{margin:0;font-size:14px;color:var(--ink-3)}
 .glance-head a{color:var(--brand);font-weight:600;text-decoration:none}
 .glance-map{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:clamp(12px,2vw,26px);overflow-x:auto;box-shadow:0 1px 2px rgba(3,13,45,.04),0 16px 40px rgba(3,13,45,.06)}
-.glance-map svg{display:block;width:100%;min-width:900px;height:auto}
+.glance-map>svg{display:block;width:100%;min-width:900px;height:auto}
 .glance-map .t{font:700 20px var(--display);fill:var(--ink)}
 .glance-map .d{font:400 15px var(--body);fill:var(--ink-3)}
 .glance-map .g{font:600 14px var(--display);fill:var(--ink-3)}

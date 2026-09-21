@@ -3,6 +3,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { HISTORY, PAGES, type PageId } from '../../data/intel';
 import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
 import { Icon, type IconName } from '../Icon';
+import { Logo } from '../Logo';
 
 type NavId = 'newQuery' | 'oracle' | 'radiologist' | 'documents' | 'connectors';
 type HistoryEntry = string | { text: string; show?: SceneSpec; active?: Toggle };
@@ -19,31 +20,31 @@ export interface SidebarProps {
 export function Sidebar({ active = {}, highlight = {}, history = HISTORY }: SidebarProps) {
   const { at, cls } = useScenes();
   const item = (id: NavId, icon: IconName, label: string) => (
-    <a {...cls('', { on: active[id], hl: highlight[id] })}><Icon name={icon} />{label}</a>
+    <a {...cls('', { on: active[id], hl: highlight[id] })}><Icon name={icon} /><span>{label}</span></a>
   );
   return (
     <aside className="s-side">
-      <div className="s-logo"><i />6labs.ai</div>
+      <div className="s-logo"><Logo height={28} /></div>
       <div className="s-area"><span className="on">Intelligence</span><span>Testing</span></div>
       <div className="s-rule" />
       <nav className="s-nav">
         {item('newQuery', 'new', 'New Query')}
         <div className="s-nav-h ca fold">Core agents</div>
-        <div {...cls('i-tree', { hl: highlight.agents })}>
+        <div {...cls('s-tree', { hl: highlight.agents })}>
           {item('oracle', 'oracle', 'Oracle')}
           {item('radiologist', 'radio', 'Radiologist')}
-          <a className="soon"><Icon name="fore" />Forecaster</a>
+          <a className="s-off"><Icon name="fore" /><span>Forecaster</span><span className="s-soon">SOON</span></a>
         </div>
         <div className="s-nav-h cx">Context</div>
-        <div {...cls('i-tree', { hl: highlight.context })}>
+        <div {...cls('s-tree', { hl: highlight.context })}>
           {item('documents', 'docs', 'Documents')}
           {item('connectors', 'conn', 'Connectors')}
         </div>
         <div className="s-nav-h hs fold">History</div>
-        <div {...cls('i-tree hist', { hl: highlight.history })}>
+        <div {...cls('s-tree hist', { hl: highlight.history })}>
           {history.map(h => typeof h === 'string'
-            ? <a key={h}>{h}</a>
-            : <a key={h.text} {...at(h.show)} {...cls('', { on: h.active })}>{h.text}</a>)}
+            ? <a key={h}><span>{h}</span></a>
+            : <a key={h.text} {...at(h.show)} {...cls('', { on: h.active })}><span>{h.text}</span></a>)}
         </div>
       </nav>
     </aside>

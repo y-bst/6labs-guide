@@ -16,8 +16,8 @@
 .s-app{display:grid;grid-template-columns:var(--nav,256px) minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:100%;min-height:100%}
 .s-app.intel{--nav:244px}
 .s-app>*{min-height:0}
-.s-logo{display:flex;align-items:center;gap:8px;font:700 22px/1 var(--display);letter-spacing:-.02em;padding:4px 6px}
-.s-logo i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#0D5ED4);box-shadow:inset 0 0 0 6px rgba(255,255,255,.28)}
+.s-logo{display:flex;align-items:center;padding:4px 6px}
+.s-logo svg{display:block}
 .s-area{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:12px;background:var(--line)}
 .s-area span{height:36px;display:grid;place-items:center;border-radius:9px;font:600 14px/1 var(--display);color:var(--ink-3)}
 .s-area span.on{background:var(--brand);color:#fff}
@@ -26,15 +26,26 @@
 
 
 /* sidebar shell — the same in both areas. What differs between them stays in the area's own
-   stylesheet: the tree style (.i-tree vs .s-tree), the SOON badge, and the group heading icon. */
+   stylesheet: the main-area background, and the group heading icon. */
 .s-side{background:#fff;border-right:1px solid var(--line);padding:16px 12px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
 .s-side .s-area{background:var(--tint-l)}
 .s-rule{height:1px;background:var(--line);margin:2px -12px 0}
 .s-nav{display:flex;flex-direction:column;gap:2px;min-height:0}
 .s-nav a{position:relative;display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border-radius:8px;font-size:14px;color:var(--ink);white-space:nowrap;text-decoration:none;transition:background .25s,color .25s}
 .s-nav a svg{flex:none;color:var(--ink-2)}
+.s-nav a>span:not(.s-soon){min-width:0;overflow:hidden;text-overflow:ellipsis}
 .s-nav a.on{background:var(--tint-l);color:var(--brand);font-weight:500}
 .s-nav a.on svg{color:var(--brand)}
+/* not built yet */
+.s-nav a.s-off,.s-nav a.s-off svg{color:var(--ph)}
+.s-soon{flex:none;margin-left:auto;font:600 9px/1 var(--body);letter-spacing:.1em;padding:3px 5px;border-radius:4px;background:var(--subtle);color:var(--ink-4)}
+/* items under a group heading, joined by elbow connectors */
+.s-tree{display:flex;flex-direction:column;gap:2px;margin-left:8px}
+.s-tree a{margin-left:12px;gap:8px;padding:0 8px;font-size:13px}
+.s-tree a::before{content:"";position:absolute;left:-12px;top:0;width:9px;height:50%;border-left:1.5px solid var(--line);border-bottom:1.5px solid var(--line);border-bottom-left-radius:7px}
+.s-tree a::after{content:"";position:absolute;left:-12px;top:50%;bottom:-2px;border-left:1.5px solid var(--line)}
+.s-tree a:last-child::after{display:none}
+.s-tree a.on::before{border-color:var(--brand)}
 /* group heading; the colour says which group it is */
 .s-nav-h{display:flex;align-items:center;justify-content:space-between;padding:14px 10px 4px;font:600 11px/1 var(--display);letter-spacing:.09em;text-transform:uppercase}
 .s-nav-h.ca{color:var(--violet)}
