@@ -1,0 +1,67 @@
+/* Testing kit · app: page header, buttons, inputs, page layer, breadcrumb bar */
+/* page header */
+.s-head{display:flex;align-items:center;gap:20px;margin-bottom:24px}
+.s-icon{width:60px;height:60px;border-radius:12px;display:grid;place-items:center;color:#fff;flex:none}
+.s-icon.lib{background:linear-gradient(135deg,var(--violet-d) 0%,var(--violet) 55%,var(--violet-l) 100%)}
+.s-icon.ut{background:linear-gradient(135deg,#0D5ED4 0%,var(--brand) 55%,#6FA6F7 100%)}
+.s-icon.sm{width:40px;height:40px;border-radius:10px}
+.s-h1{font:800 30px/1.3 var(--display);margin:0;letter-spacing:-.01em}
+.s-sub{font-size:14px;color:var(--ink-2);margin:2px 0 0}
+
+/* buttons, inputs */
+.s-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:44px;padding:0 24px;border-radius:8px;border:1px solid transparent;font:600 14px/1 var(--display);white-space:nowrap}
+.s-btn.primary{background:var(--brand);color:#fff}
+.s-btn.ghost{background:#fff;border-color:var(--line-2);color:var(--ink)}
+.s-btn.dis{background:var(--subtle);color:var(--ph)}
+.s-btn.sm{height:36px;padding:0 16px}
+.s-input{height:46px;display:flex;align-items:center;padding:0 14px;border:1px solid var(--line-2);border-radius:8px;background:#fff;font-size:15px;color:var(--ink)}
+.s-input.ph{color:var(--ph)}
+.s-label{font:600 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4)}
+.s-label small{font:400 13px/1 var(--body);letter-spacing:0;text-transform:none;margin-left:6px}
+.s-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.s-col{display:flex;flex-direction:column;gap:10px}
+.s-sep{width:1px;height:28px;background:var(--line-2)}
+
+
+/* page layer, breadcrumb bar */
+.s-main{overflow:hidden}
+.s-pg{position:absolute;inset:0;padding:36px 40px;overflow:hidden}
+.s-crumb{position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;height:60px;margin:-36px -40px 22px;padding:0 28px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.75);font:600 15px/1 var(--display)}
+.s-crumb span{color:var(--ink-4);font-weight:500}
+
+/* sidebar: the Testing navigation, as a tree */
+.s-nav a>span:not(.s-soon){min-width:0;overflow:hidden;text-overflow:ellipsis}
+.s-nav a.s-off,.s-nav a.s-off svg{color:var(--ph)}
+.s-soon{flex:none;margin-left:auto;font:600 8px/1 var(--body);letter-spacing:.08em;padding:3px 4px;border-radius:4px;background:var(--subtle);color:var(--ink-4)}
+.s-tree{display:flex;flex-direction:column;gap:2px;margin-left:8px}
+.s-tree a{margin-left:12px;gap:8px;padding:0 8px;font-size:13px}
+.s-tree a::before{content:"";position:absolute;left:-12px;top:0;width:9px;height:50%;border-left:1.5px solid var(--line);border-bottom:1.5px solid var(--line);border-bottom-left-radius:7px}
+.s-tree a::after{content:"";position:absolute;left:-12px;top:50%;bottom:-2px;border-left:1.5px solid var(--line)}
+.s-tree a:last-child::after{display:none}
+.s-tree a.on::before{border-color:var(--brand)}
+
+/* page header tones */
+.s-icon.ft{background:linear-gradient(135deg,#2BB7A0 0%,#178F7C 100%)}
+.s-icon.ai{background:linear-gradient(135deg,#34C27A 0%,var(--green) 100%)}
+
+/* top bar with a back arrow, buttons and the run's state on the right */
+.s-crumb-t{display:flex;align-items:center;font:600 15px/1 var(--display);color:var(--ink)}
+.s-crumb-t svg{margin-right:12px;color:var(--ink-3)}
+.s-crumb-t span{margin-right:5px}
+.s-crumb-r{display:flex;align-items:center;gap:10px}
+.s-state{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;font:600 12px/1 var(--body)}
+.s-state.ok{background:rgba(22,163,74,.1);color:#15803D;font-weight:600}
+.s-state.busy{background:var(--tint);color:var(--brand);font-weight:600}
+.s-state.done{background:var(--subtle);color:var(--ink-3);font-weight:600}
+
+/* the page scrolling under a scene */
+.s-scroller{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.s-scroller.y1{transform:translateY(var(--y1))}
+.s-scroller.y2{transform:translateY(var(--y2))}
+.s-scroller.y3{transform:translateY(var(--y3))}
+
+/* more inputs */
+.s-intro{margin:-6px 0 16px;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.s-select{display:inline-flex;align-items:center;justify-content:space-between;gap:10px;height:40px;padding:0 12px 0 14px;min-width:170px;border:1px solid var(--line-2);border-radius:10px;background:#fff;font-size:14px;color:var(--ink)}
+.s-select.sm,.s-search.sm{height:34px;min-width:0;font-size:13px}
+.s-input.area{height:64px;align-items:flex-start;padding-top:11px;line-height:1.5}

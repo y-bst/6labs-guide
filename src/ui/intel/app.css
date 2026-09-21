@@ -1,0 +1,22 @@
+/* Intelligence · app frame: sidebar and main area */
+
+.shot-canvas svg{flex:none}
+
+.s-side .s-area span{display:flex;align-items:center;justify-content:center;gap:6px}
+.s-nav a.soon,.s-nav a.soon svg{color:var(--ph)}
+.s-nav a.soon::after{content:"SOON";margin-left:auto;font:600 9px/1 var(--body);letter-spacing:.1em;padding:3px 5px;border-radius:4px;background:var(--subtle);color:var(--ink-4)}
+.s-nav-h.fold::after{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg)}
+.i-tree{margin-left:12px;padding-left:10px;border-left:1.5px solid var(--line);display:flex;flex-direction:column;gap:2px;border-radius:0 8px 8px 0}
+.i-tree a.on::before{content:"";position:absolute;left:-11.5px;top:7px;bottom:7px;width:1.5px;background:var(--brand)}
+.i-tree.hist a{display:block;line-height:34px;font-size:13px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis}
+.i-tree.hist a.on{background:#F1F1F3;color:var(--ink);font-weight:400}
+
+.i-main{position:relative;overflow:hidden;background-color:var(--canvas);background-image:radial-gradient(55% 45% at 6% 0%,rgba(23,112,239,.16) 0%,rgba(23,112,239,0) 70%),radial-gradient(50% 50% at 96% 8%,rgba(123,76,255,.13) 0%,rgba(123,76,255,0) 70%),radial-gradient(60% 50% at 80% 100%,rgba(194,5,104,.05) 0%,rgba(194,5,104,0) 70%)}
+.i-pg{position:absolute;inset:0;padding:34px 40px;overflow:hidden}
+.i-top{position:absolute;left:0;right:0;top:0;height:52px;display:flex;align-items:center;gap:14px;padding:0 20px;background:rgba(255,255,255,.9);border-bottom:1px solid var(--line);font:600 14px/1 var(--display);z-index:4}
+.i-top .grow{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.i-top>svg{color:var(--ink-3)}
+.i-btn{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--line-2);background:#fff;font:500 13px/1 var(--body);color:var(--ink);white-space:nowrap}
+.i-btn.brand{border-color:var(--brand);color:var(--brand);font-weight:600}
+.i-btn.pri{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+

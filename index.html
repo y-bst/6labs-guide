@@ -1,24 +1,32 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>6labs Testing Guides</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@500;600&display=swap">
-<style>
-/* ============================================================
-   Guide shell — scroll story + step-by-step, 6labs Studio theme
+<html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/><title>6labs Studio Guides</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&amp;family=Inter:wght@400;500;600&amp;family=Roboto+Mono:wght@500;600&amp;display=swap"/><style>/* ============================================================
+   6labs Studio · design tokens. On :root, so the story shell
+   (story.css, pages/index.css) can use them too — the kit files
+   are inside .shot, the shell is not.
    ============================================================ */
 :root{
-  --bg:#F5F6FA; --paper:#FFFFFF; --ink:#030D2D; --ink-2:#353D57; --ink-3:#4F566C; --ink-4:#818696;
-  --line:#E6E7EA; --line-2:#CDCFD5; --brand:#1770EF; --brand-2:#0D5ED4;
-  --tint:rgba(23,112,239,.14); --tint-l:rgba(23,112,239,.07);
-  --red:#C9392A; --red-bg:rgba(201,57,42,.08); --amber:#FFB700; --amber-ink:#8A5A00; --green:#16A34A;
+  /* ink */
+  --ink:#030D2D;--ink-2:#353D57;--ink-3:#4F566C;--ink-4:#818696;--ph:#9A9EAB;
+  /* lines and surfaces */
+  --line:#E6E7EA;--line-2:#CDCFD5;--subtle:#E6E7EA;--inset:#FAFAFB;--pale:#F5F5F5;--canvas:#F5F6FA;
+  /* brand */
+  --brand:#1770EF;--tint:rgba(23,112,239,.14);--tint-l:rgba(23,112,239,.07);
+  /* accents */
+  --violet:#7B4CFF;--violet-d:#6431E0;--violet-l:#8FA8F8;--violet-p:#B44CFF;--teal:#0E99BF;--jade:#00A393;
+  /* status */
+  --red:#C9392A;--red-bg:rgba(201,57,42,.08);--red-2:#E5484D;
+  --amber:#FFB700;--amber-ink:#8A5A00;--amber-bg:rgba(255,183,0,.14);--green:#16A34A;
+  /* type */
   --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
   --body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"Roboto Mono",ui-monospace,Consolas,monospace;
+}
+/* ============================================================
+   Guide shell — scroll story + step-by-step, 6labs Studio theme
+   ============================================================ */
+/* The palette and the fonts come from ui/tokens.css. Only shell-local values here. */
+:root{
+  --bg:var(--canvas); --paper:#FFFFFF; --brand-2:#0D5ED4;
   --gut:clamp(16px,4vw,48px);
   color-scheme:light;
 }
@@ -35,7 +43,7 @@ p{text-wrap:pretty}
 /* ---------- top bar ---------- */
 .topbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:16px var(--gut)}
 .mark{display:flex;align-items:center;gap:10px;font:700 18px/1 var(--display);color:var(--ink);text-decoration:none}
-.mark i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#1770EF,#0D5ED4);box-shadow:inset 0 0 0 6px rgba(255,255,255,.28)}
+.mark i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#0D5ED4);box-shadow:inset 0 0 0 6px rgba(255,255,255,.28)}
 .mark span{font:500 14px/1 var(--body);color:var(--ink-3)}
 .navs{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .docpill{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:9999px;border:1px solid var(--line-2);background:var(--paper);font:600 14px/1 var(--display);color:var(--ink);text-decoration:none;white-space:nowrap}
@@ -44,15 +52,20 @@ p{text-wrap:pretty}
 .docpill[aria-current="page"] .n{color:var(--brand)}
 .docpill.soon{color:var(--ink-4);background:transparent;pointer-events:none}
 .docpill.soon::after{content:"soon";font:600 10px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;padding:3px 6px;border-radius:4px;background:var(--line)}
-.layswitch{display:inline-flex;padding:2px;gap:2px;border-radius:12px;background:#E6E7EA}
+.layswitch{display:inline-flex;padding:2px;gap:2px;border-radius:12px;background:var(--line)}
 .layswitch a{height:34px;padding:0 12px;border-radius:10px;display:inline-flex;align-items:center;font:600 13px/1 var(--display);color:var(--ink-3);text-decoration:none;white-space:nowrap}
 .layswitch a[aria-current="true"]{background:var(--paper);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.06)}
 
 /* ---------- hero ---------- */
 .hero{max-width:1320px;margin:0 auto;padding:clamp(28px,6vw,72px) var(--gut) clamp(24px,4vw,48px);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:end}
 .hero-icon{width:72px;height:72px;border-radius:14px;display:grid;place-items:center;color:#fff;margin-bottom:22px}
-.hero-icon.lib{background:linear-gradient(135deg,#6431E0 0%,#7B4CFF 55%,#8FA8F8 100%)}
-.hero-icon.ut{background:linear-gradient(135deg,#0D5ED4 0%,#1770EF 55%,#6FA6F7 100%)}
+.hero-icon.lib{background:linear-gradient(135deg,var(--violet-d) 0%,var(--violet) 55%,var(--violet-l) 100%)}
+.hero-icon.ut{background:linear-gradient(135deg,#0D5ED4 0%,var(--brand) 55%,#6FA6F7 100%)}
+.hero-icon.ft{background:linear-gradient(135deg,#2BB7A0 0%,#178F7C 100%)}
+.hero-icon.ai{background:linear-gradient(135deg,#34C27A 0%,var(--green) 100%)}
+.hero-icon.or{background:radial-gradient(circle at 60% 55%,#05C290 0%,var(--teal) 50%,var(--brand) 100%)}
+.hero-icon.ra{background:linear-gradient(var(--violet),var(--violet-p))}
+.hero-icon.cx{background:linear-gradient(134deg,#9976FF 1%,#00BAA5 99%)}
 .hero h1{font-weight:800;font-size:clamp(40px,6.4vw,72px);line-height:1.02;margin-top:12px}
 .lede{margin:20px 0 0;font-size:clamp(17px,1.6vw,19px);line-height:1.65;color:var(--ink-2);max-width:60ch}
 .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
@@ -61,7 +74,7 @@ p{text-wrap:pretty}
 .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
 .btn.primary:hover{background:var(--brand-2);border-color:var(--brand-2)}
 .btn:disabled{opacity:.45;cursor:default}
-.btn .rec{width:10px;height:10px;border-radius:50%;background:#E5484D;box-shadow:0 0 0 3px rgba(229,72,77,.2)}
+.btn .rec{width:10px;height:10px;border-radius:50%;background:var(--red-2);box-shadow:0 0 0 3px rgba(229,72,77,.2)}
 .chapters{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:8px;box-shadow:0 1px 2px rgba(3,13,45,.04),0 16px 40px rgba(3,13,45,.06)}
 .chapters h3{font:600 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:14px 14px 8px}
 .chapters ol{list-style:none;margin:0;padding:0;counter-reset:ch}
@@ -90,18 +103,18 @@ p{text-wrap:pretty}
 .glance-head a{color:var(--brand);font-weight:600;text-decoration:none}
 .glance-map{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:clamp(12px,2vw,26px);overflow-x:auto;box-shadow:0 1px 2px rgba(3,13,45,.04),0 16px 40px rgba(3,13,45,.06)}
 .glance-map svg{display:block;width:100%;min-width:900px;height:auto}
-.glance-map .t{font:700 20px var(--display);fill:#030D2D}
-.glance-map .d{font:400 15px var(--body);fill:#4F566C}
-.glance-map .g{font:600 14px var(--display);fill:#4F566C}
-.glance-map .k{font:600 13px var(--display);letter-spacing:.08em;fill:#1770EF}
-.glance-map .f{font:500 14px var(--body);fill:#1770EF}
-.glance-map .t2{font:700 17px var(--display);fill:#030D2D}
-.glance-map .d2{font:400 13px var(--body);fill:#4F566C}
+.glance-map .t{font:700 20px var(--display);fill:var(--ink)}
+.glance-map .d{font:400 15px var(--body);fill:var(--ink-3)}
+.glance-map .g{font:600 14px var(--display);fill:var(--ink-3)}
+.glance-map .k{font:600 13px var(--display);letter-spacing:.08em;fill:var(--brand)}
+.glance-map .f{font:500 14px var(--body);fill:var(--brand)}
+.glance-map .t2{font:700 17px var(--display);fill:var(--ink)}
+.glance-map .d2{font:400 13px var(--body);fill:var(--ink-3)}
 .recapmap{width:100%;margin-top:8px}
 .recapmap svg{min-width:960px}
 .legend{display:flex;align-items:center;justify-content:center;gap:10px;margin:4px 0 0;font:500 14px/1 var(--body);color:var(--ink-3)}
-.legend .lg{width:22px;height:4px;border-radius:4px;background:#1770EF}
-.legend .lg.a{background:#7B4CFF;margin-left:14px}
+.legend .lg{width:22px;height:4px;border-radius:4px;background:var(--brand)}
+.legend .lg.a{background:var(--violet);margin-left:14px}
 
 /* ---------- recap ---------- */
 .recap{max-width:1320px;margin:0 auto;padding:clamp(48px,7vw,96px) var(--gut) 0}
@@ -110,7 +123,7 @@ p{text-wrap:pretty}
 .recap-flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin-top:10px}
 .rf-group{display:inline-flex;flex-wrap:wrap;gap:6px;padding:6px;border-radius:16px;background:rgba(3,13,45,.04)}
 .rf{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:9999px;background:var(--paper);border:1px solid var(--line-2);font:600 14px/1 var(--display)}
-.rf.strong{background:linear-gradient(135deg,#6431E0,#7B4CFF);border-color:transparent;color:#fff}
+.rf.strong{background:linear-gradient(135deg,var(--violet-d),var(--violet));border-color:transparent;color:#fff}
 .rf-arrow{font:600 22px/1 var(--display);color:var(--brand)}
 .recap-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
 .quotes{list-style:none;margin:0;padding:0;display:grid;gap:12px}
@@ -126,13 +139,13 @@ p{text-wrap:pretty}
 .stage>.side{grid-row:2;grid-column:1}
 .stage>.visual{grid-row:2;grid-column:2}
 /* single flow bar: where you are in the process */
-.flow{grid-row:1;grid-column:1 / -1;min-width:0;max-width:calc(100% + 56px);display:flex;align-items:center;gap:0;margin:0 -28px;padding:6px 28px 2px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 calc(100% - 28px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 calc(100% - 28px),transparent 100%);list-style:none;overflow-x:auto;scrollbar-width:none}
+.flow{grid-row:1;grid-column:1 / -1;min-width:0;max-width:calc(100% + 2 * var(--gut));display:flex;align-items:center;gap:0;margin:0 calc(-1 * var(--gut));padding:6px var(--gut) 2px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 calc(100% - 28px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 calc(100% - 28px),transparent 100%);list-style:none;overflow-x:auto;scrollbar-width:none}
 .flow::-webkit-scrollbar{display:none}
 .flow li{display:flex;align-items:center;flex:none}
 .flow li+li::before{content:"";width:clamp(12px,2.4vw,36px);height:2px;margin-inline:8px;background:var(--line-2);border-radius:2px}
 .flow li.done+li::before,.flow li.on::before{background:var(--brand)}
 .flow button{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 6px;border-radius:9999px;border:1px solid transparent;background:none;font:600 14px/1 var(--display);color:var(--ink-4);cursor:pointer;white-space:nowrap}
-.flow button i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#E6E7EA;font:600 11px/1 var(--mono);font-style:normal;color:var(--ink-3)}
+.flow button i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--line);font:600 11px/1 var(--mono);font-style:normal;color:var(--ink-3)}
 .flow li.done button{color:var(--ink-2)}
 .flow li.done button i{background:var(--tint);color:var(--brand)}
 .flow li.on button{background:var(--paper);border-color:var(--brand);color:var(--ink);box-shadow:0 4px 14px rgba(23,112,239,.14)}
@@ -162,6 +175,7 @@ p{text-wrap:pretty}
 .say .label{display:block;margin-bottom:6px}
 .say q{font:600 16px/1.45 var(--display);color:var(--ink);quotes:"\201C" "\201D"}
 .card .btn{margin-top:18px}
+.textlink{display:inline-block;margin-top:14px;font:600 14px/1.3 var(--display);color:var(--brand);text-decoration:none}
 .dots{display:flex;flex-wrap:wrap;gap:6px}
 .dots button{width:22px;height:6px;padding:0;border:0;border-radius:6px;background:rgba(3,13,45,.12);cursor:pointer}
 .dots button.done{background:rgba(23,112,239,.35)}
@@ -184,15 +198,15 @@ p{text-wrap:pretty}
 .shot .hl{box-shadow:0 0 0 3px var(--brand),0 0 0 9px rgba(23,112,239,.18)!important;animation:hl 1.8s ease-in-out infinite;position:relative;z-index:2}
 .shot .dim{opacity:.35;transition:opacity .35s}
 .shot .backdrop{position:absolute;inset:0;background:rgba(3,13,45,.42);backdrop-filter:blur(1px)}
-.callout{position:absolute;z-index:5;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;background:#030D2D;color:#fff;font:600 15px/1.2 var(--display);white-space:nowrap;box-shadow:0 10px 24px rgba(3,13,45,.25)}
+.callout{position:absolute;z-index:5;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;background:var(--ink);color:#fff;font:600 15px/1.2 var(--display);white-space:nowrap;box-shadow:0 10px 24px rgba(3,13,45,.25)}
 .callout::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--amber)}
-.toast{position:absolute;z-index:6;display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:12px;background:#030D2D;color:#fff;font:500 15px/1.3 var(--body);box-shadow:0 16px 36px rgba(3,13,45,.3)}
+.toast{position:absolute;z-index:6;display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:12px;background:var(--ink);color:#fff;font:500 15px/1.3 var(--body);box-shadow:0 16px 36px rgba(3,13,45,.3)}
 @keyframes beat-in{from{opacity:0;transform:translateY(10px)}}
 @keyframes hl{50%{box-shadow:0 0 0 3px var(--brand),0 0 0 14px rgba(23,112,239,.08)}}
 
 /* ---------- interactive terms ---------- */
 .term{border:0;background:none;padding:0;font:inherit;color:var(--ink);font-weight:500;text-decoration:underline dotted var(--brand) 2px;text-underline-offset:4px;cursor:help}
-.tip{position:fixed;z-index:100;max-width:280px;padding:12px 14px;border-radius:12px;background:#030D2D;color:#fff;font:400 13.5px/1.5 var(--body);box-shadow:0 16px 36px rgba(3,13,45,.3);pointer-events:none}
+.tip{position:fixed;z-index:100;max-width:280px;padding:12px 14px;border-radius:12px;background:var(--ink);color:#fff;font:400 13.5px/1.5 var(--body);box-shadow:0 16px 36px rgba(3,13,45,.3);pointer-events:none}
 .tip b{display:block;font:600 14px/1.3 var(--display);margin-bottom:3px}
 
 /* ---------- after sections ---------- */
@@ -214,8 +228,8 @@ summary::after{content:"+";font:400 22px/1 var(--body);color:var(--ink-4)}
 details[open] summary::after{content:"\2212"}
 details p{margin:0 0 14px;font-size:15px;color:var(--ink-2)}
 .nextdoc{max-width:1320px;margin:0 auto;padding:0 var(--gut) 80px}
-.nextdoc a{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 28px;border-radius:20px;background:#030D2D;color:#fff;text-decoration:none}
-.nextdoc small{display:block;font:600 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:#8FA8F8;margin-bottom:8px}
+.nextdoc a{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 28px;border-radius:20px;background:var(--ink);color:#fff;text-decoration:none}
+.nextdoc small{display:block;font:600 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--violet-l);margin-bottom:8px}
 .nextdoc b{font:700 clamp(22px,3vw,32px)/1.1 var(--display)}
 
 /* ---------- dialog ---------- */
@@ -245,97 +259,37 @@ dialog.sheet::backdrop{background:rgba(3,13,45,.55);backdrop-filter:blur(3px)}
   .in-dialog .visual{height:42svh}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
-</style>
-<style>
-  .guides{max-width:1040px;margin:0 auto;padding:0 var(--gut) 80px}
-  .group+.group{margin-top:44px}
-  .group-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:14px}
-  .group-h h2{font-size:24px;font-weight:700}
-  .group-h p{margin:0;font-size:14px;color:var(--ink-3)}
-  .group.lib .group-h h2{color:#6431E0}
-  .group.human .group-h h2{color:var(--brand)}
-  .group.ai .group-h h2{color:var(--green)}
-  .cards2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-  .guide{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px 20px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px 24px;box-shadow:0 1px 2px rgba(3,13,45,.04),0 16px 40px rgba(3,13,45,.06)}
-  .cards2 .guide{grid-template-columns:auto minmax(0,1fr)}
-  .cards2 .guide .open{grid-column:2}
-  .guide .hero-icon{width:56px;height:56px;border-radius:12px;margin:0}
-  .guide h3{font-size:22px;margin-top:4px}
-  .guide p{margin:6px 0 0;color:var(--ink-2);font-size:15px}
-  .tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#E6E7EA;font:600 11px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
-  .guide.later{background:rgba(255,255,255,.5);box-shadow:none;border-style:dashed}
-  .guide.later h3{color:var(--ink-3)}
-  .guide.later .hero-icon{background:#E6E7EA;color:var(--ink-4)}
-  @media (max-width:760px){
-    .guide{grid-template-columns:auto minmax(0,1fr)}
-    .guide .open{grid-column:1 / -1}
-    .guide .open .btn{width:100%}
-    .cards2{grid-template-columns:minmax(0,1fr)}
-  }
-</style>
-</head>
-<body>
-
-<section class="intro">
-  <div class="label">6labs Studio · Testing</div>
-  <h1>Testing guides</h1>
-  <p class="lede">How gameplay videos get into 6labs Studio, and how the testing agents turn them into results. Start with the Gameplay Library — every test uses it.</p>
-</section>
-
-<main class="guides">
-  <section class="group lib" aria-labelledby="h-lib">
-    <div class="group-h"><h2 id="h-lib">Gameplay Library</h2><p>Where every test gets its videos — start here</p></div>
-    <article class="guide">
-      <div class="hero-icon lib" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M10 10.5v5l4-2.5z" fill="currentColor" stroke="none"/></svg></div>
-      <div>
-        <h3>Gameplay Library</h3>
-        <p>How videos come in — Gameplay Recorder App, browser upload, CLI — and how they're organised.</p>
-      </div>
-      <div class="open"><a class="btn primary" href="01-gameplay-library.html">Open guide</a></div>
-    </article>
-  </section>
-
-  <section class="group human" aria-labelledby="h-human">
-    <div class="group-h"><h2 id="h-human">Human testing</h2><p>Tests on videos recorded by real players</p></div>
-    <div class="cards2">
-      <article class="guide">
-        <div class="hero-icon ut" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.8-3.2 3.2-5 6-5s5.2 1.8 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16.5 14c2.3.2 4 1.8 4.5 4.5"/></svg></div>
-        <div>
-          <h3>User Test</h3>
-          <p>Pick videos, get a report or ask a question — every finding backed by clips.</p>
-        </div>
-        <div class="open"><a class="btn primary" href="02-user-test.html">Open guide</a></div>
-      </article>
-      <article class="guide later">
-        <div class="hero-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 9l2 2 4-4M8 16h8"/></svg></div>
-        <div>
-          <span class="tag">Coming soon</span>
-          <h3>Functional Test</h3>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <section class="group ai" aria-labelledby="h-ai">
-    <div class="group-h"><h2 id="h-ai">AI player testing</h2><p>Tests where 6labs AI agents play the build</p></div>
-    <div class="cards2">
-      <article class="guide later">
-        <div class="hero-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9.5 13h.01M14.5 13h.01"/></svg></div>
-        <div>
-          <span class="tag">Coming soon</span>
-          <h3>AI Behavioural Test</h3>
-        </div>
-      </article>
-      <article class="guide later">
-        <div class="hero-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9 14l2 2 4-4"/></svg></div>
-        <div>
-          <span class="tag">Coming soon</span>
-          <h3>AI Functional Test</h3>
-        </div>
-      </article>
-    </div>
-  </section>
-</main>
-
-</body>
-</html>
+/* Index page: area sections and guide cards */
+.guides{max-width:1040px;margin:0 auto;padding:0 var(--gut) 80px}
+.area+.area{margin-top:72px}
+.area-h{display:grid;gap:8px;padding-bottom:18px;margin-bottom:26px;border-bottom:1px solid var(--line)}
+.area-h h2{font-size:clamp(30px,4vw,40px);font-weight:800}
+.area-h p{margin:0;font-size:16px;color:var(--ink-2);max-width:62ch}
+.group+.group{margin-top:40px}
+.group-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:14px}
+.group-h h3{font-size:22px;font-weight:700}
+.group-h p{margin:0;font-size:14px;color:var(--ink-3)}
+.group.lib .group-h h3{color:var(--violet-d)}
+.group.human .group-h h3{color:var(--brand)}
+.group.ai .group-h h3{color:var(--green)}
+.group.agents .group-h h3{color:var(--violet)}
+.group.ctx .group-h h3{color:var(--brand)}
+.cards2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.guide{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px 20px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px 24px;box-shadow:0 1px 2px rgba(3,13,45,.04),0 16px 40px rgba(3,13,45,.06)}
+.cards2 .guide{grid-template-columns:auto minmax(0,1fr)}
+.cards2 .guide .open{grid-column:2}
+.guide .hero-icon{width:56px;height:56px;border-radius:12px;margin:0}
+.guide h4{font:700 22px/1.2 var(--display);margin:4px 0 0;letter-spacing:-.01em}
+.guide p{margin:6px 0 0;color:var(--ink-2);font-size:15px}
+.tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:var(--line);font:600 11px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.guide.later{background:rgba(255,255,255,.5);box-shadow:none;border-style:dashed}
+.guide.later h4{color:var(--ink-3)}
+.guide.later .hero-icon{background:var(--line);color:var(--ink-4)}
+@media (max-width:760px){
+  .guide{grid-template-columns:auto minmax(0,1fr)}
+  .guide .open{grid-column:1 / -1}
+  .guide .open .btn{width:100%}
+  .cards2{grid-template-columns:minmax(0,1fr)}
+  .cards2 .guide .open{grid-column:1 / -1}
+}
+</style></head><body><section class="intro"><div class="label">6labs Studio</div><h1>Guides</h1><p class="lede">How 6labs Studio works, one flow at a time. <b>Testing</b> checks your builds with real players and AI players. <b>Intelligence</b> answers questions about your game.</p></section><main class="guides"><section class="area" aria-labelledby="h-testing"><div class="area-h"><div class="label">Area 1</div><h2 id="h-testing">Testing</h2><p>Gameplay videos go into one library, and testing agents turn them into results. AI players can also play your build for you. Start with the Gameplay Library, since the human tests use it.</p></div><section class="group lib" aria-labelledby="h-lib"><div class="group-h"><h3 id="h-lib">Gameplay Library</h3><p>Where the human tests get their videos</p></div><article class="guide"><div class="hero-icon lib" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M10 10.5v5l4-2.5z" fill="currentColor" stroke="none"></path></svg></div><div><h4>Gameplay Library</h4><p>How videos come in (Gameplay Recorder App, browser upload, CLI) and how they&#x27;re organised.</p></div><div class="open"><a class="btn primary" href="01-gameplay-library.html">Open guide</a></div></article></section><section class="group human" aria-labelledby="h-human"><div class="group-h"><h3 id="h-human">Human testing</h3><p>Tests on videos recorded by real players</p></div><div class="cards2"><article class="guide"><div class="hero-icon ut" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"></circle><path d="M3 19c.8-3.2 3.2-5 6-5s5.2 1.8 6 5"></path><circle cx="17" cy="9" r="2.4"></circle><path d="M16.5 14c2.3.2 4 1.8 4.5 4.5"></path></svg></div><div><h4>User Test</h4><p>Pick videos, get a report or ask a question, with clips behind every finding.</p></div><div class="open"><a class="btn primary" href="02-user-test.html">Open guide</a></div></article><article class="guide"><div class="hero-icon ft" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11.5 21H4.7A1.7 1.7 0 0 1 3 19.4V4.6A1.7 1.7 0 0 1 4.7 3h14.6A1.7 1.7 0 0 1 21 4.6V9" stroke-linecap="round"></path><path d="M16 8l-5.3 6L8 11.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M22.7 20.3L20 16.05v-3.2h.75V12h-4.5v.85H17v3.2l-2.7 4.25a1.6 1.6 0 0 0 1.2 2.7h6a1.6 1.6 0 0 0 1.2-2.7zM17.75 16.33v-3.48h1.5v3.48l1 1.56h-3.5zM21.5 22.15h-6a.75.75 0 0 1-.6-1.37l1.3-2.04h4.6l1.3 2.04a.75.75 0 0 1-.6 1.37z" fill="currentColor" stroke="none"></path></svg></div><div><h4>Functional Test</h4><p>Upload the test cases your team ran and 6labs checks each one against the recordings, with the clip that shows it.</p></div><div class="open"><a class="btn primary" href="03-functional-test.html">Open guide</a></div></article></div></section><section class="group ai" aria-labelledby="h-ai"><div class="group-h"><h3 id="h-ai">AI player testing</h3><p>Tests where 6labs AI players play the build</p></div><div class="cards2"><article class="guide"><div class="hero-icon ai" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 3c-.47 0-.97 0-1.5 0C7 3 4.8 3 3.4 4.4 2 5.8 2 8 2 12.5s0 6.7 1.4 8.1C4.8 22 7 22 11.5 22s6.7 0 8.1-1.4C21 19.2 21 17 21 12.5c0-.53 0-1.03 0-1.5" stroke-linecap="round"></path><path d="M18.5 2l.26.7c.34.91.5 1.37.84 1.7.33.34.79.5 1.7.84L22 5.5l-.7.26c-.91.34-1.37.5-1.7.84-.34.33-.5.79-.84 1.7L18.5 9l-.26-.7c-.34-.91-.5-1.37-.84-1.7-.33-.34-.79-.5-1.7-.84L15 5.5l.7-.26c.91-.34 1.37-.5 1.7-.84.34-.33.5-.79.84-1.7z" stroke-linejoin="round"></path><path d="M7 17.5c2.33-2.44 6.64-2.56 9 0M14 10a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" stroke-linecap="round"></path></svg></div><div><h4>AI Behavioural Test</h4><p>AI players play your build as personas and report where the game blocks, confuses or loses them.</p></div><div class="open"><a class="btn primary" href="04-ai-behavioural-test.html">Open guide</a></div></article><article class="guide"><div class="hero-icon ai" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 21H4.7A1.7 1.7 0 0 1 3 19.4V4.6A1.7 1.7 0 0 1 4.7 3h14.6A1.7 1.7 0 0 1 21 4.6v5.9" stroke-linecap="round"></path><path d="M16 8l-5.3 6L8 11.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M18.5 14l.26.7c.34.91.5 1.37.84 1.7.33.34.79.5 1.7.84l.7.26-.7.26c-.91.34-1.37.5-1.7.84-.34.33-.5.79-.84 1.7L18.5 21l-.26-.7c-.34-.91-.5-1.37-.84-1.7-.33-.34-.79-.5-1.7-.84L15 17.5l.7-.26c.91-.34 1.37-.5 1.7-.84.34-.33.5-.79.84-1.7z" stroke-linejoin="round"></path></svg></div><div><h4>AI Functional Test</h4><p>AI players run your test cases on your build and report what passed and what failed, with the video.</p></div><div class="open"><a class="btn primary" href="05-ai-functional-test.html">Open guide</a></div></article></div></section></section><section class="area" aria-labelledby="h-intel"><div class="area-h"><div class="label">Area 2</div><h2 id="h-intel">Intelligence</h2><p>Agents that read your gameplay and answer questions about it, backed by the videos they used.</p></div><section class="group agents" aria-labelledby="h-agents"><div class="group-h"><h3 id="h-agents">Core agents</h3><p>Start from the home screen or the sidebar</p></div><div class="cards2"><article class="guide"><div class="hero-icon or" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 4.5a3 3 0 0 0-5.6 1.4A3.4 3.4 0 0 0 4 9.5a3.5 3.5 0 0 0 .9 5.6A3 3 0 0 0 9 19a3 3 0 0 0 3-1.5V4.5z"></path><path d="M12 4.5a3 3 0 0 1 5.6 1.4A3.4 3.4 0 0 1 20 9.5"></path><circle cx="17" cy="16" r="2.6"></circle><path d="M19 18l2 2"></path></svg></div><div><h4>Oracle</h4><p>Ask about your players in plain words and get answers backed by gameplay videos.</p></div><div class="open"><a class="btn primary" href="06-oracle.html">Open guide</a></div></article><article class="guide"><div class="hero-icon ra" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4h12v3H4z"></path><path d="M6 7v8a4 4 0 0 0 6.5 3.1M10 7v4H8"></path><circle cx="16.5" cy="15.5" r="3"></circle><path d="M18.8 17.8L21 20"></path></svg></div><div><h4>Radiologist</h4><p>Search for a moment and see every session where it happens, event by event.</p></div><div class="open"><a class="btn primary" href="07-radiologist.html">Open guide</a></div></article></div></section><section class="group ctx" aria-labelledby="h-ctx"><div class="group-h"><h3 id="h-ctx">Context</h3><p>What agents know about your game</p></div><article class="guide"><div class="hero-icon cx" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"></path></svg></div><div><h4>Documents &amp; Connectors</h4><p>Upload design docs and link the tools your studio uses, so every answer gets sharper.</p></div><div class="open"><a class="btn primary" href="08-context.html">Open guide</a></div></article></section></section></main></body></html>

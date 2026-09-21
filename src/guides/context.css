@@ -1,0 +1,20 @@
+/* Documents & Connectors guide: diagram layouts (why context, health, roles) */
+/* why context */
+.why-d{left:40px;top:96px;width:410px}
+.why-c{left:486px;top:96px;width:410px}
+.why-a{left:218px;top:560px;width:500px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.why-a b{font:700 16px/1.3 var(--display);width:100%;text-align:center;margin-bottom:4px}
+.agentpill{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 16px 0 6px;border-radius:12px;border:1px solid var(--line);background:var(--canvas);font:600 15px/1 var(--display)}
+/* health */
+.hb{width:262px;top:140px}
+.hb p{margin:12px 0 0}
+.hb .c-status,.h-err .c-status{font-size:12px;padding:7px 11px}
+.h-err{left:642px;top:440px;width:262px}
+.h-note{left:32px;top:440px;width:560px}
+.h-note p{margin:0}
+/* shared */
+.roles{position:absolute;right:28px;top:250px;width:380px;z-index:5;padding:14px 20px}
+.roles .k-role i{width:36px;height:36px;font-size:13px}
+.roles .k-role{grid-template-columns:36px minmax(0,1fr);padding:11px 0}
+.roles .k-role b{font-size:14.5px}
+.roles .k-role span{font-size:12.5px}

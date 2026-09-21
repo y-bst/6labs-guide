@@ -1,0 +1,9 @@
+/* Radiologist guide: the "Two agents, one flow" diagram */
+.link-o{left:40px;top:140px;width:390px}
+.link-r{left:526px;top:140px;width:370px}
+.link-arrow{position:absolute;left:434px;top:280px;width:88px;display:grid;justify-items:center;gap:6px;font:600 13px/1.2 var(--display);color:var(--brand);text-align:center}
+.mini-vids{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.mini-vids i{aspect-ratio:16/9;border-radius:8px;background:linear-gradient(180deg,#1C2340,#0B1020)}
+.link-cap{position:absolute;left:40px;right:40px;top:500px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.link-cap div{display:flex;gap:12px;align-items:center;padding:16px 18px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+.link-cap b{color:var(--ink)}

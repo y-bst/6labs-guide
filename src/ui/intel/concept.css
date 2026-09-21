@@ -1,0 +1,22 @@
+/* Intelligence · concept scenes (diagrams drawn inside the main area) */
+/* concept scenes (full canvas) */
+.k-scene{position:absolute;inset:0;background:var(--canvas);background-image:radial-gradient(60% 70% at 12% 8%,rgba(123,76,255,.16) 0%,rgba(123,76,255,0) 70%),radial-gradient(60% 55% at 85% 95%,rgba(23,112,239,.16) 0%,rgba(23,112,239,0) 70%)}
+.k-title{position:absolute;left:0;right:0;top:60px;text-align:center;font:600 13px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4)}
+.k-box{position:absolute;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 18px 44px rgba(3,13,45,.1);padding:20px 22px}
+.k-box h4{display:flex;align-items:center;gap:12px;margin:0;font:700 19px/1.2 var(--display)}
+.k-box p{margin:10px 0 0;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.k-list{display:grid;gap:8px;margin-top:14px}
+.k-list span{display:flex;align-items:center;gap:10px;height:36px;padding:0 12px;border-radius:9px;background:var(--canvas);font-size:13.5px}
+.k-arrow{position:absolute;color:var(--brand)}
+.k-lines{position:absolute;inset:0;pointer-events:none}
+.k-lines path{fill:none;stroke-width:4;stroke-linecap:round}
+.k-scene.play .k-lines .flow{stroke-dasharray:3 13;animation:dashflow .9s linear infinite}
+@keyframes dashflow{to{stroke-dashoffset:-16}}
+.k-role{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;align-items:start;padding:14px 0;border-top:1px solid var(--line)}
+.k-role:first-of-type{border-top:0}
+.k-role i{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:700 15px/1 var(--display);font-style:normal;color:#fff}
+.k-role>div>b{display:block;font:700 16px/1.3 var(--display)}
+.k-role>div>span{display:block;font-size:13.5px;color:var(--ink-2);line-height:1.5;margin-top:2px}
+.k-role>div>span b{color:var(--ink);font-weight:600}
+.k-status{display:grid;gap:10px;justify-items:start}
+.k-status p{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-2)}

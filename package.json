@@ -1,0 +1,28 @@
+{
+  "name": "6labs-guides",
+  "private": true,
+  "type": "module",
+  "description": "6labs Studio learning guides. React components rendered to static, self-contained HTML pages.",
+  "scripts": {
+    "build": "tsx scripts/build.tsx",
+    "dev": "tsx watch --clear-screen=false --include \"src/**/*.css\" --include \"src/**/*.js\" --include \"src/**/*.svg\" scripts/build.tsx --serve",
+    "snap": "node scripts/snap.mjs",
+    "check": "npm run build && node scripts/snap.mjs capture new && node scripts/snap.mjs compare base new",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "htmlparser2": "^10.1.0",
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0",
+    "puppeteer-core": "^24.10.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.8.0"
+  }
+}

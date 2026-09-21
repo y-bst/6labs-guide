@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/><title>AI Functional Test Guide</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&amp;family=Inter:wght@400;500;600&amp;family=Roboto+Mono:wght@500;600&amp;display=swap"/><style>/* ============================================================
+   6labs Studio · design tokens. On :root, so the story shell
+   (story.css, pages/index.css) can use them too — the kit files
+   are inside .shot, the shell is not.
+   ============================================================ */
+:root{
+  /* ink */
+  --ink:#030D2D;--ink-2:#353D57;--ink-3:#4F566C;--ink-4:#818696;--ph:#9A9EAB;
+  /* lines and surfaces */
+  --line:#E6E7EA;--line-2:#CDCFD5;--subtle:#E6E7EA;--inset:#FAFAFB;--pale:#F5F5F5;--canvas:#F5F6FA;
+  /* brand */
+  --brand:#1770EF;--tint:rgba(23,112,239,.14);--tint-l:rgba(23,112,239,.07);
+  /* accents */
+  --violet:#7B4CFF;--violet-d:#6431E0;--violet-l:#8FA8F8;--violet-p:#B44CFF;--teal:#0E99BF;--jade:#00A393;
+  /* status */
+  --red:#C9392A;--red-bg:rgba(201,57,42,.08);--red-2:#E5484D;
+  --amber:#FFB700;--amber-ink:#8A5A00;--amber-bg:rgba(255,183,0,.14);--green:#16A34A;
+  /* type */
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"Roboto Mono",ui-monospace,Consolas,monospace;
+}
+
+/* ============================================================
+   6labs Studio UI kit · base: app frame and shared keyframes
+   at their real sizes. Screens are scaled to fit by guide.js.
+   Tokens live in tokens.css, loaded before this.
+   ============================================================ */
+.shot{width:100%;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;border-radius:18px}
+.shot-canvas{width:var(--w,960px);zoom:var(--s,1);font:400 16px/1.5 var(--body);color:var(--ink);text-align:left}
+.shot-canvas *{box-sizing:border-box}
+.shot-canvas button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+
+/* app frame — fills the canvas, whose height is the --h set by <Story>, so the
+   screen size is stated once, in Story.tsx */
+.s-frame{height:100%;border-radius:18px;overflow:hidden;border:1px solid rgba(3,13,45,.08);box-shadow:0 2px 6px rgba(3,13,45,.05),0 24px 60px rgba(3,13,45,.12);background:#F1F1F1}
+.grow{flex:1}
+/* sidebar column, then the page. --nav is the sidebar width; Intelligence runs narrower. */
+.s-app{display:grid;grid-template-columns:var(--nav,256px) minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:100%;min-height:100%}
+.s-app.intel{--nav:244px}
+.s-app>*{min-height:0}
+.s-logo{display:flex;align-items:center;gap:8px;font:700 22px/1 var(--display);letter-spacing:-.02em;padding:4px 6px}
+.s-logo i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#0D5ED4);box-shadow:inset 0 0 0 6px rgba(255,255,255,.28)}
+.s-area{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:12px;background:var(--line)}
+.s-area span{height:36px;display:grid;place-items:center;border-radius:9px;font:600 14px/1 var(--display);color:var(--ink-3)}
+.s-area span.on{background:var(--brand);color:#fff}
+.s-main{position:relative;padding:36px 40px 40px;background-color:var(--canvas);background-image:radial-gradient(60% 70% at 12% 8%,rgba(123,76,255,.25) 0%,rgba(123,76,255,0) 70%),radial-gradient(55% 60% at 88% 12%,rgba(22,163,74,.18) 0%,rgba(22,163,74,0) 70%),radial-gradient(60% 55% at 85% 95%,rgba(23,112,239,.2) 0%,rgba(23,112,239,0) 70%),radial-gradient(50% 50% at 10% 100%,rgba(194,5,104,.08) 0%,rgba(194,5,104,0) 70%)}
+.s-main.flat{padding:28px}
+
+
+/* sidebar shell — the same in both areas. What differs between them stays in the area's own
+   stylesheet: the tree style (.i-tree vs .s-tree), the SOON badge, and the group heading icon. */
+.s-side{background:#fff;border-right:1px solid var(--line);padding:16px 12px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.s-side .s-area{background:var(--tint-l)}
+.s-rule{height:1px;background:var(--line);margin:2px -12px 0}
+.s-nav{display:flex;flex-direction:column;gap:2px;min-height:0}
+.s-nav a{position:relative;display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border-radius:8px;font-size:14px;color:var(--ink);white-space:nowrap;text-decoration:none;transition:background .25s,color .25s}
+.s-nav a svg{flex:none;color:var(--ink-2)}
+.s-nav a.on{background:var(--tint-l);color:var(--brand);font-weight:500}
+.s-nav a.on svg{color:var(--brand)}
+/* group heading; the colour says which group it is */
+.s-nav-h{display:flex;align-items:center;justify-content:space-between;padding:14px 10px 4px;font:600 11px/1 var(--display);letter-spacing:.09em;text-transform:uppercase}
+.s-nav-h.ca{color:var(--violet)}
+.s-nav-h.cx{color:var(--brand)}
+.s-nav-h.hs{color:var(--ink-4)}
+.s-nav-h.ai{color:var(--green)}
+
+@keyframes s-fill{from{width:0}}
+@keyframes s-spin{to{transform:rotate(360deg)}}
+
+.s-head{display:flex;align-items:center;gap:20px;margin-bottom:24px}
+.s-icon{width:60px;height:60px;border-radius:12px;display:grid;place-items:center;color:#fff;flex:none}
+.s-icon.sm{width:40px;height:40px;border-radius:10px}
+.s-h1{font:800 30px/1.3 var(--display);margin:0;letter-spacing:-.01em}
+.s-sub{font-size:14px;color:var(--ink-2);margin:2px 0 0}
+.s-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:44px;padding:0 24px;border-radius:8px;border:1px solid transparent;font:600 14px/1 var(--display);white-space:nowrap}
+.s-btn.primary{background:var(--brand);color:#fff}
+.s-btn.ghost{background:#fff;border-color:var(--line-2);color:var(--ink)}
+.s-btn.dis{background:var(--subtle);color:var(--ph)}
+.s-btn.sm{height:36px;padding:0 16px}
+.s-input{height:46px;display:flex;align-items:center;padding:0 14px;border:1px solid var(--line-2);border-radius:8px;background:#fff;font-size:15px;color:var(--ink)}
+.s-input.ph{color:var(--ph)}
+.s-label{font:600 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4)}
+.s-label small{font:400 13px/1 var(--body);letter-spacing:0;text-transform:none;margin-left:6px}
+.s-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.s-main{overflow:hidden}
+.s-pg{position:absolute;inset:0;padding:36px 40px;overflow:hidden}
+.s-crumb{position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;height:60px;margin:-36px -40px 22px;padding:0 28px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.75);font:600 15px/1 var(--display)}
+.s-crumb span{color:var(--ink-4);font-weight:500}
+.s-nav a>span:not(.s-soon){min-width:0;overflow:hidden;text-overflow:ellipsis}
+.s-nav a.s-off,.s-nav a.s-off svg{color:var(--ph)}
+.s-soon{flex:none;margin-left:auto;font:600 8px/1 var(--body);letter-spacing:.08em;padding:3px 4px;border-radius:4px;background:var(--subtle);color:var(--ink-4)}
+.s-tree{display:flex;flex-direction:column;gap:2px;margin-left:8px}
+.s-tree a{margin-left:12px;gap:8px;padding:0 8px;font-size:13px}
+.s-tree a::before{content:"";position:absolute;left:-12px;top:0;width:9px;height:50%;border-left:1.5px solid var(--line);border-bottom:1.5px solid var(--line);border-bottom-left-radius:7px}
+.s-tree a::after{content:"";position:absolute;left:-12px;top:50%;bottom:-2px;border-left:1.5px solid var(--line)}
+.s-tree a:last-child::after{display:none}
+.s-tree a.on::before{border-color:var(--brand)}
+.s-icon.ai{background:linear-gradient(135deg,#34C27A 0%,var(--green) 100%)}
+.s-crumb-t{display:flex;align-items:center;font:600 15px/1 var(--display);color:var(--ink)}
+.s-crumb-t svg{margin-right:12px;color:var(--ink-3)}
+.s-crumb-t span{margin-right:5px}
+.s-crumb-r{display:flex;align-items:center;gap:10px}
+.s-scroller{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.s-scroller.y1{transform:translateY(var(--y1))}
+.s-intro{margin:-6px 0 16px;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.s-select{display:inline-flex;align-items:center;justify-content:space-between;gap:10px;height:40px;padding:0 12px 0 14px;min-width:170px;border:1px solid var(--line-2);border-radius:10px;background:#fff;font-size:14px;color:var(--ink)}
+.s-select.sm,.s-search.sm{height:34px;min-width:0;font-size:13px}
+.s-input.area{height:64px;align-items:flex-start;padding-top:11px;line-height:1.5}
+
+
+.s-seg{display:inline-flex;padding:2px;gap:2px;border-radius:12px;background:var(--subtle)}
+.s-seg>*{height:31px;padding:0 12px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;font:600 14px/1 var(--display);color:var(--ink-3)}
+.s-seg>[aria-pressed="true"],.s-seg>.on{background:#fff;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.s-search{display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;min-width:260px;border:1px solid var(--line-2);border-radius:10px;background:#fff;font-size:14px;color:var(--ph)}
+.s-search input{border:0;outline:0;background:none;font:inherit;color:var(--ink);width:100%;min-width:0}
+.s-modal{background:#fff;border-radius:12px;box-shadow:0 24px 70px rgba(3,13,45,.22);padding:24px}
+.s-modal h2{font:700 22px/1.3 var(--display);margin:0}
+.s-modal p{margin:6px 0 0;font-size:14px;color:var(--ink-2)}
+.s-drop{border:1.5px dashed var(--line-2);border-radius:12px;padding:26px;text-align:center;display:grid;gap:6px;justify-items:center}
+.s-drop b{font-size:14px;font-weight:600}
+.s-drop span{font-size:12px;color:var(--ink-3)}
+
+
+.s-tabs{display:flex;gap:8px;border-bottom:1px solid var(--line);margin-bottom:24px}
+.s-tabs span{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;font:600 14px/1 var(--display);color:var(--ink-3);border-bottom:2px solid transparent;margin-bottom:-1px}
+.s-tabs span.on{color:var(--brand);border-color:var(--brand)}
+.s-tabs .n{min-width:22px;height:20px;padding:0 6px;border-radius:999px;border:1px solid var(--line-2);font:500 12px/18px var(--body);text-align:center;color:var(--ink-3)}
+.s-tabs .on .n{background:var(--brand);border-color:var(--brand);color:#fff}
+.s-table{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 2px rgba(3,13,45,.04)}
+.s-trow{display:grid;grid-template-columns:44px minmax(0,1.7fr) 150px 170px 70px 120px;gap:16px;align-items:center;padding:16px 20px;border-top:1px solid var(--line)}
+.s-trow.head{border-top:0;padding-block:12px;font:600 11px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4)}
+.s-trow.live{background:var(--tint-l)}
+.s-ticon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--tint-l);color:var(--brand)}
+.s-trow b{display:block;font:600 14px/1.35 var(--display)}
+.s-trow small{font-size:12px;color:var(--ink-4)}
+.s-result{display:flex;align-items:center;height:28px;padding:0 12px;border-radius:6px;font:600 12px/1 var(--body)}
+.s-result.live{background:var(--tint);color:var(--brand)}
+.s-date{font-size:14px;color:var(--ink-4);text-align:right}
+.s-spin{width:18px;height:18px;border-radius:50%;border:2.5px solid var(--tint);border-top-color:var(--brand);animation:s-spin .9s linear infinite}
+.s-seq{position:absolute;inset:36px 40px 40px}
+.s-seq-a,.s-seq-b{position:absolute;inset:0}
+.s-seq-a{opacity:0;visibility:hidden}
+.s-stack{display:grid;align-items:center}
+.s-stack>*{grid-area:1 / 1;justify-self:start}
+.s-seq .s-st-prog{opacity:0}
+.s-seq .s-newrow{background:#fff}
+.s-click{position:relative;display:inline-flex}
+.s-ripple{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:var(--brand);opacity:0;pointer-events:none}
+.s-cursor{position:absolute;left:62%;top:58%;opacity:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
+.s-seq.play .s-seq-a{animation:s-seqA 8s both}
+.s-seq.play .s-seq-b{animation:s-seqB 8s both}
+.s-seq.play .s-st-prog{animation:s-stProg 8s both}
+.s-seq.play .s-st-ready{animation:s-stReady 8s both}
+.s-seq.play .s-newrow{animation:s-rowbg 8s both}
+.s-seq.play .s-ripple{animation:s-ripple 8s both}
+.s-seq.play .s-cursor{animation:s-cursor 8s both}
+.s-seq.play .s-viewbtn{animation:s-stReady 8s both,s-ring 1.8s ease-in-out 6s infinite}
+
+@keyframes s-seqA{0%,24%{opacity:1;visibility:visible}30%,100%{opacity:0;visibility:hidden}}
+@keyframes s-seqB{0%,26%{opacity:0}33%,100%{opacity:1}}
+@keyframes s-stProg{0%,60%{opacity:1}66%,100%{opacity:0}}
+@keyframes s-stReady{0%,62%{opacity:0}70%,100%{opacity:1}}
+@keyframes s-rowbg{0%,62%{background-color:rgba(23,112,239,.08)}70%,100%{background-color:#fff}}
+@keyframes s-ripple{0%,11%{transform:scale(0);opacity:0}14%{transform:scale(1);opacity:.45}24%,100%{transform:scale(2.2);opacity:0}}
+@keyframes s-cursor{0%{transform:translate(-140px,90px);opacity:0}4%{opacity:1}12%,22%{transform:translate(0,0);opacity:1}27%,100%{transform:translate(0,0);opacity:0}}
+@keyframes s-ring{0%,100%{box-shadow:0 0 0 0 rgba(23,112,239,.45)}50%{box-shadow:0 0 0 8px rgba(23,112,239,0)}}.s-table.counts .s-trow{grid-template-columns:40px minmax(0,1.7fr) 136px 164px 52px 108px;gap:12px}
+.s-table.counts .s-trow small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-trow .s-plain{font-size:14px;color:var(--ink-2)}
+.s-outc{display:flex;gap:5px}
+.s-outc i{min-width:28px;height:26px;padding:0 7px;border-radius:6px;display:grid;place-items:center;font:600 12px/1 var(--body);font-style:normal}
+.s-outc .p{background:rgba(22,163,74,.1);color:#15803D}
+.s-outc .f{background:var(--red-bg);color:var(--red)}
+.s-outc .r{background:var(--amber-bg);color:var(--amber-ink)}
+.s-outc .n{background:var(--subtle);color:var(--ink-3)}
+
+@keyframes s-blink{50%{opacity:.25}}
+
+
+@keyframes s-play{to{width:100%}}
+
+.s-tiles2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.s-slot{display:grid}
+.s-slot>*{grid-area:1 / 1}
+.s-intile{border:1.5px dashed var(--line-2);border-radius:16px;background:rgba(255,255,255,.65);padding:20px 18px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;min-height:232px}
+.s-intile-ic{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;background:rgba(22,163,74,.1);color:var(--green)}
+.s-intile>b{font:600 15px/1.3 var(--display);margin-top:6px}
+.s-intile>p{margin:0;font-size:13px;line-height:1.5;color:var(--ink-3);max-width:300px}
+.s-formats{font:500 11px/1 var(--mono);letter-spacing:.12em;color:var(--ink-4);margin-top:6px}
+.s-req{font:600 10px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4);margin-top:4px}
+.s-colnote{display:flex;gap:8px;align-items:flex-start;text-align:left;margin-top:8px;padding:9px 11px;border-radius:10px;background:var(--inset);border:1px solid var(--line);font-size:11.5px;line-height:1.5;color:var(--ink-3)}
+.s-colnote svg{flex:none;margin-top:1px}
+.s-colnote b{color:var(--ink);font-weight:600}
+.s-colnote a{color:var(--brand);font-weight:600}
+.s-filled{background:#fff;border-radius:16px;padding:16px 18px 14px;display:flex;flex-direction:column;gap:10px}
+.s-picked{display:flex;align-items:center;gap:10px}
+.s-picked b{flex:1;font:600 15px/1.3 var(--display)}
+.s-picked>svg{color:var(--ink-4)}
+.s-picked-b{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:rgba(22,163,74,.1);color:var(--green)}
+.s-picked-b .s-apk{background:none}
+.s-picked-sub{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-3)}
+.s-apk{display:inline-grid;place-items:center;height:22px;padding:0 6px;border-radius:5px;background:rgba(22,163,74,.1);color:var(--green);font:700 9.5px/1 var(--body);letter-spacing:.04em}
+.s-filled-f{display:flex;justify-content:space-between;margin-top:auto;padding-top:12px;border-top:1px solid var(--line);font:600 13px/1 var(--display);color:var(--brand)}
+.s-filecount{font-size:13px;color:var(--ink-4)}
+.s-filecount b{font:600 14px/1 var(--display);color:var(--ink)}
+.s-casefile{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+.s-casefile .ic{width:24px;height:24px;border-radius:6px;display:grid;place-items:center;background:rgba(22,163,74,.1);color:var(--green)}
+.s-casefile b{font:600 13.5px/1.2 var(--display)}
+.s-casefile small{flex:1;font-size:12px;color:var(--ink-4)}
+.s-casefile>svg{color:var(--ink-4)}
+.s-details{margin-top:14px;background:#fff;border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.s-details-h{font:600 15px/1.3 var(--display)}
+.s-details>p{margin:-4px 0 4px;font-size:13px;color:var(--ink-3)}
+.s-details .s-label{margin-top:6px}
+.s-details .s-input{height:42px;font-size:14px}
+.s-details .s-input.area{height:64px}
+.s-details-f{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
+.s-vcard{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.s-vhead{background:#EEF0F4;padding:16px 20px}
+.s-vhead h3{margin:6px 0 0;font:700 22px/1.2 var(--display)}
+.s-score{display:grid;grid-template-columns:1fr 1fr}
+.s-score-p{padding:16px 20px 18px;display:flex;flex-direction:column;gap:10px;border-radius:4px}
+.s-score-p+.s-score-p{border-left:1px solid var(--line)}
+.s-score .s-label{color:var(--ink)}
+.s-score .s-label small{font:400 11.5px/1 var(--body);letter-spacing:0;text-transform:none;margin-left:6px;color:var(--ink-4)}
+.s-big{display:flex;align-items:baseline;gap:8px;font-size:14px;color:var(--ink-2)}
+.s-big b{font:600 30px/1 var(--display);color:var(--ink)}
+.s-stackbar{display:flex;height:6px;border-radius:6px;overflow:hidden;background:var(--subtle)}
+.s-stackbar i:nth-child(1){background:var(--green)}
+.s-stackbar i:nth-child(2){background:var(--red)}
+.s-stackbar i:nth-child(3){background:var(--amber)}
+.s-stackbar i:nth-child(4){background:var(--ink-4)}
+.s-otiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.s-otiles span{border-radius:8px;padding:9px 10px;font-size:11.5px;display:flex;flex-direction:column;gap:3px}
+.s-otiles b{font:600 17px/1.1 var(--display)}
+.s-otiles .p,.s-status.p{background:rgba(22,163,74,.08);color:#15803D}
+.s-otiles .f,.s-status.f{background:var(--red-bg);color:var(--red)}
+.s-otiles .r,.s-status.r{background:var(--amber-bg);color:var(--amber-ink)}
+.s-otiles .n,.s-status.n{background:var(--subtle);color:var(--ink-3)}
+.s-covbar{height:6px;border-radius:6px;background:var(--subtle);overflow:hidden}
+.s-covbar i{display:block;height:100%;background:var(--brand)}
+.s-score-p>p{margin:0;font-size:12.5px;color:var(--ink-3)}
+.s-against{display:flex;align-items:center;gap:14px;margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.s-against a{display:inline-flex;align-items:center;gap:8px;font:600 14px/1 var(--display);color:var(--brand)}
+.s-against em{font-style:normal;font-size:13px;color:var(--ink-3)}
+.s-cfilters{margin-top:12px;display:flex;flex-direction:column;gap:10px;border-radius:12px}
+.s-otabs{align-self:flex-start}
+.s-otabs small{font:500 12px var(--body);color:var(--ink-4);margin-left:3px}
+.s-ctable{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.s-crow{display:grid;grid-template-columns:70px minmax(0,1.6fr) 140px minmax(0,1.5fr) 96px 14px;gap:12px;align-items:start;padding:11px 16px;border-top:1px solid var(--line);font-size:13px;line-height:1.45}
+.s-crow.head{border-top:0;padding-block:10px;font:600 10.5px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4)}
+.s-crow .mono{font:500 11.5px/1.7 var(--mono);color:var(--ink-4)}
+.s-crow small{display:block;font-size:11.5px;color:var(--ink-4)}
+.s-crow>svg{color:var(--ink-4);margin-top:3px}
+.s-status{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:5px;font:500 12px/1 var(--body);white-space:nowrap}
+.s-pager{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+.s-pager small{color:var(--ink-4)}
+.s-case{position:absolute;left:34px;top:26px;right:34px;bottom:26px;padding:0;display:flex;flex-direction:column;overflow:hidden}
+.s-case-h{display:flex;justify-content:space-between;align-items:flex-start;padding:16px 22px 14px;border-bottom:1px solid var(--line)}
+.s-case-h small{font-size:12px;color:var(--ink-4)}
+.s-case-h .mono{font:500 12px/1 var(--mono);margin-right:6px}
+.s-case .s-case-h h2{font:600 19px/1.3 var(--display);margin:5px 0 0}
+.s-case-h>svg{color:var(--ink-3)}
+.s-case-b{flex:1;min-height:0;display:grid;grid-template-columns:236px minmax(0,1fr) 330px}
+.s-rail{border-right:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.s-rail>*{flex:none}
+.s-rail .s-search{min-width:0}
+.s-rail-g{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+.s-rail-g .s-label{font-size:10.5px;margin:4px 0}
+.s-rail-i{display:grid;grid-template-columns:6px minmax(0,1fr);gap:9px;padding:7px 8px;border-radius:8px;font-size:12px;line-height:1.4}
+.s-rail-i i{width:6px;height:6px;border-radius:50%;margin-top:5px}
+.s-rail-i i.p{background:var(--green)}
+.s-rail-i i.f{background:var(--red)}
+.s-rail-i i.r{background:var(--amber)}
+.s-rail-i i.n{background:var(--ink-4)}
+.s-rail-i small{display:block;font:500 10.5px/1.7 var(--mono);color:var(--ink-4)}
+.s-rail-i.on{background:var(--tint-l);color:var(--brand)}
+.s-evidence{padding:14px 18px;display:flex;flex-direction:column;gap:8px;border-right:1px solid var(--line);min-width:0}
+.s-aimark{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;border-radius:5px;background:var(--tint-l);font:600 10px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+.s-clip{position:relative;aspect-ratio:16/9;border-radius:10px;background:linear-gradient(135deg,#1E2A55,#34457E);display:grid;place-items:center;overflow:hidden}
+.s-clip-play{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;color:#fff}
+.s-clipbar{height:4px;border-radius:4px;background:var(--subtle);overflow:hidden}
+.s-clipbar i{display:block;height:100%;width:0;background:var(--brand);transition:width .6s}
+.s-clip.jump+.s-clipbar i{width:6%}
+.s-clip.jump::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 3px var(--brand);border-radius:inherit}
+.s-clipctl{display:flex;align-items:center;gap:8px;font:500 12px/1 var(--mono);color:var(--ink-3)}
+.s-cliprange{font:500 11.5px/1 var(--mono);color:var(--ink-4)}
+.s-spec,.s-observed{border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.s-spec{margin-top:4px;background:var(--inset)}
+.s-spec>.s-label,.s-observed-h{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;margin-bottom:4px;border-bottom:1px solid var(--line);color:var(--ink)}
+.s-observed-h .s-label{color:var(--ink)}
+.s-spec small,.s-observed small{display:block;font-size:11.5px;color:var(--ink-4);margin-top:9px}
+.s-case .s-spec p,.s-case .s-observed p{margin:2px 0 0;font-size:13.5px;line-height:1.45;color:var(--ink)}
+.s-observed-col{padding:14px 16px;min-width:0}
+.s-steps{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:2px;border-radius:8px}
+.s-steps li{display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:8px 6px;border-radius:8px;font-size:13px;line-height:1.4}
+.s-steps li i{font:500 11px/1 var(--mono);font-style:normal;color:var(--ink-4)}
+.s-steps time{font:500 11.5px/1 var(--mono);color:var(--ink-4)}
+.s-steps li.on{background:var(--tint-l);color:var(--brand);box-shadow:0 0 0 2px var(--brand)}
+.s-steps li.on time,.s-steps li.on i{color:var(--brand)}
+.s-case-f{display:flex;align-items:center;gap:10px;padding:12px 22px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
+
+
+.s-builds{position:absolute;left:50%;top:34px;width:600px;margin-left:-300px;padding:0;overflow:hidden}
+.s-builds-h{padding:20px 22px 0}
+.s-builds-h>svg{float:right;color:var(--ink-3)}
+.s-builds .s-builds-h h2{font-size:19px}
+.s-builds .s-builds-h p{font-size:13px}
+.s-builds .s-drop{margin:14px 22px 0;padding:18px;border-radius:12px}
+.s-builds .s-drop b{margin-top:4px}
+.s-buildlist{margin:14px 22px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.s-buildlist-h{display:flex;align-items:baseline;gap:8px;padding:10px 14px;background:var(--inset);border-bottom:1px solid var(--line);font-size:13px}
+.s-buildlist-h small{color:var(--ink-4)}
+.s-build{display:grid;grid-template-columns:16px 40px minmax(0,1fr) auto 16px;gap:12px;align-items:center;padding:10px 14px;border-top:1px solid var(--line)}
+.s-buildlist-h+.s-build{border-top:0}
+.s-build.on{background:var(--tint-l)}
+.s-build b{display:flex;align-items:center;gap:8px;font:600 14px/1.3 var(--display)}
+.s-build em{font:600 9px/1 var(--body);font-style:normal;letter-spacing:.08em;text-transform:uppercase;padding:3px 6px;border-radius:4px;background:rgba(22,163,74,.1);color:var(--green)}
+.s-build small{display:block;font-size:12px;color:var(--ink-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-build .s-apk{height:34px;width:40px}
+.s-build>svg{color:var(--brand)}
+.s-ready{font-size:12px;color:var(--ink-3)}
+.s-radio{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line-2);background:#fff}
+.s-build.on .s-radio{border:5px solid var(--brand)}
+.s-builds-f{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px 22px;background:var(--inset);border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
+.s-builds-f>span:first-child{flex:1}
+
+
+/* ============================================================
+   Guide shell — scroll story + step-by-step, 6labs Studio theme
+   ============================================================ */
+/* The palette and the fonts come from ui/tokens.css. Only shell-local values here. */
+:root{
+  --bg:var(--canvas); --paper:#FFFFFF; --brand-2:#0D5ED4;
+  --gut:clamp(16px,4vw,48px);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;min-height:100%;color:var(--ink);font:16px/1.6 var(--body);-webkit-font-smoothing:antialiased;background-color:var(--bg);background-image:radial-gradient(60% 70% at 12% 8%,rgba(123,76,255,.16) 0%,rgba(123,76,255,0) 70%),radial-gradient(55% 60% at 88% 12%,rgba(22,163,74,.12) 0%,rgba(22,163,74,0) 70%),radial-gradient(60% 55% at 85% 95%,rgba(23,112,239,.14) 0%,rgba(23,112,239,0) 70%);background-attachment:fixed}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;text-wrap:balance;margin:0}
+p{text-wrap:pretty}
+.label{font:600 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+
+/* ---------- top bar ---------- */
+.topbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:16px var(--gut)}
+.mark{display:flex;align-items:center;gap:10px;font:700 18px/1 var(--display);color:var(--ink);text-decoration:none}
+.mark i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#0D5ED4);box-shadow:inset 0 0 0 6px rgba(255,255,255,.28)}
+.mark span{font:500 14px/1 var(--body);color:var(--ink-3)}
+.navs{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.docpill{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:9999px;border:1px solid var(--line-2);background:var(--paper);font:600 14px/1 var(--display);color:var(--ink);text-decoration:none;white-space:nowrap}
+.docpill .n{font:500 12px/1 var(--mono);color:var(--ink-4)}
+.docpill[aria-current="page"]{border-color:var(--brand);background:var(--tint-l);color:var(--brand)}
+.docpill[aria-current="page"] .n{color:var(--brand)}
+.docpill.soon{color:var(--ink-4);background:transparent;pointer-events:none}
+.docpill.soon::after{content:"soon";font:600 10px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;padding:3px 6px;border-radius:4px;background:var(--line)}
+.layswitch{display:inline-flex;padding:2px;gap:2px;border-radius:12px;background:var(--line)}
+.layswitch a{height:34px;padding:0 12px;border-radius:10px;display:inline-flex;align-items:center;font:600 13px/1 var(--display);color:var(--ink-3);text-decoration:none;white-space:nowrap}
+.layswitch a[aria-current="true"]{background:var(--paper);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+
+/* ---------- hero ---------- */
+.hero{max-width:1320px;margin:0 auto;padding:clamp(28px,6vw,72px) var(--gut) clamp(24px,4vw,48px);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:end}
+.hero-icon{width:72px;height:72px;border-radius:14px;display:grid;place-items:center;color:#fff;margin-bottom:22px}
+.hero-icon.lib{background:linear-gradient(135deg,var(--violet-d) 0%,var(--violet) 55%,var(--violet-l) 100%)}
+.hero-icon.ut{background:linear-gradient(135deg,#0D5ED4 0%,var(--brand) 55%,#6FA6F7 100%)}
+.hero-icon.ft{background:linear-gradient(135deg,#2BB7A0 0%,#178F7C 100%)}
+.hero-icon.ai{background:linear-gradient(135deg,#34C27A 0%,var(--green) 100%)}
+.hero-icon.or{background:radial-gradient(circle at 60% 55%,#05C290 0%,var(--teal) 50%,var(--brand) 100%)}
+.hero-icon.ra{background:linear-gradient(var(--violet),var(--violet-p))}
+.hero-icon.cx{background:linear-gradient(134deg,#9976FF 1%,#00BAA5 99%)}
+.hero h1{font-weight:800;font-size:clamp(40px,6.4vw,72px);line-height:1.02;margin-top:12px}
+.lede{margin:20px 0 0;font-size:clamp(17px,1.6vw,19px);line-height:1.65;color:var(--ink-2);max-width:60ch}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:44px;padding:0 22px;border-radius:8px;border:1px solid var(--line-2);background:var(--paper);font:600 14px/1 var(--display);color:var(--ink);text-decoration:none;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--ink-4)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.primary:hover{background:var(--brand-2);border-color:var(--brand-2)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn .rec{width:10px;height:10px;border-radius:50%;background:var(--red-2);box-shadow:0 0 0 3px rgba(229,72,77,.2)}
+.chapters{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:8px;box-shadow:0 1px 2px rgba(3,13,45,.04),0 16px 40px rgba(3,13,45,.06)}
+.chapters h3{font:600 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:14px 14px 8px}
+.chapters ol{list-style:none;margin:0;padding:0;counter-reset:ch}
+.chapters button{width:100%;display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;align-items:center;padding:9px 14px;border:0;border-radius:12px;background:none;text-align:left;cursor:pointer}
+.chapters button:hover{background:var(--tint-l)}
+.chapters button i{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:#F1F1F3;font:600 12px/1 var(--mono);font-style:normal;color:var(--ink-3)}
+.chapters button b{font:600 15px/1.3 var(--display)}
+.chapters button span{font-size:13px;color:var(--ink-4)}
+.chapters button.on i{background:var(--brand);color:#fff}
+
+/* ---------- intro ---------- */
+.intro{max-width:880px;margin:0 auto;padding:clamp(40px,8vw,110px) var(--gut) clamp(32px,5vw,64px);text-align:center;display:grid;justify-items:center}
+.intro h1{font-weight:800;font-size:clamp(42px,7vw,80px);line-height:1;margin-top:14px}
+.intro .lede{margin-inline:auto}
+.intro .hero-actions{justify-content:center;align-items:center}
+.scrollcue{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:9999px;background:var(--paper);border:1px solid var(--line);font:600 14px/1 var(--display);color:var(--ink-3)}
+.scrollcue svg{animation:cue 1.6s ease-in-out infinite}
+@keyframes cue{50%{transform:translateY(4px)}}
+[data-layout="steps"] .scrollcue{display:none}
+
+/* ---------- flow at a glance ---------- */
+.glance{max-width:1320px;margin:0 auto;padding:0 var(--gut) clamp(40px,6vw,72px)}
+.glance-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 20px;margin-bottom:14px}
+.glance-head h2{font-size:clamp(22px,2.6vw,30px);font-weight:700;margin-top:8px}
+.glance-head p{margin:0;font-size:14px;color:var(--ink-3)}
+.glance-head a{color:var(--brand);font-weight:600;text-decoration:none}
+.glance-map{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:clamp(12px,2vw,26px);overflow-x:auto;box-shadow:0 1px 2px rgba(3,13,45,.04),0 16px 40px rgba(3,13,45,.06)}
+.glance-map svg{display:block;width:100%;min-width:900px;height:auto}
+.glance-map .t{font:700 20px var(--display);fill:var(--ink)}
+.glance-map .d{font:400 15px var(--body);fill:var(--ink-3)}
+.glance-map .g{font:600 14px var(--display);fill:var(--ink-3)}
+.glance-map .k{font:600 13px var(--display);letter-spacing:.08em;fill:var(--brand)}
+.glance-map .f{font:500 14px var(--body);fill:var(--brand)}
+.glance-map .t2{font:700 17px var(--display);fill:var(--ink)}
+.glance-map .d2{font:400 13px var(--body);fill:var(--ink-3)}
+.recapmap{width:100%;margin-top:8px}
+.recapmap svg{min-width:960px}
+.legend{display:flex;align-items:center;justify-content:center;gap:10px;margin:4px 0 0;font:500 14px/1 var(--body);color:var(--ink-3)}
+.legend .lg{width:22px;height:4px;border-radius:4px;background:var(--brand)}
+.legend .lg.a{background:var(--violet);margin-left:14px}
+
+/* ---------- recap ---------- */
+.recap{max-width:1320px;margin:0 auto;padding:clamp(48px,7vw,96px) var(--gut) 0}
+.recap-head{text-align:center;display:grid;justify-items:center;gap:14px;margin-bottom:36px}
+.recap-head h2{font-size:clamp(28px,4vw,44px);font-weight:800;line-height:1.1;max-width:22ch}
+.recap-flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin-top:10px}
+.rf-group{display:inline-flex;flex-wrap:wrap;gap:6px;padding:6px;border-radius:16px;background:rgba(3,13,45,.04)}
+.rf{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:9999px;background:var(--paper);border:1px solid var(--line-2);font:600 14px/1 var(--display)}
+.rf.strong{background:linear-gradient(135deg,var(--violet-d),var(--violet));border-color:transparent;color:#fff}
+.rf-arrow{font:600 22px/1 var(--display);color:var(--brand)}
+.recap-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.quotes{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.quotes li{padding:14px 16px;border-radius:12px;background:var(--tint-l);font:600 16px/1.45 var(--display)}
+.quotes li::before{content:"\201C"}
+.quotes li::after{content:"\201D"}
+.recap .nextdoc{padding:20px 0 80px}
+@media (max-width:980px){.recap-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* ---------- story ---------- */
+.story{position:relative;--n:6}
+.stage{position:relative;display:grid;grid-template-columns:minmax(320px,420px) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:18px clamp(20px,3vw,44px);padding:22px var(--gut) 24px;max-width:1600px;margin:0 auto}
+.stage>.side{grid-row:2;grid-column:1}
+.stage>.visual{grid-row:2;grid-column:2}
+/* single flow bar: where you are in the process */
+.flow{grid-row:1;grid-column:1 / -1;min-width:0;max-width:calc(100% + 2 * var(--gut));display:flex;align-items:center;gap:0;margin:0 calc(-1 * var(--gut));padding:6px var(--gut) 2px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 calc(100% - 28px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 calc(100% - 28px),transparent 100%);list-style:none;overflow-x:auto;scrollbar-width:none}
+.flow::-webkit-scrollbar{display:none}
+.flow li{display:flex;align-items:center;flex:none}
+.flow li+li::before{content:"";width:clamp(12px,2.4vw,36px);height:2px;margin-inline:8px;background:var(--line-2);border-radius:2px}
+.flow li.done+li::before,.flow li.on::before{background:var(--brand)}
+.flow button{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 6px;border-radius:9999px;border:1px solid transparent;background:none;font:600 14px/1 var(--display);color:var(--ink-4);cursor:pointer;white-space:nowrap}
+.flow button i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--line);font:600 11px/1 var(--mono);font-style:normal;color:var(--ink-3)}
+.flow li.done button{color:var(--ink-2)}
+.flow li.done button i{background:var(--tint);color:var(--brand)}
+.flow li.on button{background:var(--paper);border-color:var(--brand);color:var(--ink);box-shadow:0 4px 14px rgba(23,112,239,.14)}
+.flow li.on button i{background:var(--brand);color:#fff}
+/* camera: zooms the product screen onto what the card is about */
+.cam{position:absolute;inset:0;transform-origin:0 0;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+[data-layout="scroll"] .story{height:calc(var(--n) * 85vh + 100vh)}
+[data-layout="scroll"] .stage{position:sticky;top:0;height:100vh;height:100svh}
+[data-layout="steps"] .stage{height:min(860px,calc(100svh - 24px));min-height:600px}
+.progress{position:absolute;top:0;left:var(--gut);right:var(--gut);height:5px;border-radius:5px;background:rgba(3,13,45,.07);overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--brand);border-radius:inherit;transition:width .15s linear}
+.side{display:flex;flex-direction:column;justify-content:center;gap:18px;min-height:0}
+.cards{display:grid;min-height:0}
+.card{grid-area:1 / 1;align-self:center;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:26px 28px;box-shadow:0 1px 2px rgba(3,13,45,.04),0 18px 44px rgba(3,13,45,.08);transition:opacity .35s ease,transform .35s ease,visibility 0s;max-height:100%;overflow:auto}
+.card.off{opacity:0;transform:translateY(14px);visibility:hidden;pointer-events:none;transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s}
+.count{font:500 12px/1 var(--mono);color:var(--ink-4);margin-bottom:12px;display:flex;gap:10px;align-items:center}
+.count::after{content:attr(data-chapter);font:600 11px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+.card h2{font-size:clamp(24px,2.2vw,30px);line-height:1.15;font-weight:700}
+.card p{margin:12px 0 0;font-size:16px;line-height:1.65;color:var(--ink-2)}
+.card ul{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.card li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:10px;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.card li::before{content:"";width:6px;height:6px;margin:9px 0 0 4px;border-radius:50%;background:var(--brand)}
+.card li b{color:var(--ink);font-weight:600}
+.facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.facts span{display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:6px;background:#F1F1F3;font:500 12.5px/1 var(--body);color:var(--ink-3)}
+.say{margin-top:18px;padding:14px 16px;border-radius:12px;background:var(--tint-l)}
+.say .label{display:block;margin-bottom:6px}
+.say q{font:600 16px/1.45 var(--display);color:var(--ink);quotes:"\201C" "\201D"}
+.card .btn{margin-top:18px}
+.textlink{display:inline-block;margin-top:14px;font:600 14px/1.3 var(--display);color:var(--brand);text-decoration:none}
+.dots{display:flex;flex-wrap:wrap;gap:6px}
+.dots button{width:22px;height:6px;padding:0;border:0;border-radius:6px;background:rgba(3,13,45,.12);cursor:pointer}
+.dots button.done{background:rgba(23,112,239,.35)}
+.dots button.on{width:36px;background:var(--brand)}
+.ctrl{display:flex;align-items:center;gap:8px}
+.ctrl .grow{flex:1}
+[data-layout="scroll"] .story:not(.in-dialog) .ctrl{display:none}
+.scrollhint{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-4)}
+[data-layout="steps"] .scrollhint{display:none}
+.visual{position:relative;min-height:0;min-width:0;display:grid;place-items:center}
+.visual .shot{width:auto;max-width:100%;overflow:hidden;border-radius:18px}
+.shot-canvas{height:var(--h,auto);position:relative}
+
+/* beat-driven states inside screens */
+.shot [data-at].off{display:none!important}
+.shot .layer{position:absolute;inset:0}
+.shot .layer.off{display:block!important;opacity:0;visibility:hidden;pointer-events:none}
+.shot .layer{transition:opacity .35s ease}
+.shot [data-at]:not(.off):not(.layer){animation:beat-in .45s cubic-bezier(.2,.7,.2,1) backwards}
+.shot .hl{box-shadow:0 0 0 3px var(--brand),0 0 0 9px rgba(23,112,239,.18)!important;animation:hl 1.8s ease-in-out infinite;position:relative;z-index:2}
+.shot .dim{opacity:.35;transition:opacity .35s}
+.shot .backdrop{position:absolute;inset:0;background:rgba(3,13,45,.42);backdrop-filter:blur(1px)}
+.callout{position:absolute;z-index:5;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;background:var(--ink);color:#fff;font:600 15px/1.2 var(--display);white-space:nowrap;box-shadow:0 10px 24px rgba(3,13,45,.25)}
+.callout::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--amber)}
+.toast{position:absolute;z-index:6;display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:12px;background:var(--ink);color:#fff;font:500 15px/1.3 var(--body);box-shadow:0 16px 36px rgba(3,13,45,.3)}
+@keyframes beat-in{from{opacity:0;transform:translateY(10px)}}
+@keyframes hl{50%{box-shadow:0 0 0 3px var(--brand),0 0 0 14px rgba(23,112,239,.08)}}
+
+/* ---------- interactive terms ---------- */
+.term{border:0;background:none;padding:0;font:inherit;color:var(--ink);font-weight:500;text-decoration:underline dotted var(--brand) 2px;text-underline-offset:4px;cursor:help}
+.tip{position:fixed;z-index:100;max-width:280px;padding:12px 14px;border-radius:12px;background:var(--ink);color:#fff;font:400 13.5px/1.5 var(--body);box-shadow:0 16px 36px rgba(3,13,45,.3);pointer-events:none}
+.tip b{display:block;font:600 14px/1.3 var(--display);margin-bottom:3px}
+
+/* ---------- after sections ---------- */
+.after{max-width:1320px;margin:0 auto;padding:clamp(40px,6vw,80px) var(--gut) 64px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:26px 28px}
+.panel h3{font-size:22px;margin-bottom:14px}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.list li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;font-size:15px;color:var(--ink-2)}
+.list li::before{content:"";width:8px;height:8px;margin:8px 0 0 6px;border-radius:50%;background:var(--brand)}
+.nots{display:flex;flex-wrap:wrap;gap:8px}
+.nots span{display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:9999px;border:1px solid var(--line-2);font:500 14px/1 var(--body);color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--red)}
+.salesline{margin:18px 0 0;padding:16px 18px;border-radius:12px;background:var(--tint-l);font:600 18px/1.4 var(--display)}
+.salesline em{font-style:normal;color:var(--brand)}
+details{border-top:1px solid var(--line)}
+details:first-of-type{border-top:0}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px;padding:13px 0;font:600 16px/1.35 var(--display)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:400 22px/1 var(--body);color:var(--ink-4)}
+details[open] summary::after{content:"\2212"}
+details p{margin:0 0 14px;font-size:15px;color:var(--ink-2)}
+.nextdoc{max-width:1320px;margin:0 auto;padding:0 var(--gut) 80px}
+.nextdoc a{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 28px;border-radius:20px;background:var(--ink);color:#fff;text-decoration:none}
+.nextdoc small{display:block;font:600 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--violet-l);margin-bottom:8px}
+.nextdoc b{font:700 clamp(22px,3vw,32px)/1.1 var(--display)}
+
+/* ---------- dialog ---------- */
+dialog.sheet{width:min(1100px,calc(100vw - 32px));max-height:calc(100svh - 32px);border:0;border-radius:24px;padding:0;background:var(--bg);color:var(--ink);box-shadow:0 40px 100px rgba(3,13,45,.4);overflow:auto}
+dialog.sheet::backdrop{background:rgba(3,13,45,.55);backdrop-filter:blur(3px)}
+.sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:22px 26px 0}
+.sheet-head h2{font-size:26px;margin-top:8px}
+.in-dialog .stage{height:min(600px,calc(100svh - 150px));min-height:460px;padding-top:22px}
+.in-dialog .progress{top:6px}
+
+/* ---------- responsive ---------- */
+@media (max-width:980px){
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .after{grid-template-columns:minmax(0,1fr)}
+  .stage{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;gap:12px;padding-top:14px}
+  .stage>.visual{grid-row:2;grid-column:1}
+  .stage>.side{grid-row:3;grid-column:1;justify-content:flex-start}
+  .flow button{height:32px;font-size:13px}
+  .card{padding:18px 20px;max-height:44svh}
+  .card h2{font-size:22px}
+  .card p{font-size:15px}
+  .say{display:none}
+  [data-layout="steps"] .stage{height:auto;min-height:0}
+  [data-layout="steps"] .visual{height:52svh}
+  [data-layout="steps"] .card{max-height:none}
+  .in-dialog .stage{height:auto}
+  .in-dialog .visual{height:42svh}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style></head><body data-layout="scroll"><header class="topbar"><a class="mark" href="index.html"><i></i>6labs Studio <span>Testing guides</span></a><nav class="navs" aria-label="Guides"><a class="docpill" data-doc="" href="01-gameplay-library.html"><span class="n">01</span>Gameplay Library</a><a class="docpill" data-doc="" href="02-user-test.html"><span class="n">02</span>User Test</a><a class="docpill" data-doc="" href="03-functional-test.html"><span class="n">03</span>Functional Test</a><a class="docpill" data-doc="" href="04-ai-behavioural-test.html"><span class="n">04</span>AI Behavioural</a><a class="docpill" data-doc="" href="05-ai-functional-test.html" aria-current="page"><span class="n">05</span>AI Functional</a></nav></header><section class="intro"><div class="hero-icon ai" aria-hidden="true"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 21H4.7A1.7 1.7 0 0 1 3 19.4V4.6A1.7 1.7 0 0 1 4.7 3h14.6A1.7 1.7 0 0 1 21 4.6v5.9" stroke-linecap="round"></path><path d="M16 8l-5.3 6L8 11.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M18.5 14l.26.7c.34.91.5 1.37.84 1.7.33.34.79.5 1.7.84l.7.26-.7.26c-.91.34-1.37.5-1.7.84-.34.33-.5.79-.84 1.7L18.5 21l-.26-.7c-.34-.91-.5-1.37-.84-1.7-.33-.34-.79-.5-1.7-.84L15 17.5l.7-.26c.91-.34 1.37-.5 1.7-.84.34-.33.5-.79.84-1.7z" stroke-linejoin="round"></path></svg></div><div class="label">Guide 05 · AI player testing</div><h1>AI Functional Test</h1><p class="lede">AI Functional Test hands your test cases to 6labs AI players. They install your build, play through every case, and report what passed and what failed, with the video of each attempt.</p><div class="hero-actions"><span class="scrollcue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14m-6-6l6 6 6-6"></path></svg>Scroll to start</span></div></section><section class="glance" aria-labelledby="glance-title"><div class="glance-head"><div><div class="label">Quick reminder</div><h2 id="glance-title">Testing at a glance</h2></div><p>This guide covers the highlighted part. The report works like <a data-doc="" href="03-functional-test.html">Functional Test</a>&#x27;s.</p></div><div class="glance-map"><svg viewBox="0 0 1450 560" role="img" aria-label="Testers play and their sessions go into the Gameplay Library, which User Test and Functional Test read. Your build goes to AI players, which run AI Behavioural Test and AI Functional Test. A test case sheet feeds both functional tests. User Test and AI Behavioural Test return findings with clips; the functional tests return a verdict for every case."><rect x="640" y="414" width="790" height="126" rx="22" fill="rgba(23,112,239,.05)" stroke="rgba(23,112,239,.4)" stroke-width="1.5" stroke-dasharray="6 6"></rect><text class="k" x="660" y="437">THIS GUIDE</text><g fill="none" stroke-width="5" stroke-linecap="round"><path d="M264 138H330" stroke="#1770EF"></path><path d="M570 138C615 138 615 78 660 78M570 138C615 138 615 198 660 198" stroke="#1770EF"></path><path d="M264 428H330" stroke="#16A34A"></path><path d="M570 428C615 428 615 368 660 368M570 428C615 428 615 488 660 488" stroke="#16A34A"></path><path d="M940 78H1030" stroke="#1770EF"></path><path d="M940 198H1030" stroke="#178F7C"></path><path d="M940 368H1030" stroke="#16A34A"></path><path d="M940 488H1030" stroke="#16A34A"></path></g><g fill="none" stroke-width="3" stroke-dasharray="8 8" stroke-linecap="round" stroke="#178F7C"><path d="M570 283C620 283 612 218 660 218"></path><path d="M570 283C620 283 612 468 660 468"></path></g><g stroke-width="2.5"><rect x="24" y="100" width="240" height="76" rx="18" fill="#fff" stroke="#1770EF"></rect><rect x="330" y="100" width="240" height="76" rx="18" fill="#fff" stroke="#030D2D" stroke-width="3"></rect><rect x="24" y="390" width="240" height="76" rx="18" fill="#fff" stroke="#16A34A"></rect><rect x="330" y="390" width="240" height="76" rx="18" fill="#fff" stroke="#16A34A" stroke-width="3"></rect><rect x="330" y="245" width="240" height="76" rx="18" fill="#fff" stroke="#178F7C" stroke-dasharray="7 6"></rect><g><rect x="660" y="40" width="280" height="76" rx="18" fill="#EAF2FE" stroke="#1770EF" stroke-width="3"></rect><rect x="1030" y="40" width="380" height="76" rx="18" fill="#fff" stroke="#1770EF"></rect></g><g><rect x="660" y="160" width="280" height="76" rx="18" fill="#E7F5F2" stroke="#178F7C" stroke-width="3"></rect><rect x="1030" y="160" width="380" height="76" rx="18" fill="#fff" stroke="#178F7C"></rect></g><g><rect x="660" y="330" width="280" height="76" rx="18" fill="#E9F7EF" stroke="#16A34A" stroke-width="3"></rect><rect x="1030" y="330" width="380" height="76" rx="18" fill="#fff" stroke="#16A34A"></rect></g><g><rect x="660" y="450" width="280" height="76" rx="18" fill="#E9F7EF" stroke="#16A34A" stroke-width="3"></rect><rect x="1030" y="450" width="380" height="76" rx="18" fill="#fff" stroke="#16A34A"></rect></g></g><g text-anchor="middle"><text class="t" x="144" y="133">Testers play</text><text class="d" x="144" y="158">Recorder app, upload or CLI</text><text class="t" x="450" y="133">Gameplay Library</text><text class="d" x="450" y="158">every session, one shelf</text><text class="t" x="144" y="423">Your build</text><text class="d" x="144" y="448">an APK, up to 500 MB</text><text class="t" x="450" y="423">AI players</text><text class="d" x="450" y="448">install and play it</text><text class="t" x="450" y="278">Test case sheet</text><text class="d" x="450" y="303">CSV or XLSX, one row per case</text><g><text class="t" x="800" y="73">User Test</text><text class="d" x="800" y="98">free play → problems</text><text class="t" x="1220" y="73">Findings with clips</text><text class="d" x="1220" y="98">where players struggle</text></g><g><text class="t" x="800" y="193">Functional Test</text><text class="d" x="800" y="218">your cases vs the recordings</text><text class="t" x="1220" y="193">A verdict for every case</text><text class="d" x="1220" y="218">with the clip that shows it</text></g><g><text class="t" x="800" y="363">AI Behavioural Test</text><text class="d" x="800" y="388">AI personas play freely</text><text class="t" x="1220" y="363">Findings by persona</text><text class="d" x="1220" y="388">where the build blocks or loses them</text></g><g><text class="t" x="800" y="483">AI Functional Test</text><text class="d" x="800" y="508">AI players run your cases</text><text class="t" x="1220" y="483">A verdict for every case</text><text class="d" x="1220" y="508">with the AI player&#x27;s video</text></g></g><g class="g"><text x="24" y="86">REAL PLAYERS</text><text x="24" y="376">AI PLAYERS</text></g></svg></div></section><section class="story" data-story="" data-scenes="open,build,cases,details,submit,report,case,export" aria-label="AI Functional Test walkthrough"><div class="stage"><div class="progress"><i></i></div><ol class="flow" aria-label="Where you are"><li data-node="open"><button type="button"><i>1</i>Open AI Functional Test</button></li><li data-node="build"><button type="button"><i>2</i>Build</button></li><li data-node="cases"><button type="button"><i>3</i>Test cases</button></li><li data-node="details"><button type="button"><i>4</i>Name &amp; instructions</button></li><li data-node="submit"><button type="button"><i>5</i>Run test</button></li><li data-node="report"><button type="button"><i>6</i>Report</button></li><li data-node="case"><button type="button"><i>7</i>Case detail</button></li><li data-node="export"><button type="button"><i>8</i>Export</button></li></ol><div class="side"><div class="cards"><article class="card" data-node="open"><div class="count" data-chapter="Open AI Functional Test"></div><h2>AI players run your test cases</h2><p>You give it two things: a <b>build</b> of your game and your <b>test case sheet</b>. 6labs AI players install the build and play through each case.</p><p>No testers and no recordings needed: the AI players make the recordings themselves.</p></article><article class="card" data-node="build"><div class="count" data-chapter="Build"></div><h2>Choose the build</h2><p>Click <b>Choose a build</b>. Drop in a new APK, or pick one you uploaded before; the newest is at the top.</p><p>Here, <b>v2.3.1</b>. The AI players install exactly this build.</p><div class="facts"><span>Android APK</span><span>Up to 500 MB</span></div></article><article class="card" data-node="cases" data-focus="930 400 1.2"><div class="count" data-chapter="Test cases"></div><h2>Add the test case sheet</h2><p>The same sheet as Functional Test: a <b>CSV or XLSX</b> file, one row per case.</p><p>Each case needs a <b>Precondition</b>, an <b>Expected result</b> and <b>Steps</b>, or it can only be marked <b>not verified</b>.</p></article><article class="card" data-node="details"><div class="count" data-chapter="Name &amp; instructions"></div><h2>Name it and add instructions</h2><p>Both are <b>optional</b>. Left empty, the name is made from the file name, the build version and the date.</p><p><b>Instructions</b> are one note for the whole run: a test account to use, where to start, or cases to skip.</p></article><article class="card" data-node="submit"><div class="count" data-chapter="Run test"></div><h2>The AI players get to work</h2><p>Click <b>Run test</b>. The run sits on top of <b>Run history</b> as <b>In progress</b> while the AI players play.</p><p>When the last case is done, the row shows the four counts and a <b>View report</b> button.</p></article><article class="card" data-node="report" data-focus="560 300 1.2"><div class="count" data-chapter="Report"></div><h2>Read the result</h2><p><b>95%</b> of the 1,247 cases that ran passed; the AI players reached <b>64%</b> of the sheet.</p><ul><li><span><b>Passed</b> — the AI player got the expected result</span></li><li><span><b>Failed</b> — the steps ran and the build didn&#x27;t do what the case expects</span></li><li><span><b>Need review</b> — the case was reached, but the video doesn&#x27;t settle it</span></li><li><span><b>Not verified</b> — the case wasn&#x27;t reached, or the sheet lacks its details</span></li></ul><a class="textlink" data-doc="" href="03-functional-test.html">The report, part by part, in Functional Test →</a></article><article class="card" data-node="case"><div class="count" data-chapter="Case detail"></div><h2>Watch what the AI player did</h2><p>Open any case. The video is marked <b>Played by an AI player</b>. <b>Specified</b> shows what your sheet expects; <b>Observed</b> shows what happened.</p><p>Each of your steps shows the moment it happened. Click one and the video jumps there.</p></article><article class="card" data-node="export" data-focus="1000 200 1.15"><div class="count" data-chapter="Export"></div><h2>Export as CSV</h2><p><b>Export CSV</b> gives every case with your IDs, the status, the reason, the steps with their timestamps, and the clip.</p><a class="textlink" href="#recap">See the recap ↓</a></article></div></div><div class="visual"><div class="shot" style="--w:1180px;--h:780px"><div class="shot-canvas"><div class="cam"><div class="s-frame"><div class="s-app"><aside class="s-side"><div class="s-logo"><i></i>6labs.ai</div><div class="s-area"><span>Intelligence</span><span class="on">Testing</span></div><div class="s-rule"></div><nav class="s-nav"><a><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg><span>Overview</span></a><a><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><g transform="scale(1.2)"><path d="M3.25 3h4.5c.47 0 .92.22 1.2.6l.68.9c.47.63 1.21 1 2 1h5.12c.83 0 1.5.67 1.5 1.5v8.5c0 .83-.67 1.5-1.5 1.5H3.25c-.83 0-1.5-.67-1.5-1.5v-11c0-.83.67-1.5 1.5-1.5z" stroke-width="1"></path><path d="M5.45 8.4c-.2-.12-.45.02-.45.25v5.2c0 .23.25.37.45.25l4.33-2.6a.3.3 0 0 0 0-.5z" fill="currentColor" stroke="none"></path></g></svg><span>Gameplay Library</span></a><div class="s-nav-h cx">Human testing<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-tree"><a><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><g fill="currentColor" stroke="none"><path d="M18.53 19.66a.75.75 0 0 1-.74-.74v-1.57c0-.64-.25-1.25-.71-1.71a2.4 2.4 0 0 0-1.7-.71H9.09c-.64 0-1.25.25-1.7.71a2.4 2.4 0 0 0-.71 1.71v1.57a.75.75 0 0 1-1.49 0v-1.57c0-1.02.42-2.03 1.14-2.75a3.9 3.9 0 0 1 2.75-1.14h6.29c1.02 0 2.03.42 2.75 1.14a3.9 3.9 0 0 1 1.14 2.75v1.57a.75.75 0 0 1-.74.74z"></path><path d="M12.24 11.78a3.89 3.89 0 1 1 0-7.78 3.89 3.89 0 0 1 0 7.78zm0-6.29a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8z"></path><path d="M23.26 19.65a.75.75 0 0 1-.75-.74v-1.58c0-.53-.18-1.06-.5-1.48a2.6 2.6 0 0 0-1.3-.85.75.75 0 1 1 .37-1.43c.83.22 1.57.71 2.1 1.38.53.67.82 1.53.82 2.38v1.58a.75.75 0 0 1-.74.74zM17.75 11.7a.74.74 0 0 1-.72-.55.74.74 0 0 1 .53-.9c.52-.13.97-.43 1.31-.85.32-.42.5-.95.5-1.48s-.18-1.06-.5-1.48a2.4 2.4 0 0 0-1.31-.85.75.75 0 1 1 .37-1.43c.83.22 1.59.71 2.1 1.38.53.67.82 1.53.82 2.39s-.29 1.71-.82 2.38a3.9 3.9 0 0 1-2.1 1.38c-.06.01-.12.02-.18.02zM.74 19.65c.41 0 .75-.34.75-.74v-1.58c0-.53.18-1.06.5-1.48.33-.42.8-.72 1.3-.85a.75.75 0 1 0-.37-1.43c-.83.22-1.57.71-2.1 1.38A3.9 3.9 0 0 0 0 17.35v1.57c0 .41.34.74.74.74zM6.25 11.7c.34 0 .64-.23.72-.55a.74.74 0 0 0-.53-.9 2.4 2.4 0 0 1-1.31-.85c-.32-.42-.5-.95-.5-1.48s.18-1.06.5-1.48c.32-.42.79-.72 1.31-.85a.75.75 0 1 0-.37-1.45c-.83.22-1.59.71-2.1 1.38-.53.67-.82 1.53-.82 2.39s.29 1.71.82 2.38c.53.68 1.27 1.17 2.1 1.38.06.01.12.02.18.02z"></path></g></svg><span>User test</span></a><a><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11.5 21H4.7A1.7 1.7 0 0 1 3 19.4V4.6A1.7 1.7 0 0 1 4.7 3h14.6A1.7 1.7 0 0 1 21 4.6V9" stroke-linecap="round"></path><path d="M16 8l-5.3 6L8 11.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M22.7 20.3L20 16.05v-3.2h.75V12h-4.5v.85H17v3.2l-2.7 4.25a1.6 1.6 0 0 0 1.2 2.7h6a1.6 1.6 0 0 0 1.2-2.7zM17.75 16.33v-3.48h1.5v3.48l1 1.56h-3.5zM21.5 22.15h-6a.75.75 0 0 1-.6-1.37l1.3-2.04h4.6l1.3 2.04a.75.75 0 0 1-.6 1.37z" fill="currentColor" stroke="none"></path></svg><span>Functional test</span></a><a class="s-off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"></path></svg><span>External agency test</span><span class="s-soon">SOON</span></a><a class="s-off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19V5M4 19h16M7 15l4-5 3 3 5-7" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Beta · CBT / OBT</span><span class="s-soon">SOON</span></a></div><div class="s-nav-h ai">AI player testing<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-tree"><a><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 3c-.47 0-.97 0-1.5 0C7 3 4.8 3 3.4 4.4 2 5.8 2 8 2 12.5s0 6.7 1.4 8.1C4.8 22 7 22 11.5 22s6.7 0 8.1-1.4C21 19.2 21 17 21 12.5c0-.53 0-1.03 0-1.5" stroke-linecap="round"></path><path d="M18.5 2l.26.7c.34.91.5 1.37.84 1.7.33.34.79.5 1.7.84L22 5.5l-.7.26c-.91.34-1.37.5-1.7.84-.34.33-.5.79-.84 1.7L18.5 9l-.26-.7c-.34-.91-.5-1.37-.84-1.7-.33-.34-.79-.5-1.7-.84L15 5.5l.7-.26c.91-.34 1.37-.5 1.7-.84.34-.33.5-.79.84-1.7z" stroke-linejoin="round"></path><path d="M7 17.5c2.33-2.44 6.64-2.56 9 0M14 10a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" stroke-linecap="round"></path></svg><span>AI behavioural test</span></a><a class="on"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 21H4.7A1.7 1.7 0 0 1 3 19.4V4.6A1.7 1.7 0 0 1 4.7 3h14.6A1.7 1.7 0 0 1 21 4.6v5.9" stroke-linecap="round"></path><path d="M16 8l-5.3 6L8 11.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M18.5 14l.26.7c.34.91.5 1.37.84 1.7.33.34.79.5 1.7.84l.7.26-.7.26c-.91.34-1.37.5-1.7.84-.34.33-.5.79-.84 1.7L18.5 21l-.26-.7c-.34-.91-.5-1.37-.84-1.7-.33-.34-.79-.5-1.7-.84L15 17.5l.7-.26c.91-.34 1.37-.5 1.7-.84.34-.33.5-.79.84-1.7z" stroke-linejoin="round"></path></svg><span>AI functional test</span></a><a class="s-off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="2"></circle><circle cx="18" cy="6" r="2"></circle><circle cx="6" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle><circle cx="12" cy="12" r="2.5"></circle><path d="M8 7.5L10 10M16 7.5L14 10M8 16.5L10 14M16 16.5L14 14" stroke-linecap="round"></path></svg><span>AI large-scale test</span><span class="s-soon">SOON</span></a><a class="s-off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6h13M8 12h13M8 18h13M3 6l1 1 2-2M3 12l1 1 2-2M3 18l1 1 2-2" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Test case generation</span><span class="s-soon">SOON</span></a><a class="s-off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"></path></svg><span>L-QA · localization</span><span class="s-soon">SOON</span></a></div></nav></aside><div class="s-main"><div class="layer s-pg" data-at="0-3"><div class="s-scroller" data-fx="y1:3" style="--y1:-130px"><div class="s-head"><div class="s-icon ai"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 21H4.7A1.7 1.7 0 0 1 3 19.4V4.6A1.7 1.7 0 0 1 4.7 3h14.6A1.7 1.7 0 0 1 21 4.6v5.9" stroke-linecap="round"></path><path d="M16 8l-5.3 6L8 11.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M18.5 14l.26.7c.34.91.5 1.37.84 1.7.33.34.79.5 1.7.84l.7.26-.7.26c-.91.34-1.37.5-1.7.84-.34.33-.5.79-.84 1.7L18.5 21l-.26-.7c-.34-.91-.5-1.37-.84-1.7-.33-.34-.79-.5-1.7-.84L15 17.5l.7-.26c.91-.34 1.37-.5 1.7-.84.34-.33.5-.79.84-1.7z" stroke-linejoin="round"></path></svg></div><div class="grow"><h3 class="s-h1">AI functional test</h3><p class="s-sub">AI players run your test cases on your build and report what passed, what failed and what they could not reach — with the video.</p></div></div><div class="s-tabs"><span class="on">New run</span><span>Run history <span class="n">2</span></span></div><p class="s-intro">Each run keeps its own build, test cases and report.</p><div class="s-tiles2"><div class="s-slot"><div class="s-intile" data-at="0-1"><span class="s-intile-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7 9m5-5l5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"></path></svg></span><b>Choose a build</b><p>Upload an APK, or pick one you uploaded before.</p><span class="s-formats">APK</span><span class="s-req">Required</span></div><div class="s-filled" data-at="2-7"><span class="s-label">Build</span><div class="s-picked"><span class="s-picked-b"><span class="s-apk">APK</span></span><b>v2.3.1</b><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path></svg></div><div class="s-picked-sub">whiteout-2.3.1-release.apk · 312 MB · uploaded Aug 29 · newest</div><div class="s-filled-f"><a>Change build</a></div></div></div><div class="s-slot"><div class="s-intile" data-fx="hl:2" data-at="0-2"><span class="s-intile-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7 9m5-5l5 5"></path><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"></path></svg></span><b>Add your test cases</b><p>Upload a spreadsheet of test cases — one row per case.</p><span class="s-formats">CSV · XLSX</span><span class="s-req">Required</span><div class="s-colnote"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5.5M12 7.5h.01" stroke-linecap="round"></path></svg><span>Each case needs <b>Precondition, Expected result, Steps</b> — without them 6labs can only mark the case not verified. <a>See a sample sheet</a></span></div></div><div class="s-filled" data-at="3"><span class="s-label">Test cases</span><div class="s-filecount"><b>1 file</b> · 1,956 cases</div><div class="s-casefile"><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l5 5v13H7z" stroke-linejoin="round"></path><path d="M14 3v5h5M10 12.5h6M10 16h6M13 11v7"></path></svg></span><b>regression-suite.xlsx</b><small>1,956 cases</small><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path></svg></div><div class="s-filled-f"><a>+ Add another file</a><a>See a sample sheet</a></div></div></div></div><div class="s-details"><b class="s-details-h">Name this run</b><p>A clear name makes the run easy to find later.</p><span class="s-label">Run name <small>optional</small></span><div class="s-input ph" data-at="0-2">e.g. Season 9 — core loop</div><div class="s-input" data-at="3">Season 9 — core loop</div><span class="s-label">Instructions <small>optional</small></span><div class="s-input area ph" data-at="0-2">e.g. Start from a fresh install. Skip the tutorial for cases TC-10 onward. Use the test account bp_tester_03.</div><div class="s-input area" data-fx="hl:3" data-at="3">Start from a fresh install. Skip the tutorial for cases TC-10 onward. Use the test account bp_tester_03.</div><div class="s-details-f"><span><span data-at="0-2">Choose a build and add the test cases to run.</span><span data-at="3">1 file · v2.3.1</span></span><span class="s-btn dis" data-at="0-2">Run test</span><span class="s-btn primary" data-at="3">Run test</span></div></div></div></div><div class="layer" data-at="1"><div class="backdrop"></div><div class="s-modal s-builds"><div class="s-builds-h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path></svg><h2>Select a build</h2><p>Upload an APK, or pick one you uploaded before. The AI players install the build you choose.</p></div><div class="s-drop"><span class="s-intile-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 16V4m0 0L7 9m5-5l5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"></path></svg></span><b>Drop a build here or click to upload</b><span>A release build of the game the AI players will install and play.</span><span class="s-formats">APK · up to 500 MB</span></div><div class="s-buildlist" data-fx="hl:1"><div class="s-buildlist-h"><b>Uploaded builds</b><small>3 ready</small></div><div class="s-build on"><span class="s-radio"></span><span class="s-apk">APK</span><span><b>v2.3.1<em>Newest</em></b><small>whiteout-2.3.1-release.apk · 312 MB · uploaded Aug 29</small></span><span class="s-ready">Ready to run</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></div><div class="s-build"><span class="s-radio"></span><span class="s-apk">APK</span><span><b>v2.3.0</b><small>whiteout-2.3.0-release.apk · 308 MB · uploaded Aug 22</small></span><span class="s-ready">Ready to run</span><span></span></div><div class="s-build"><span class="s-radio"></span><span class="s-apk">APK</span><span><b>v2.2.9</b><small>whiteout-2.2.9-release.apk · 301 MB · uploaded Aug 14</small></span><span class="s-ready">Ready to run</span><span></span></div></div><div class="s-builds-f"><span>The players will install v2.3.1.</span><span class="s-btn ghost sm">Cancel</span><span class="s-btn primary sm">Use v2.3.1</span></div></div></div><div class="layer s-pg" data-at="4"><div class="s-seq" data-fx="play:4"><div class="s-seq-a"><div style="transform:translateY(-130px)"><div class="s-head"><div class="s-icon ai"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 21H4.7A1.7 1.7 0 0 1 3 19.4V4.6A1.7 1.7 0 0 1 4.7 3h14.6A1.7 1.7 0 0 1 21 4.6v5.9" stroke-linecap="round"></path><path d="M16 8l-5.3 6L8 11.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M18.5 14l.26.7c.34.91.5 1.37.84 1.7.33.34.79.5 1.7.84l.7.26-.7.26c-.91.34-1.37.5-1.7.84-.34.33-.5.79-.84 1.7L18.5 21l-.26-.7c-.34-.91-.5-1.37-.84-1.7-.33-.34-.79-.5-1.7-.84L15 17.5l.7-.26c.91-.34 1.37-.5 1.7-.84.34-.33.5-.79.84-1.7z" stroke-linejoin="round"></path></svg></div><div class="grow"><h3 class="s-h1">AI functional test</h3><p class="s-sub">AI players run your test cases on your build and report what passed, what failed and what they could not reach — with the video.</p></div></div><div class="s-tabs"><span class="on">New run</span><span>Run history <span class="n">2</span></span></div><p class="s-intro">Each run keeps its own build, test cases and report.</p><div class="s-tiles2"><div class="s-slot"><div class="s-filled"><span class="s-label">Build</span><div class="s-picked"><span class="s-picked-b"><span class="s-apk">APK</span></span><b>v2.3.1</b><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path></svg></div><div class="s-picked-sub">whiteout-2.3.1-release.apk · 312 MB · uploaded Aug 29 · newest</div><div class="s-filled-f"><a>Change build</a></div></div></div><div class="s-slot"><div class="s-filled"><span class="s-label">Test cases</span><div class="s-filecount"><b>1 file</b> · 1,956 cases</div><div class="s-casefile"><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l5 5v13H7z" stroke-linejoin="round"></path><path d="M14 3v5h5M10 12.5h6M10 16h6M13 11v7"></path></svg></span><b>regression-suite.xlsx</b><small>1,956 cases</small><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path></svg></div><div class="s-filled-f"><a>+ Add another file</a><a>See a sample sheet</a></div></div></div></div><div class="s-details"><b class="s-details-h">Name this run</b><p>A clear name makes the run easy to find later.</p><span class="s-label">Run name <small>optional</small></span><div class="s-input">Season 9 — core loop</div><span class="s-label">Instructions <small>optional</small></span><div class="s-input area">Start from a fresh install. Skip the tutorial for cases TC-10 onward. Use the test account bp_tester_03.</div><div class="s-details-f"><span>1 file · v2.3.1</span><span class="s-click"><span class="s-btn primary">Run test</span><span class="s-ripple"></span><svg class="s-cursor" width="30" height="30" viewBox="0 0 24 24"><path d="M5 3l14 8-6 1.5L10 19z" fill="var(--ink)" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"></path></svg></span></div></div></div></div><div class="s-seq-b"><div class="s-head"><div class="s-icon ai"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 21H4.7A1.7 1.7 0 0 1 3 19.4V4.6A1.7 1.7 0 0 1 4.7 3h14.6A1.7 1.7 0 0 1 21 4.6v5.9" stroke-linecap="round"></path><path d="M16 8l-5.3 6L8 11.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M18.5 14l.26.7c.34.91.5 1.37.84 1.7.33.34.79.5 1.7.84l.7.26-.7.26c-.91.34-1.37.5-1.7.84-.34.33-.5.79-.84 1.7L18.5 21l-.26-.7c-.34-.91-.5-1.37-.84-1.7-.33-.34-.79-.5-1.7-.84L15 17.5l.7-.26c.91-.34 1.37-.5 1.7-.84.34-.33.5-.79.84-1.7z" stroke-linejoin="round"></path></svg></div><div class="grow"><h3 class="s-h1">AI functional test</h3><p class="s-sub">AI players run your test cases on your build and report what passed, what failed and what they could not reach — with the video.</p></div></div><div class="s-tabs"><span>New run</span><span class="on">Run history <span class="n">3</span></span></div><div class="s-table counts"><div class="s-trow head"><span></span><span>Run</span><span>Build</span><span>Result</span><span class="s-date">Date</span><span></span></div><div class="s-trow s-newrow"><span class="s-stack"><span class="s-ticon s-st-prog"><span class="s-spin"></span></span><span class="s-ticon s-st-ready"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg></span></span><span><b>Season 9 — core loop</b><small>1,956 cases · regression-suite.xlsx</small></span><span class="s-plain">v2.3.1</span><span class="s-stack"><span class="s-result live s-st-prog">In progress</span><span class="s-outc s-st-ready"><i class="p">1,186</i><i class="f">31</i><i class="r">12</i><i class="n">18</i></span></span><span class="s-date">Sep 18</span><span class="s-stack"><span class="s-btn dis sm s-st-prog">Analysing…</span><span class="s-btn primary sm s-st-ready s-viewbtn">View report</span></span></div><div class="s-trow"><span class="s-ticon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg></span><span><b>Season 8 — core loop</b><small>1,904 cases · regression-suite.xlsx</small></span><span class="s-plain">v2.2.9</span><span class="s-outc"><i class="p">1,102</i><i class="f">44</i><i class="r">20</i><i class="n">31</i></span><span class="s-date">Aug 29</span><span class="s-btn ghost sm">View report</span></div><div class="s-trow"><span class="s-ticon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg></span><span><b>Battle Pass v2 — store</b><small>5 cases · battlepass-cases.csv</small></span><span class="s-plain">v2.3.0</span><span class="s-outc"><i class="p">4</i><i class="f">1</i><i class="r">0</i><i class="n">0</i></span><span class="s-date">Aug 28</span><span class="s-btn ghost sm">View report</span></div></div></div></div></div><div class="layer s-pg" data-at="5-7"><div class="s-crumb"><b class="s-crumb-t"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>AI functional test ·</span>Season 9 — core loop</b><div class="s-crumb-r"><span class="s-btn ghost sm" data-fx="hl:7"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v11m0 0l-5-5m5 5l5-5M5 20h14"></path></svg>Export CSV</span></div></div><div class="s-scroller" data-fx="y1:6" style="--y1:-300px"><div class="s-vcard"><div class="s-vhead"><span class="s-label">AI functional test report</span><h3>Season 9 — core loop</h3></div><div class="s-score"><div class="s-score-p" data-fx="hl:5"><span class="s-label">Result <small>of the 1,247 cases that ran</small></span><div class="s-big"><b>95%</b>passed</div><div class="s-stackbar"><i style="width:95.1%"></i><i style="width:2.5%"></i><i style="width:1%"></i><i style="width:1.4%"></i></div><div class="s-otiles"><span class="p"><b>1,186</b>passed</span><span class="f"><b>31</b>failed</span><span class="r"><b>12</b>need review</span><span class="n"><b>18</b>not verified</span></div></div><div class="s-score-p"><span class="s-label">Coverage <small>of the 1,956 cases in the file</small></span><div class="s-big"><b>64%</b>reached across 18 recordings</div><div class="s-covbar"><i style="width:64%"></i></div><p>709 cases never appeared in this footage.</p></div></div></div><div class="s-against"><span class="s-label">Verified against</span><a><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v11m0 0l-5-5m5 5l5-5M5 20h14"></path></svg>regression-suite.xlsx</a><em>on build v2.3.1</em></div><div class="s-cfilters"><div class="s-row" style="gap:10px"><span class="s-search" style="flex:1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>Search id, name, category or reason…</span><span class="s-select">All categories<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div><div class="s-seg s-otabs"><span class="on">All <small>1,247</small></span><span>Pass <small>1,186</small></span><span>Failed <small>31</small></span><span>Need review <small>12</small></span><span>Not verified <small>18</small></span></div></div><div class="s-ctable"><div class="s-crow head"><span>ID</span><span>Test case</span><span>Category</span><span>Reason</span><span>Status</span><span></span></div><div class="s-crow"><span class="mono">TC-8889</span><span>Privacy notice close button exits with a toast</span><span>Startup notices<small>Launch › First run</small></span><span>Game closed with no toast shown.</span><span><span class="s-status f">Failed</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-crow"><span class="mono">TC-8810</span><span>Age-14 popup is not shown in non-KR locales</span><span>Startup notices<small>Launch › First run</small></span><span>Popup shown where the case requires it be suppressed.</span><span><span class="s-status f">Failed</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-crow"><span class="mono">TC-8821</span><span>Game Center login restores the existing account</span><span>Title screen<small>Launch › Title screen</small></span><span>Account restored, but a duplicate profile was created.</span><span><span class="s-status r">Need review</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-crow"><span class="mono">TC-8898</span><span>Skill cooldown prevents an immediate second use</span><span>Skills<small>Combat › Skills</small></span><span>Cooldown enforced correctly.</span><span><span class="s-status p">Pass</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-crow"><span class="mono">TC-8822</span><span>Revive item cannot be used twice in one encounter</span><span>Encounter<small>Combat › Encounter</small></span><span>Second revive was accepted.</span><span><span class="s-status f">Failed</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-crow"><span class="mono">TC-8839</span><span>Combat rewards match the listed drop table</span><span>Encounter<small>Combat › Encounter</small></span><span>Only two clears present — cannot establish a drop table.</span><span><span class="s-status r">Need review</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-crow"><span class="mono">TC-1102</span><span>Alliance join request is sent</span><span>Alliance<small>Post-tutorial › Alliance</small></span><span>Request sent and acknowledged.</span><span><span class="s-status p">Pass</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-crow"><span class="mono">TC-86</span><span>Battle Pass premium purchase</span><span>Store<small>Store › Purchase</small></span><span>Purchase confirmed but entitlement not granted.</span><span><span class="s-status f">Failed</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-crow"><span class="mono">TC-14</span><span>Furnace upgrade from tutorial hint</span><span>Progression<small>Tutorial › Furnace</small></span><span>Button unresponsive until the hint overlay times out.</span><span><span class="s-status f">Failed</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-crow"><span class="mono">TC-15</span><span>Daily quest reset at 00:00 UTC</span><span>Progression<small>Systems › Daily</small></span><span>Reset time could not be reached in the session.</span><span><span class="s-status n">Not verified</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-crow"><span class="mono">TC-81</span><span>Complete the tutorial on a fresh install</span><span>Onboarding<small>Launch › First run</small></span><span>Completed cleanly.</span><span><span class="s-status p">Pass</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-crow"><span class="mono">TC-19</span><span>Leave alliance during rally</span><span>Alliance<small>Alliance › Rally</small></span><span>Left mid-rally; state after leaving unclear.</span><span><span class="s-status r">Need review</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="s-pager"><span class="s-btn ghost sm dim"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>Previous</span><span>Page 1 of 104</span><span class="s-btn ghost sm">Next<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><small>1–12 of 1,247</small></div></div></div><div class="toast" data-at="7" style="top:78px;right:28px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5BD08A" stroke-width="2.4"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>CSV ready — season-9-core-loop.csv</div></div></div></div></div><div class="layer" data-at="6" style="z-index:10"><div class="backdrop" style="border-radius:18px"></div><div class="s-modal s-case"><div class="s-case-h"><div><small><span class="mono">TC-8889</span> Startup notices · Launch › First run</small><h2>Privacy notice close button exits with a toast</h2></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path></svg></div><div class="s-case-b"><div class="s-rail"><span class="s-search sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>Search cases…</span><span class="s-select sm">All outcomes<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><div class="s-rail-g"><span class="s-label">Startup notices</span><div class="s-rail-i on"><i class="f"></i><span>Privacy notice close button exits with a toast<small>TC-8889</small></span></div><div class="s-rail-i"><i class="f"></i><span>Age-14 popup is not shown in non-KR locales<small>TC-8810</small></span></div></div><div class="s-rail-g"><span class="s-label">Title screen</span><div class="s-rail-i"><i class="r"></i><span>Game Center login restores the existing account<small>TC-8821</small></span></div></div><div class="s-rail-g"><span class="s-label">Skills</span><div class="s-rail-i"><i class="p"></i><span>Skill cooldown prevents an immediate second use<small>TC-8898</small></span></div><div class="s-rail-i"><i class="p"></i><span>Hero swap mid-encounter keeps the accumulated rage<small>TC-8896</small></span></div></div><div class="s-rail-g"><span class="s-label">Progression</span><div class="s-rail-i"><i class="f"></i><span>Furnace upgrade from tutorial hint<small>TC-14</small></span></div><div class="s-rail-i"><i class="n"></i><span>Daily quest reset at 00:00 UTC<small>TC-15</small></span></div></div></div><div class="s-evidence"><span class="s-aimark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 3c-.47 0-.97 0-1.5 0C7 3 4.8 3 3.4 4.4 2 5.8 2 8 2 12.5s0 6.7 1.4 8.1C4.8 22 7 22 11.5 22s6.7 0 8.1-1.4C21 19.2 21 17 21 12.5c0-.53 0-1.03 0-1.5" stroke-linecap="round"></path><path d="M18.5 2l.26.7c.34.91.5 1.37.84 1.7.33.34.79.5 1.7.84L22 5.5l-.7.26c-.91.34-1.37.5-1.7.84-.34.33-.5.79-.84 1.7L18.5 9l-.26-.7c-.34-.91-.5-1.37-.84-1.7-.33-.34-.79-.5-1.7-.84L15 5.5l.7-.26c.91-.34 1.37-.5 1.7-.84.34-.33.5-.79.84-1.7z" stroke-linejoin="round"></path><path d="M7 17.5c2.33-2.44 6.64-2.56 9 0M14 10a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" stroke-linecap="round"></path></svg>Played by an AI player</span><div class="s-clip" data-fx="jump:6"><span class="s-clip-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke="none"></path></svg></span></div><div class="s-clipbar"><i></i></div><div class="s-clipctl"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke="none"></path></svg><span>0:00 / 0:17</span></div><span class="s-cliprange">01:14–01:31</span><div class="s-spec"><span class="s-label">Specified</span><small>Precondition</small><p>Resource download complete</p><small>Expected result</small><p>Toast is shown, then the game closes.</p></div></div><div class="s-observed-col"><div class="s-observed"><div class="s-observed-h"><span class="s-label">Observed</span><span class="s-status f">Failed</span></div><small>Result</small><p>Game closed with no toast shown.</p><small>Steps</small><ol class="s-steps"><li data-fx="on:6"><i>1</i><span>Tap close on the privacy notice</span><time>01:14</time></li></ol></div></div></div><div class="s-case-f"><span>1 of 1,247</span><span style="flex:1"></span><span class="s-btn ghost sm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>Previous</span><span class="s-btn ghost sm">Next<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div></div></div></div></div></div></div></div></section><section class="recap" id="recap"><div class="recap-head"><div class="label">Recap</div><h2>Your test cases, played by AI players.</h2><div class="recap-flow" aria-label="The flow"><span class="rf">Upload or pick a build</span><span class="rf-arrow" aria-hidden="true">→</span><span class="rf">Add test cases</span><span class="rf-arrow" aria-hidden="true">→</span><span class="rf strong">AI players run every case</span><span class="rf-arrow" aria-hidden="true">→</span><span class="rf-group"><span class="rf">Result</span><span class="rf">Coverage</span><span class="rf">Case detail</span></span><span class="rf-arrow" aria-hidden="true">→</span><span class="rf">Export CSV</span></div></div><div class="recap-grid"><div class="panel"><h3>Say it to a client</h3><ul class="quotes"><li>Hand over a build and your test cases; AI players run them and show you what failed.</li><li>Every result comes with the video of the AI player&#x27;s attempt.</li><li>No testers to book: the AI players play the build for you.</li></ul></div><div class="panel"><h3>Questions clients ask</h3><details><summary>What do we need to provide?</summary><p>An Android build (APK, up to 500 MB) and a spreadsheet of test cases (CSV or XLSX). Instructions are optional.</p></details><details><summary>How is this different from Functional Test?</summary><p>Functional Test checks recordings your testers already made. Here, AI players play the build and make the recordings themselves.</p></details><details><summary>What if a run fails?</summary><p>The row in Run history turns red and says why. Open it to see the details and start the run again.</p></details><details><summary>Does it work on iOS?</summary><p>Not today. Builds are Android APKs.</p></details><details><summary>Can we compare two builds?</summary><p>Not in this version. Each run has its own report.</p></details></div></div><div class="nextdoc"><a data-doc="" href="06-oracle.html"><span><small>Next · Intelligence</small><b>Oracle — ask about your players</b></span><span aria-hidden="true">→</span></a></div></section><script>(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const layout = document.body.dataset.layout === 'steps' ? 'steps' : 'scroll';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canHover = matchMedia('(hover: hover)').matches;
+
+  /* ---------- ranges: "2", "2-4", "3-", "-1", "0,4-5" ---------- */
+  function inRange(spec, k) {
+    return String(spec).split(',').some(part => {
+      const m = part.trim().match(/^(\d*)(-?)(\d*)$/);
+      if (!m || (m[1] === '' && m[3] === '' )) return false;
+      const a = m[1] === '' ? -Infinity : +m[1];
+      const b = m[2] ? (m[3] === '' ? Infinity : +m[3]) : a;
+      return k >= a && k <= b;
+    });
+  }
+
+  /* ---------- layout switch + doc links ---------- */
+  $$('.layswitch a').forEach(a => a.setAttribute('aria-current', String(a.dataset.lay === layout)));
+
+  /* ---------- fit product screens to their box ---------- */
+  function fit(shot) {
+    const cs = getComputedStyle(shot);
+    const w = parseFloat(cs.getPropertyValue('--w')) || 960;
+    const h = parseFloat(cs.getPropertyValue('--h')) || 0;
+    const box = shot.parentElement;
+    let s = box.clientWidth / w;
+    if (h && box.clientHeight > 0) s = Math.min(s, box.clientHeight / h);
+    shot.style.setProperty('--s', Math.max(0.2, Math.min(1, s)).toFixed(4));
+  }
+  const ro = new ResizeObserver(entries => entries.forEach(e => $$(':scope > .shot', e.target).forEach(fit)));
+  $$('.visual').forEach(v => ro.observe(v));
+
+  /* ---------- stories ---------- */
+  const stories = [];
+
+  function Story(root) {
+    const inDialog = !!root.closest('dialog');
+    if (inDialog) root.classList.add('in-dialog');
+    const scroll = layout === 'scroll' && !inDialog;
+    const cards = $$('.card', root);
+    const N = cards.length;
+    root.style.setProperty('--n', N);
+    const atEls = $$('.visual [data-at]', root);
+    const fxEls = $$('.visual [data-fx]', root).map(el => ({
+      el,
+      rules: el.dataset.fx.trim().split(/\s+/).map(t => [t.slice(0, t.indexOf(':')), t.slice(t.indexOf(':') + 1)])
+    }));
+    const bar = $('.progress i', root);
+    const dots = $('.dots', root);
+    const prev = $('[data-prev]', root);
+    const next = $('[data-next]', root);
+    const chapterBtns = inDialog ? [] : $$('.chapters [data-jump]');
+    const flowItems = $$('.flow [data-node]', root);
+    const flowOrder = flowItems.map(li => li.dataset.node);
+    const cam = $('.cam', root);
+    const shot = cam?.closest('.shot');
+    let beat = -1;
+
+    flowItems.forEach(li => $('button', li).addEventListener('click', () => {
+      const k = cards.findIndex(c => c.dataset.node === li.dataset.node);
+      if (k > -1) jump(k);
+    }));
+
+    function aim(card) {
+      if (!cam) return;
+      const cs = getComputedStyle(shot);
+      const W = parseFloat(cs.getPropertyValue('--w')) || 960;
+      const H = parseFloat(cs.getPropertyValue('--h')) || 600;
+      const f = (card.dataset.focus || '').trim().split(/\s+/).map(Number);
+      let tx = 0, ty = 0, z = 1;
+      if (f.length === 3 && f.every(Number.isFinite)) {
+        z = f[2];
+        tx = Math.min(0, Math.max(W - W * z, W / 2 - f[0] * z));
+        ty = Math.min(0, Math.max(H - H * z, H / 2 - f[1] * z));
+      }
+      cam.style.transform = `translate(${tx}px, ${ty}px) scale(${z})`;
+    }
+
+    cards.forEach((c, k) => {
+      const count = $('.count', c);
+      if (count) count.textContent = `${String(k + 1).padStart(2, '0')} / ${String(N).padStart(2, '0')}`;
+      if (dots) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-label', `Go to ${k + 1}: ${$('h2', c)?.textContent || ''}`);
+        b.addEventListener('click', () => jump(k));
+        dots.appendChild(b);
+      }
+    });
+
+    function set(k) {
+      k = Math.max(0, Math.min(N - 1, k));
+      if (k === beat) return;
+      const was = beat;
+      beat = k;
+      cards.forEach((c, j) => { c.classList.toggle('off', j !== k); c.inert = j !== k; });
+      atEls.forEach(el => el.classList.toggle('off', !inRange(el.dataset.at, k)));
+      fxEls.forEach(({ el, rules }) => rules.forEach(([cls, r]) => el.classList.toggle(cls, inRange(r, k))));
+      if (dots) $$('button', dots).forEach((b, j) => { b.classList.toggle('on', j === k); b.classList.toggle('done', j < k); });
+      chapterBtns.forEach(b => b.classList.toggle('on', +b.dataset.jump === k));
+      const ni = flowOrder.indexOf(cards[k].dataset.node);
+      flowItems.forEach((li, j) => { li.classList.toggle('on', j === ni); li.classList.toggle('done', j < ni); });
+      if (flowItems[ni]) {
+        const li = flowItems[ni], bar = li.parentElement;
+        const left = li.getBoundingClientRect().left - bar.getBoundingClientRect().left + bar.scrollLeft - (bar.clientWidth - li.offsetWidth) / 2;
+        bar.scrollLeft = Math.max(0, left);
+      }
+      aim(cards[k]);
+      if (prev) prev.disabled = k === 0;
+      if (next) next.textContent = k === N - 1 ? (root.dataset.endLabel || 'Start over') : 'Next';
+      if (!scroll && bar) bar.style.width = `${((k + 1) / N) * 100}%`;
+      root.dispatchEvent(new CustomEvent('beat', { detail: { beat: k, prev: was } }));
+    }
+
+    function jump(k) {
+      if (!scroll) return set(k);
+      const top = root.getBoundingClientRect().top + scrollY;
+      const span = root.offsetHeight - innerHeight;
+      scrollTo({ top: top + span * ((k + 0.5) / N), behavior: reduce ? 'auto' : 'smooth' });
+    }
+
+    function forward() {
+      if (beat < N - 1) return set(beat + 1);
+      if (root.dataset.endHref) location.href = root.dataset.endHref;
+      else if ('endClose' in root.dataset) root.closest('dialog').close();
+      else set(0);
+    }
+
+    if (scroll) {
+      let queued = false;
+      const update = () => {
+        queued = false;
+        const span = root.offsetHeight - innerHeight;
+        const p = Math.min(1, Math.max(0, -root.getBoundingClientRect().top / span));
+        if (bar) bar.style.width = `${p * 100}%`;
+        set(Math.min(N - 1, Math.floor(p * N)));
+      };
+      addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
+      addEventListener('resize', update);
+      update();
+    } else {
+      prev?.addEventListener('click', () => set(beat - 1));
+      next?.addEventListener('click', forward);
+      set(0);
+    }
+
+    chapterBtns.forEach(b => b.addEventListener('click', () => {
+      jump(+b.dataset.jump);
+      if (!scroll) root.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    }));
+
+    root.dataset.ready = '1';
+    const api = { root, set, jump, forward, back: () => set(beat - 1), inDialog, scroll, get beat() { return beat; } };
+    stories.push(api);
+    return api;
+  }
+
+  $$('[data-story]').forEach(Story);
+
+  /* ---------- keyboard (step layout + dialogs) ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') hideTip();
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    if (e.target.closest('input, textarea, select, [contenteditable]')) return;
+    const open = $('dialog[open]');
+    const s = open ? stories.find(x => open.contains(x.root)) : stories.find(x => !x.inDialog && !x.scroll);
+    if (!s) return;
+    e.preventDefault();
+    e.key === 'ArrowRight' ? s.forward() : s.back();
+  });
+
+  /* ---------- term tooltips ---------- */
+  const tip = document.createElement('div');
+  tip.className = 'tip';
+  tip.setAttribute('role', 'tooltip');
+  tip.hidden = true;
+  let tipFor = null;
+  function showTip(el) {
+    const host = el.closest('dialog') || document.body;
+    if (tip.parentNode !== host) host.appendChild(tip);
+    const b = document.createElement('b');
+    b.textContent = el.dataset.title || el.textContent.trim();
+    tip.replaceChildren(b, document.createTextNode(el.dataset.def || ''));
+    tip.hidden = false;
+    const r = el.getBoundingClientRect();
+    const x = Math.min(Math.max(8, r.left + r.width / 2 - tip.offsetWidth / 2), innerWidth - tip.offsetWidth - 8);
+    let y = r.top - tip.offsetHeight - 10;
+    if (y < 8) y = r.bottom + 10;
+    tip.style.left = `${x}px`;
+    tip.style.top = `${y}px`;
+    tipFor = el;
+  }
+  function hideTip() { tip.hidden = true; tipFor = null; }
+  document.addEventListener('click', e => {
+    const t = e.target.closest('.term');
+    if (!t) return hideTip();
+    tipFor === t && !canHover ? hideTip() : showTip(t);
+  });
+  if (canHover) {
+    document.addEventListener('mouseover', e => { const t = e.target.closest('.term'); if (t) showTip(t); });
+    document.addEventListener('mouseout', e => { if (e.target.closest('.term')) hideTip(); });
+  }
+  addEventListener('scroll', hideTip, { passive: true, capture: true });
+
+  /* ---------- dialogs ---------- */
+  document.addEventListener('click', e => {
+    const opener = e.target.closest('[data-open]');
+    if (opener) {
+      const d = document.getElementById(opener.dataset.open);
+      d.showModal();
+      stories.filter(s => d.contains(s.root)).forEach(s => s.set(0));
+      $$('.visual', d).forEach(v => $$(':scope > .shot', v).forEach(fit));
+      return;
+    }
+    if (e.target.closest('[data-close]')) e.target.closest('dialog').close();
+    else if (e.target.matches('dialog.sheet')) e.target.close();
+  });
+
+  window.Guide = { stories, $, $$ };
+})();
+</script></body></html>

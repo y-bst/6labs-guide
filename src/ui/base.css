@@ -1,0 +1,46 @@
+/* ============================================================
+   6labs Studio UI kit · base: app frame and shared keyframes
+   at their real sizes. Screens are scaled to fit by guide.js.
+   Tokens live in tokens.css, loaded before this.
+   ============================================================ */
+.shot{width:100%;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;border-radius:18px}
+.shot-canvas{width:var(--w,960px);zoom:var(--s,1);font:400 16px/1.5 var(--body);color:var(--ink);text-align:left}
+.shot-canvas *{box-sizing:border-box}
+.shot-canvas button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+
+/* app frame — fills the canvas, whose height is the --h set by <Story>, so the
+   screen size is stated once, in Story.tsx */
+.s-frame{height:100%;border-radius:18px;overflow:hidden;border:1px solid rgba(3,13,45,.08);box-shadow:0 2px 6px rgba(3,13,45,.05),0 24px 60px rgba(3,13,45,.12);background:#F1F1F1}
+.grow{flex:1}
+/* sidebar column, then the page. --nav is the sidebar width; Intelligence runs narrower. */
+.s-app{display:grid;grid-template-columns:var(--nav,256px) minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:100%;min-height:100%}
+.s-app.intel{--nav:244px}
+.s-app>*{min-height:0}
+.s-logo{display:flex;align-items:center;gap:8px;font:700 22px/1 var(--display);letter-spacing:-.02em;padding:4px 6px}
+.s-logo i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#0D5ED4);box-shadow:inset 0 0 0 6px rgba(255,255,255,.28)}
+.s-area{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:12px;background:var(--line)}
+.s-area span{height:36px;display:grid;place-items:center;border-radius:9px;font:600 14px/1 var(--display);color:var(--ink-3)}
+.s-area span.on{background:var(--brand);color:#fff}
+.s-main{position:relative;padding:36px 40px 40px;background-color:var(--canvas);background-image:radial-gradient(60% 70% at 12% 8%,rgba(123,76,255,.25) 0%,rgba(123,76,255,0) 70%),radial-gradient(55% 60% at 88% 12%,rgba(22,163,74,.18) 0%,rgba(22,163,74,0) 70%),radial-gradient(60% 55% at 85% 95%,rgba(23,112,239,.2) 0%,rgba(23,112,239,0) 70%),radial-gradient(50% 50% at 10% 100%,rgba(194,5,104,.08) 0%,rgba(194,5,104,0) 70%)}
+.s-main.flat{padding:28px}
+
+
+/* sidebar shell — the same in both areas. What differs between them stays in the area's own
+   stylesheet: the tree style (.i-tree vs .s-tree), the SOON badge, and the group heading icon. */
+.s-side{background:#fff;border-right:1px solid var(--line);padding:16px 12px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.s-side .s-area{background:var(--tint-l)}
+.s-rule{height:1px;background:var(--line);margin:2px -12px 0}
+.s-nav{display:flex;flex-direction:column;gap:2px;min-height:0}
+.s-nav a{position:relative;display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border-radius:8px;font-size:14px;color:var(--ink);white-space:nowrap;text-decoration:none;transition:background .25s,color .25s}
+.s-nav a svg{flex:none;color:var(--ink-2)}
+.s-nav a.on{background:var(--tint-l);color:var(--brand);font-weight:500}
+.s-nav a.on svg{color:var(--brand)}
+/* group heading; the colour says which group it is */
+.s-nav-h{display:flex;align-items:center;justify-content:space-between;padding:14px 10px 4px;font:600 11px/1 var(--display);letter-spacing:.09em;text-transform:uppercase}
+.s-nav-h.ca{color:var(--violet)}
+.s-nav-h.cx{color:var(--brand)}
+.s-nav-h.hs{color:var(--ink-4)}
+.s-nav-h.ai{color:var(--green)}
+
+@keyframes s-fill{from{width:0}}
+@keyframes s-spin{to{transform:rotate(360deg)}}

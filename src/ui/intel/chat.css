@@ -1,0 +1,52 @@
+/* Intelligence · chat and thinking steps */
+.i-chat{position:absolute;left:0;right:0;top:52px;bottom:0;padding:20px 30px 0;overflow:hidden}
+.i-roll{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.i-roll.down{transform:translateY(-318px)}
+.i-qb{margin-left:auto;width:max-content;max-width:70%;padding:10px 14px;border-radius:16px;background:var(--subtle);font-size:14px}
+.i-card{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.i-card-b{padding:18px 20px}
+.i-srch{display:flex;align-items:center;gap:6px;font:600 15px/1 var(--display)}
+.i-srch span{font:400 12px/1 var(--body);color:var(--ink-4)}
+.i-srch svg{color:var(--ink-3)}
+.i-vids{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.i-vid{position:relative;aspect-ratio:16/8.6;border-radius:8px;background:linear-gradient(180deg,#1C2340,#0B1020)}
+.i-vid::before{content:"";position:absolute;left:50%;top:50%;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;background:rgba(255,255,255,.16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9.5 7.5l7 4.5-7 4.5z' fill='white'/%3E%3C/svg%3E") center/16px no-repeat}
+.i-dur{position:absolute;right:8px;bottom:7px;display:flex;align-items:center;gap:4px;font:600 11px/1 var(--display);color:#fff}
+.i-link{display:inline-block;margin-top:10px;font:600 12px/1 var(--display);color:var(--brand)}
+.i-ans{margin-top:14px;font-size:13.5px;line-height:1.6;color:var(--ink-3)}
+.i-ans p{margin:0}
+.i-ans b{color:var(--ink);font-weight:600}
+.i-ans ul{margin:0;padding-left:18px}
+.i-foot{display:flex;align-items:center;gap:10px;margin-top:16px;color:var(--ink-3)}
+.i-credit{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:6px;background:#EDEEF1;font-size:11.5px;color:var(--ink)}
+.i-foot .thumbs{margin-left:auto;display:flex;gap:12px}
+.i-rel{padding:16px 20px 18px;border-top:1px solid var(--line)}
+.i-rel h4{margin:0 0 4px;font:600 15px/1 var(--display)}
+.i-rel span{display:flex;align-items:center;gap:10px;height:50px;padding:0 14px;margin-top:8px;border:1px solid var(--line-2);border-radius:12px;font-size:13.5px}
+.i-rel span svg{color:var(--ink-3)}
+.i-follow{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:14px 18px 12px;background:#fff;border:1px solid var(--line);border-radius:16px 16px 0 0;box-shadow:0 -10px 28px rgba(3,13,45,.06)}
+.shot .i-follow.hl{position:absolute}
+.i-follow .q{min-height:34px;font-size:14px;color:var(--ph)}
+
+/* thinking steps */
+.i-think{position:relative;margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 22px 8px;overflow:hidden}
+.i-think::before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:var(--brand);transition:width .2s}
+.i-think.play::before{animation:thinkbar 4.4s cubic-bezier(.3,.6,.3,1) forwards}
+@keyframes thinkbar{to{width:88%}}
+.i-step{position:relative;display:grid;grid-template-columns:18px minmax(0,1fr);gap:12px;padding-bottom:14px}
+.i-step::before{content:"";position:absolute;left:8.25px;top:22px;bottom:2px;width:1.5px;background:var(--line)}
+.i-step:last-child::before{display:none}
+.i-step .ck{width:18px;height:18px;margin-top:1px;border-radius:50%;background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5.5 12.5l4 4L18.5 8' stroke='white' stroke-width='3.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/11px no-repeat}
+.i-step .spin{width:18px;height:18px;margin-top:1px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--ink-3);animation:s-spin .9s linear infinite}
+.i-step b{font:600 14px/1.3 var(--display)}
+.i-step b small{font:400 10.5px/1 var(--body);color:var(--ink-4);margin-left:6px}
+.i-step p{margin:3px 0 0;font-size:12.5px;color:var(--ink-3)}
+.i-hit{margin-top:8px;padding:9px 12px;border-left:3px solid var(--amber);background:#FFF8E6;border-radius:0 6px 6px 0;font-size:13px;color:var(--ink)}
+.i-hit b{font:600 13px/1 var(--body)}
+.i-think.play .i-step{animation:stepin .45s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--k) * .55s)}
+@keyframes stepin{from{opacity:0;transform:translateY(8px)}}
+.i-step.focus{background:linear-gradient(90deg,rgba(123,76,255,.08),rgba(123,76,255,0) 80%);margin:0 -22px;padding:8px 22px 14px;border-radius:0}
+.i-step.focus>div>b{color:var(--violet)}
+.i-step.focus::before{left:30.25px;top:30px}
+
+.exp-dd{right:18px;top:58px;width:360px}
