@@ -6,7 +6,7 @@ import { Layer } from '../shell/scenes';
 import { Icon } from '../ui/Icon';
 import { IntelScreen, PageHead, ScreenBar } from '../ui/intel/app';
 import { AddMenu, AskBox, HomeLauncher, Query, SourceMenu, SuggestedPrompts } from '../ui/intel/ask';
-import { AnswerActions, AnswerCard, AnswerCaveat, AnswerNote, AnswerSection, AnswerTable, Cites, Conversation, ExploreNext, ExportButton, ExportMenu, FollowUpBox, QuestionBubble, ThinkingSteps, VideoAnalysisCta } from '../ui/intel/chat';
+import { AnswerActions, AnswerBI, AnswerCard, AnswerCaveat, AnswerMeta, AnswerNote, AnswerSection, AnswerTable, Cites, Conversation, ExploreNext, ExportButton, ExportMenu, FollowUpBox, QuestionBubble, ThinkingSteps, VideoAnalysisCta } from '../ui/intel/chat';
 import { IntelMap } from '../ui/intel/IntelMap';
 import { Click } from '../ui/Click';
 
@@ -17,6 +17,8 @@ function BooyahAnswer() {
       <AnswerSection n="01" kicker="What happened">
         <em>412</em> booyah finishes in the last 7 days — the top <em>3.1%</em> of matches played.
       </AnswerSection>
+      <AnswerMeta hl="answer" items={[['BlueStacks sessions'], ['your data warehouse — not connected'], ['players', '2,365'], ['matches', '13,290']]} />
+      <AnswerBI>No BI connection found, so Oracle answered from BlueStacks gameplay. Some figures may not cover your whole player base. <b>Connect your BI source</b> to re-run this on your own data.</AnswerBI>
       <p>All figures cover ranked squad matches that reached the final circle, compared with the matches that placed but did not win.</p>
       <h4>What separates a win from a top-5 finish?</h4>
       <AnswerTable
@@ -60,6 +62,7 @@ function BooyahVideo() {
       <AnswerSection n="01" kicker="What happened">
         Winning squads commit to a rotation early and hold it; the losing pattern is a squad still deciding.
       </AnswerSection>
+      <AnswerMeta items={[['BlueStacks sessions'], ['videos read', '200']]} />
       <h4>Pattern A · Winners open the final fight first</h4>
       <p>In 7 of 10 final circles the winning squad initiates rather than holding. The average final-zone engagement lasts 38 seconds <Cites ids={[12, 41, 67]} />, and the squad that opens has taken the high ground before the last rotation <Cites ids={[86, 94]} />.</p>
       <h4>Pattern B · The second circle is where the gap opens</h4>
@@ -109,20 +112,15 @@ function Screen() {
 
       <Layer show="thinking..">
         <ScreenBar title={BOOYAH.question}><Click on="export"><ExportButton hl="export" /></Click></ScreenBar>
-        <Conversation scrollDown="more">
+        <Conversation scroll={{ handoff: 'footer', second: 'more', end: 'export..' }}>
           <QuestionBubble>{BOOYAH.question}</QuestionBubble>
           <ThinkingSteps steps={BOOYAH.steps} show="thinking..radiologist" play="thinking..radiologist" focus={{ steps: [3, 4], during: 'radiologist' }} />
-          <AnswerCard
-            show="answer.."
-            meta={[['BlueStacks sessions'], ['your data warehouse — not connected'], ['players', '2,365'], ['matches', '13,290']]}
-            note={<>No BI connection found, so Oracle answered from BlueStacks gameplay. Some figures may not cover your whole player base. <b>Connect your BI source</b> to re-run this on your own data.</>}
-            highlight={{ meta: 'answer', next: 'footer' }}
-          >
+          <AnswerCard show="answer.." agent={{ name: 'Oracle', did: "Analysed 13,290 ranked squad matches from the last 7 days" }}>
             <BooyahAnswer />
             <VideoAnalysisCta hl="footer" click="footer" />
             <ExploreNext kicker="or explore the following directions" items={BOOYAH.related} />
           </AnswerCard>
-          <AnswerCard show="more.." meta={[['BlueStacks sessions'], ['videos read', '200']]}>
+          <AnswerCard show="more.." agent={{ name: 'Oracle', did: 'Watched 200 sessions behind the rotation gap' }}>
             <BooyahVideo />
             <ExploreNext kicker="What to explore next" items={[
               'Do squads that hold the second circle win more often on smaller maps?',

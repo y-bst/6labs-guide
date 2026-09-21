@@ -5,14 +5,18 @@ import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
 import { Click } from '../Click';
 import { Icon } from '../Icon';
 import { AskControls } from './ask';
-import { Btn } from './app';
+import { Btn, Tile } from './app';
 
 /** Scrolling area under the top bar. `scrollDown` slides it up to reveal what's below the answer. */
-export function Conversation({ scrollDown, children }: { scrollDown?: SceneSpec; children: ReactNode }) {
+export function Conversation({ scroll = {}, children }: {
+  /** Where the conversation has scrolled to: the handoff, then the answer after it. */
+  scroll?: { handoff?: SceneSpec; second?: SceneSpec; end?: SceneSpec };
+  children: ReactNode;
+}) {
   const { cls } = useScenes();
   return (
     <div className="i-chat">
-      <div {...cls('i-roll', { down: scrollDown })}>{children}</div>
+      <div {...cls('i-roll', { d1: scroll.handoff, d2: scroll.second, d3: scroll.end })}>{children}</div>
     </div>
   );
 }
@@ -63,30 +67,42 @@ export function ThinkingSteps({ steps, show, play, focus }: {
  * Oracle's answer, as the product writes it: numbered sections, the data it had to work with,
  * a table or two, and what to do next. There is no copy button, credit count or related list.
  */
-export function AnswerCard({ show, meta, note, highlight = {}, children }: {
+export function AnswerCard({ show, agent, children }: {
   show?: SceneSpec;
-  /** The chips above the answer: where the numbers came from, and how many. */
-  meta?: [label: string, value?: string][];
-  /** The "no BI connection" notice, when there is one. */
-  note?: ReactNode;
-  highlight?: { meta?: Toggle; next?: Toggle };
+  /** Which agent answered, and what it did — the line the card opens with. */
+  agent?: { name: string; did: string };
   children: ReactNode;
 }) {
-  const { at, cls } = useScenes();
+  const { at } = useScenes();
   return (
     <div className="i-card" {...at(show)}>
-      {meta && (
-        <div {...cls('i-meta', { hl: highlight.meta })}>
-          {meta.map(([label, value]) => (
-            <span key={label} className={value ? 'i-chip' : 'i-chip off'}>{value ? <><b>{value}</b>{label}</> : label}</span>
-          ))}
+      {agent && (
+        <div className="i-agent">
+          <Tile page="oracle" iconSize={18} />
+          <div><b>{agent.name}</b><span>{agent.did}</span></div>
         </div>
       )}
-      {note && <div className="i-bi"><Icon name="info" size={15} /><span>{note}</span></div>}
       <div className="i-ans">{children}</div>
     </div>
   );
 }
+
+/** Where the figures came from, and how many. Sits under the section it qualifies. */
+export function AnswerMeta({ items, hl }: { items: [label: string, value?: string][]; hl?: Toggle }) {
+  const { cls } = useScenes();
+  return (
+    <div {...cls('i-meta', { hl })}>
+      {items.map(([label, value]) => (
+        <span key={label} className={value ? 'i-chip' : 'i-chip off'}>{value ? <><b>{value}</b>{label}</> : label}</span>
+      ))}
+    </div>
+  );
+}
+
+/** The notice Oracle shows when it had to answer without your own data. */
+export const AnswerBI = ({ children }: { children: ReactNode }) => (
+  <div className="i-bi"><Icon name="info" size={15} /><span>{children}</span></div>
+);
 
 /** A numbered section of an answer: 01 WHAT HAPPENED, 03 WHAT TO DO NEXT. */
 export function AnswerSection({ n, kicker, tone = 'blue', hl, children }: {
