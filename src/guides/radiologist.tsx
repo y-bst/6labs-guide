@@ -5,7 +5,7 @@ import { defineGuide } from '../shell/guide';
 import { Layer } from '../shell/scenes';
 import { Icon } from '../ui/Icon';
 import { IntelScreen, PageHead, Tile } from '../ui/intel/app';
-import { AskBox, Query } from '../ui/intel/ask';
+import { AskBox, HomeLauncher, Query } from '../ui/intel/ask';
 import { QuestionBubble, Step } from '../ui/intel/chat';
 import { BoxTitle, ConceptBox, ConceptScene } from '../ui/intel/concept';
 import { SessionDetail } from '../ui/intel/detail';
@@ -28,7 +28,11 @@ const ANATOMY = [
 function Screen() {
   const d = SESSION_DETAIL;
   return (
-    <IntelScreen sidebar={{ active: { radiologist: true }, highlight: { radiologist: 'open' } }}>
+    <IntelScreen sidebar={{ active: { newQuery: 'home', radiologist: 'open..' }, highlight: { agents: 'home', radiologist: 'open' } }}>
+      <Layer show="home" className="i-pg">
+        <HomeLauncher agent="radiologist" switchHl="home" />
+      </Layer>
+
       <Layer show="open" className="i-pg">
         <PageHead page="radiologist" />
         <AskBox hl="open"><Query>{PLACEHOLDERS.radiologist}</Query></AskBox>
@@ -43,36 +47,19 @@ function Screen() {
         ))}
       </ResultsPage>
 
-      <Layer show="card" className="r-anat">
-        <SessionCard session={PICKED} allTags />
-        {ANATOMY.map((a, i) => <span key={a.title} className="r-num" style={{ top: `${a.top}px` }}>{i + 1}</span>)}
-        <div className="r-legend">
-          {ANATOMY.map((a, i) => <div key={a.title}><i>{i + 1}</i><span><b>{a.title}</b>{a.text}</span></div>)}
-        </div>
-      </Layer>
-
       <FiltersDialog show="filters" placementHl="filters" />
 
-      <SidePanel show="panel..info" session={PICKED} detailHl="info" scroll={{ y1: 'summary..instructions', y2: 'info' }}>
+      <SidePanel show="panel..info" session={PICKED} detailHl="info" scroll={{ y2: 'info' }}>
         <Player session={PICKED} markersHl="panel" />
-        <WhyThisVideo facts={d.why.facts} text={d.why.text} hl="why" />
         <PanelSection icon="sparkle" title="AI Summary" hl="summary">
           <p>{d.summary}</p>
           <Tags ai={PICKED.ai} tags={PICKED.tags} style={{ marginTop: '12px' }} />
         </PanelSection>
-        <PanelSection icon="robot" title="Session Instructions" hl="instructions">
-          <Instructions given={d.instructions.given}>{d.instructions.text}</Instructions>
-        </PanelSection>
-        <PanelSection icon="events" title="Detected Events" hl="summary">
+        <PanelSection icon="events" title="Detected Events" hl="info">
           {EVENTS.slice(0, 2).map(e => <EventRow key={e.type} event={e} />)}
           <div className="r-more">Show All Events ({EVENTS.length})</div>
         </PanelSection>
         <PanelSection icon="stats" title="Session Info" hl="info"><TileGrid tiles={d.info} /></PanelSection>
-        <PanelSection icon="stats" title="Gameplay Statistics" hl="info"><Stats stats={d.stats} /></PanelSection>
-        <PanelSection icon="user" title="User Profile" hl="info">
-          <Profile name={d.profile.name} kind={d.profile.kind} style={d.profile.style} />
-          <TileGrid tiles={d.profile.tiles} />
-        </PanelSection>
       </SidePanel>
 
       <Layer show="detail..playlist">
@@ -116,9 +103,9 @@ export default defineGuide({
   },
 
   steps: [
+    { id: 'home', label: 'Home' },
     { id: 'open', label: 'Open Radiologist' },
     { id: 'search', label: 'Search' },
-    { id: 'card', label: 'Session card' },
     { id: 'filters', label: 'Filters' },
     { id: 'panel', label: 'Side panel' },
     { id: 'detail', label: 'Full detail' },
@@ -127,11 +114,19 @@ export default defineGuide({
 
   scenes: [
     {
+      id: 'home', step: 'home',
+      title: 'Start from the home screen',
+      body: <>
+        <p>Every agent starts from the same box. The switch above it picks which one answers — here, <b>Radiologist</b>.</p>
+        <p>Radiologist examines gameplay moment by moment, with a video behind every result.</p>
+      </>,
+    },
+    {
       id: 'open', step: 'open',
       title: 'Radiologist finds the moment',
       body: <>
-        <p>Open <b>Radiologist</b> from the sidebar, or pick it with the switch on the home screen.</p>
-        <p>It's built to examine gameplay moment by moment, with a video behind every result. Below the search box, the latest sessions are already listed.</p>
+        <p>Its page opens with the search box and, below it, the sessions 6labs has most recently taken in.</p>
+        <p>You can also open it straight from <b>Core agents</b> in the sidebar.</p>
       </>,
     },
     {
@@ -140,14 +135,6 @@ export default defineGuide({
       body: <>
         <p>Type an action, object or event in plain words, like <b>“guild help requests”</b>, and press the arrow.</p>
         <p>Radiologist brings back every session where it happens. Here it <b>found 6 sessions</b>.</p>
-      </>,
-    },
-    {
-      id: 'card', step: 'card',
-      title: 'What a session card shows',
-      body: <>
-        <p>Each result is a card you can read before you press play: where it came from, how long it runs, and what happened in it.</p>
-        <p>Tags with a <b>✦</b> were added by AI after watching the video.</p>
       </>,
     },
     {
@@ -172,42 +159,19 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'why', step: 'panel', focus: [960, 420, 1.15],
-      title: 'Why this video matched',
-      body: <>
-        <p><b>Why this video</b> explains the match before you watch:</p>
-        <Bullets items={[
-          <>key facts, like game mode, session length and account level</>,
-          <>a few sentences on what the player does, in order</>,
-        ]} />
-      </>,
-    },
-    {
       id: 'summary', step: 'panel', focus: [960, 400, 1.15],
-      title: 'The summary and every event',
-      body: <Bullets items={[
-        <><b>AI summary</b>: the session in one or two sentences, with its tags</>,
-        <><b>Detected events</b>: each moment with its type and time, like <b>Match start · 0:21</b>. Click one to jump to it.</>,
-      ]} />,
-    },
-    {
-      id: 'instructions', step: 'panel', focus: [960, 400, 1.15],
-      title: 'What the AI player was told',
+      title: 'What the session was about',
       body: <>
-        <p>Some sessions are played by a <b>6labs AI player</b> instead of a person. Those show <b>Session instructions</b>: the exact brief the AI player followed, and its play style.</p>
-        <p>Sessions played by people don't have this section.</p>
+        <p><b>AI summary</b> is the session in a sentence or two, written after watching it, with the tags it earned.</p>
+        <p>It is the fastest way to tell whether a result is the one you wanted.</p>
       </>,
     },
     {
       id: 'info', step: 'panel', focus: [960, 400, 1.15],
-      title: 'Who played, and how it went',
+      title: 'Every moment it found',
       body: <>
-        <Bullets items={[
-          <><b>Session info</b>: source, length, region, platform, game mode</>,
-          <><b>Gameplay statistics</b>: eliminations, deaths, placement</>,
-          <><b>User profile</b>: the player, build, number of runs, play style</>,
-        ]} />
-        <p>The numbers cover the last 30 days.</p>
+        <p><b>Detected events</b> lists each moment Radiologist spotted, with its type and time — <b>Match start · 0:21</b>. Click one and the video jumps there.</p>
+        <p>Under it, <b>Session info</b>: where the session came from, how long it ran, and on what.</p>
       </>,
     },
     {
