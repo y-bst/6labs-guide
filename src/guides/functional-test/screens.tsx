@@ -109,7 +109,7 @@ export function Report() {
   return (
     <PageLayer show="result..export">
       <Crumb back trail="Functional test ·" name={FT_RUN.name}><Click on="export"><GhostButton download hl="export">Export CSV</GhostButton></Click></Crumb>
-      <Scroller stops={[['list..steps', 380]]}>
+      <Scroller stops={[['list..steps', 250]]}>
         <div className="s-vcard">
           <VerifyHeader kind="Functional test report" name={FT_RUN.name} />
           <Scorecard hlResult="result" hlCoverage="coverage" />

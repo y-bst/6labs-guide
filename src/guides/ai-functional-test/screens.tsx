@@ -111,7 +111,7 @@ export function Report() {
   return (
     <PageLayer show="report..export">
       <Crumb back trail="AI functional test ·" name={AIF_RUN.name}><Click on="export"><GhostButton download hl="export">Export CSV</GhostButton></Click></Crumb>
-      <Scroller stops={[['list..export', 380]]}>
+      <Scroller stops={[['list..export', 250]]}>
         <div className="s-vcard">
           <VerifyHeader kind="AI functional test report" name={AIF_RUN.name} />
           <Scorecard hlResult="report" />

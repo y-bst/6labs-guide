@@ -109,7 +109,7 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'list', step: 'list', focus: [717, 470, 1.28],
+      id: 'list', step: 'list', focus: [717, 300, 1.28],
       title: 'Find any case',
       body: <>
         <p>Under the scores is every case that ran, one row each: its ID, the case, its category, the <b>reason</b> for the outcome and the status.</p>
@@ -117,7 +117,7 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'case', step: 'case',
+      id: 'case', step: 'case', focus: [717, 300, 1.28],
       title: 'Watch what the AI player did',
       body: <>
         <p>Open any case. The video is marked <b>Played by an AI player</b>. <b>Specified</b> shows what your sheet expects; <b>Observed</b> shows what happened.</p>
