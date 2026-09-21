@@ -78,12 +78,11 @@ export function AskBox({ hl, controls, send, click, style, menus, children }: {
 
 /* ---------- menus ---------- */
 
-const SOURCES: { name: string; icon: 'bs' | 'yt' | 'pc' | 'mobile' | 'lib'; color?: string }[] = [
+const SOURCES: { name: string; icon: 'bs' | 'yt' | 'pc' | 'mobile'; color?: string; soon?: boolean }[] = [
   { name: 'BlueStacks', icon: 'bs' },
   { name: 'YouTube', icon: 'yt' },
-  { name: 'SDK – PC', icon: 'pc', color: 'var(--brand)' },
-  { name: 'SDK – Mobile', icon: 'mobile', color: 'var(--brand)' },
-  { name: 'Library', icon: 'lib', color: 'var(--ink-2)' },
+  { name: 'SDK – Mobile', icon: 'mobile', soon: true },
+  { name: 'SDK – PC', icon: 'pc', soon: true },
 ];
 
 /** Where the answer's data comes from. BlueStacks is selected. */
@@ -93,7 +92,7 @@ export function SourceMenu({ show }: { show?: SceneSpec }) {
     <div className="i-menu src-dd" {...at(show)}>
       <div className="mh">Sources</div>
       {SOURCES.map((s, i) => (
-        <div key={s.name} className={i === 0 ? 'i-mi sel' : 'i-mi'}>
+        <div key={s.name} className={[i === 0 ? 'i-mi sel' : 'i-mi', s.soon ? 'off' : ''].filter(Boolean).join(' ')}>
           <Icon name={s.icon} style={s.color ? { color: s.color } : undefined} />{s.name}
         </div>
       ))}

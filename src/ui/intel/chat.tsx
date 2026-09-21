@@ -2,6 +2,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { PLACEHOLDERS, type ThinkingStep } from '../../data/intel';
 import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
+import { Click } from '../Click';
 import { Icon } from '../Icon';
 import { AskControls } from './ask';
 import { Btn } from './app';
@@ -58,42 +59,93 @@ export function ThinkingSteps({ steps, show, play, focus }: {
   );
 }
 
-/** Oracle's answer: source videos, the answer text, copy/credits/rating, and related questions. */
-export function AnswerCard({ show, sources, credits, related, highlight = {}, children }: {
+/**
+ * Oracle's answer, as the product writes it: numbered sections, the data it had to work with,
+ * a table or two, and what to do next. There is no copy button, credit count or related list.
+ */
+export function AnswerCard({ show, meta, note, highlight = {}, children }: {
   show?: SceneSpec;
-  /** Durations of the source videos. */
-  sources: string[];
-  credits: number;
-  related: string[];
-  highlight?: { sources?: Toggle; footer?: Toggle; related?: Toggle };
-  /** The answer text. */
+  /** The chips above the answer: where the numbers came from, and how many. */
+  meta?: [label: string, value?: string][];
+  /** The "no BI connection" notice, when there is one. */
+  note?: ReactNode;
+  highlight?: { meta?: Toggle; next?: Toggle };
   children: ReactNode;
 }) {
   const { at, cls } = useScenes();
   return (
     <div className="i-card" {...at(show)}>
-      <div className="i-card-b">
-        <div {...cls('', { hl: highlight.sources })}>
-          <div className="i-srch">Sources <span>· {sources.length} videos</span><Icon name="down" size={14} style={{ transform: 'rotate(180deg)' }} /></div>
-          <div className="i-vids">
-            {sources.map((d, i) => <div key={i} className="i-vid"><span className="i-dur"><Icon name="clock" size={12} />{d}</span></div>)}
-          </div>
-          <span className="i-link">See these in Gameplay Library</span>
+      {meta && (
+        <div {...cls('i-meta', { hl: highlight.meta })}>
+          {meta.map(([label, value]) => (
+            <span key={label} className={value ? 'i-chip' : 'i-chip off'}>{value ? <><b>{value}</b>{label}</> : label}</span>
+          ))}
         </div>
-        <div className="i-ans">{children}</div>
-        <div {...cls('i-foot', { hl: highlight.footer })}>
-          <Icon name="copy" size={16} />
-          <span className="i-credit">{credits} Credits Used</span>
-          <span className="thumbs"><Icon name="like" size={20} /><Icon name="dislike" size={20} /></span>
-        </div>
-      </div>
-      <div className="i-rel">
-        <h4>Related</h4>
-        {related.map(r => <span key={r} {...cls('', { hl: highlight.related })}><Icon name="bulb" size={16} />{r}</span>)}
-      </div>
+      )}
+      {note && <div className="i-bi"><Icon name="info" size={15} /><span>{note}</span></div>}
+      <div className="i-ans">{children}</div>
     </div>
   );
 }
+
+/** A numbered section of an answer: 01 WHAT HAPPENED, 03 WHAT TO DO NEXT. */
+export function AnswerSection({ n, kicker, tone = 'blue', hl, children }: {
+  n: string;
+  kicker: string;
+  /** blue states what happened, green says what to do about it. */
+  tone?: 'blue' | 'green';
+  hl?: Toggle;
+  children: ReactNode;
+}) {
+  const { cls } = useScenes();
+  return (
+    <div {...cls(`i-sec ${tone}`, { hl })}>
+      <div className="i-sec-k"><i>{n}</i>{kicker}</div>
+      <h3>{children}</h3>
+    </div>
+  );
+}
+
+/** A labelled block inside an answer: an insight drawn from the numbers, or a plain fact. */
+export function AnswerNote({ kind, title, children }: { kind: 'insight' | 'fact'; title: string; children: ReactNode }) {
+  return (
+    <div className={`i-note ${kind}`}>
+      <span className="i-note-k">{kind}</span>
+      <b>{title}</b>
+      <p>{children}</p>
+    </div>
+  );
+}
+
+/** A table of the numbers behind an answer. */
+export function AnswerTable({ head, rows, footnote }: { head: string[]; rows: (string | number)[][]; footnote?: ReactNode }) {
+  return (
+    <>
+      <div className="i-table" style={{ ['--cols']: head.length } as CSSProperties}>
+        <div className="i-tr head">{head.map(h => <span key={h}>{h}</span>)}</div>
+        {rows.map(r => <div key={String(r[0])} className="i-tr">{r.map((c, i) => <span key={i}>{c}</span>)}</div>)}
+      </div>
+      {footnote && <p className="i-foot-note">{footnote}</p>}
+    </>
+  );
+}
+
+/** The offer to go and watch the sessions behind the numbers. */
+export function VideoAnalysisCta({ hl, click }: { hl?: Toggle; click?: SceneSpec }) {
+  const { cls } = useScenes();
+  const btn = <span className="i-btn pri">Run video analysis</span>;
+  return (
+    <div {...cls('i-vacta', { hl })}>
+      <div><b>The analytics located the drop-off. The sessions can show why.</b><span>Oracle will watch the matching gameplay and come back with what players actually did.</span></div>
+      {click ? <Click on={click}>{btn}</Click> : btn}
+    </div>
+  );
+}
+
+/** A clip reference inside video-analysis prose: the numbered chips that open a session. */
+export const Cites = ({ ids }: { ids: number[] }) => (
+  <span className="i-cites">{ids.map(i => <b key={i}>{i}</b>)}</span>
+);
 
 /** Box pinned to the bottom of a conversation for the next question. */
 export function FollowUpBox({ hl }: { hl?: Toggle }) {

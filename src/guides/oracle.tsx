@@ -6,26 +6,51 @@ import { Layer } from '../shell/scenes';
 import { Icon } from '../ui/Icon';
 import { IntelScreen, PageHead, ScreenBar } from '../ui/intel/app';
 import { AddMenu, AskBox, HomeLauncher, Query, SourceMenu, SuggestedPrompts } from '../ui/intel/ask';
-import { AnswerCard, Conversation, ExportButton, ExportMenu, FollowUpBox, QuestionBubble, ThinkingSteps } from '../ui/intel/chat';
+import { AnswerCard, AnswerNote, AnswerSection, AnswerTable, Cites, Conversation, ExportButton, ExportMenu, FollowUpBox, QuestionBubble, ThinkingSteps, VideoAnalysisCta } from '../ui/intel/chat';
 import { IntelMap } from '../ui/intel/IntelMap';
 import { Click } from '../ui/Click';
 
+/** The answer as Oracle writes it: what happened, what it means, what to do about it. */
 function BooyahAnswer() {
   return (
     <>
-      <p>412 booyah finishes across the last 7 days (top 3.1% of matches played).</p>
-      <p><b>What the winners share</b></p>
-      <ul>
-        <li>78% landed outside the top three hot drops and rotated in on the second circle</li>
-        <li>Median 4.2 revives given per squad — nearly double the non-winning average</li>
-        <li>81% held a mid-range weapon plus one utility slot, not two rifles</li>
-      </ul>
-      <p><b>Where they win it</b></p>
-      <ul>
-        <li>Final circle held from high ground in 64% of finishes</li>
-        <li>Average final-zone engagement lasts 38 seconds — winners open first in 7 of 10</li>
-      </ul>
-      <p><b>Bottom line:</b> booyah correlates far more with rotation discipline than with early kill count.</p>
+      <AnswerSection n="01" kicker="What happened">
+        <em>412</em> booyah finishes in the last 7 days — the top <em>3.1%</em> of matches played.
+      </AnswerSection>
+      <p>All figures cover ranked squad matches that reached the final circle, compared with the matches that placed but did not win.</p>
+      <h4>What separates a win from a top-5 finish?</h4>
+      <AnswerTable
+        head={['Outcome', 'Matches', 'Landed off hot drop', 'Revives per squad', 'Held high ground']}
+        rows={[
+          ['Booyah', '412', '78.0%', '4.2', '64.0%'],
+          ['Top 5, no win', '1,908', '41.3%', '2.3', '22.1%'],
+        ]}
+        footnote="% of matches in which the squad landed outside the three busiest drops, and held high ground entering the final circle. Counted per match."
+      />
+      <AnswerNote kind="insight" title="Rotation discipline predicts a win better than early kills">
+        Winning squads land away from the crowd in 78% of finishes and rotate in on the second circle. Early kill count is almost flat between the two groups.
+      </AnswerNote>
+      <AnswerNote kind="fact" title="Winners carry one utility slot, not a second rifle">
+        81% of booyah squads held a mid-range weapon plus one utility item. The figure is 46% among squads that placed without winning.
+      </AnswerNote>
+      <AnswerSection n="02" kicker="What to do next" tone="green">
+        The numbers say <em>where</em> squads win it. The sessions can show <em>how</em> they play the final circle.
+      </AnswerSection>
+      <p>Two of the findings above — the rotation gap and the utility-slot split — need the footage to settle. The numbers show what squads carried, not how they used it.</p>
+    </>
+  );
+}
+
+/** What the video analysis comes back with: patterns, each backed by the clips it came from. */
+function BooyahVideo() {
+  return (
+    <>
+      <h4>Pattern A · Winners open the final fight first</h4>
+      <p>In 7 of 10 final circles, the winning squad initiates rather than holding. The average final-zone engagement lasts 38 seconds <Cites ids={[12, 41, 67]} />, and the squad that opens takes the high ground before the last rotation <Cites ids={[86, 94]} />.</p>
+      <h4>Pattern B · The second circle is where the gap opens</h4>
+      <p>Squads that land off the hot drop spend the second circle moving, not looting <Cites ids={[5, 24]} />. Squads that placed without winning are still contesting their landing zone at the same point <Cites ids={[17, 55, 69]} />.</p>
+      <h4>Pattern C · Revives happen mid-rotation, not mid-fight</h4>
+      <p>Winning squads revive while moving between circles <Cites ids={[7, 12, 19]} />. The losing pattern is a revive attempted inside an active fight, which costs a second player <Cites ids={[56, 70, 95]} />.</p>
     </>
   );
 }
@@ -55,8 +80,17 @@ function Screen() {
         <Conversation scrollDown="more">
           <QuestionBubble>{BOOYAH.question}</QuestionBubble>
           <ThinkingSteps steps={BOOYAH.steps} show="thinking..radiologist" play="thinking..radiologist" focus={{ steps: [3, 4], during: 'radiologist' }} />
-          <AnswerCard show="answer.." sources={BOOYAH.sources} credits={BOOYAH.credits} related={BOOYAH.related} highlight={{ sources: 'answer', footer: 'footer', related: 'more' }}>
+          <AnswerCard
+            show="answer.."
+            meta={[['BlueStacks sessions'], ['your data warehouse — not connected'], ['players', '2,365'], ['matches', '13,290']]}
+            note={<>No BI connection found, so Oracle answered from BlueStacks gameplay. Some figures may not cover your whole player base. <b>Connect your BI source</b> to re-run this on your own data.</>}
+            highlight={{ meta: 'answer', next: 'footer' }}
+          >
             <BooyahAnswer />
+            <VideoAnalysisCta hl="footer" click="footer" />
+          </AnswerCard>
+          <AnswerCard show="more..">
+            <BooyahVideo />
           </AnswerCard>
         </Conversation>
         <FollowUpBox hl="more" />
@@ -167,29 +201,29 @@ export default defineGuide({
     {
       id: 'answer', step: 'answer',
       title: 'An answer you can check',
-      body: <Bullets items={[
-        <><b>Sources</b>: the videos Oracle used. Open them to watch, or see them in the Gameplay Library.</>,
-        <><b>The answer</b>: the headline number first, then what stands out, then a <b>bottom line</b>.</>,
-      ]} />,
-    },
-    {
-      id: 'footer', step: 'answer', focus: [712, 575, 1.35],
-      title: 'Copy it, rate it',
       body: <>
-        <p>Under every answer:</p>
+        <p>The answer opens with what it had to work with — which sessions, how many players, and whether your own data warehouse was connected.</p>
         <Bullets items={[
-          <><b>Copy</b>: paste the answer anywhere</>,
-          <><b>Credits used</b>: what this answer cost (20 here)</>,
-          <><b>Thumbs up or down</b>: tells 6labs whether the answer helped</>,
+          <><b>01 What happened</b>: the headline figure first</>,
+          <><b>The table</b>: the numbers behind it, so you can check the claim</>,
+          <><b>Insight</b> and <b>Fact</b>: what the numbers mean, and what they simply say</>,
         ]} />
       </>,
     },
     {
-      id: 'more', step: 'more',
-      title: 'Follow up in the same conversation',
+      id: 'footer', step: 'answer', focus: [712, 560, 1.3],
+      title: 'Then watch the sessions',
       body: <>
-        <p><b>Related</b> suggests the next questions. Tap one to ask it.</p>
-        <p>Or type your own in the box at the bottom. Oracle remembers the conversation, so a short follow-up like <b>“now only squads”</b> works.</p>
+        <p>The numbers say <b>where</b> something happens. To see <b>why</b>, Oracle offers to run a <b>video analysis</b> over the matching gameplay.</p>
+        <p>That is the second half of an answer, and it is a separate step because it reads the footage rather than the figures.</p>
+      </>,
+    },
+    {
+      id: 'more', step: 'more',
+      title: 'What the footage adds',
+      body: <>
+        <p>The video analysis comes back as <b>patterns</b>, each one backed by the clips it came from — the numbered chips open those sessions.</p>
+        <p>Keep going in the box at the bottom. Oracle remembers the conversation, so a short follow-up like <b>“now only squads”</b> works.</p>
       </>,
     },
     {

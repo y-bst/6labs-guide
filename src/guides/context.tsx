@@ -79,7 +79,7 @@ function Screen() {
       </Layer>
 
       {/* Connectors */}
-      <ConnectorsPage show="connectors..kinds" activeHl="connectors" kindDuring="kinds" />
+      <ConnectorsPage show="connectors" activeHl="connectors" />
 
       <Layer show="shared, describe-data">
         <ConnectionDetail
@@ -194,14 +194,6 @@ export default defineGuide({
           <><b>Available to add</b>: tools ready to connect</>,
         ]} />
       </>,
-    },
-    {
-      id: 'kinds', step: 'conn', chapter: 'Connectors · overview',
-      title: 'Pull data in, push insights out',
-      body: <Bullets items={[
-        <><b>Pull in</b> (BigQuery, Snowflake, AppsFlyer, Facebook Ads): Oracle answers from your own numbers, like campaigns, revenue and retention</>,
-        <><b>Push out</b> (Jira, Slack, Discord): findings become tickets, alerts and reports where your team already works</>,
-      ]} />,
     },
     {
       id: 'shared', step: 'conn', chapter: 'Connectors · overview',
