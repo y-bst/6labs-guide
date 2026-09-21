@@ -129,17 +129,20 @@ export function WatchLive({ click }: { click?: SceneSpec }) {
 /* ---------- a run's page ---------- */
 
 /** Report / Videos tabs of a run. */
-export function RunPageTabs({ on, videos, clickReport }: {
+export function RunPageTabs({ on, videos, clickReport, clickVideos }: {
   on: 'report' | 'videos';
   videos: number;
   /** Scenes in which a cursor taps Report, which is how the reader leaves the live view. */
   clickReport?: SceneSpec;
+  /** Scenes in which a cursor taps Videos, which is how the reader reaches the sessions. */
+  clickVideos?: SceneSpec;
 }) {
   const report = <span className={on === 'report' ? 'on' : undefined}>Report</span>;
+  const vids = <span className={on === 'videos' ? 'on' : undefined}>Videos <span className="n">{videos}</span></span>;
   return (
     <div className="s-tabs">
       {clickReport ? <Click on={clickReport}>{report}</Click> : report}
-      <span className={on === 'videos' ? 'on' : undefined}>Videos <span className="n">{videos}</span></span>
+      {clickVideos ? <Click on={clickVideos}>{vids}</Click> : vids}
     </div>
   );
 }

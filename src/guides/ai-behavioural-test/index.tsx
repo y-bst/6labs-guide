@@ -5,7 +5,7 @@ import { defineGuide } from '../../shell/guide';
 import { TestingScreen } from '../../ui/testing/app';
 import { TIcon } from '../../ui/testing/icons';
 import { TestingMap } from '../../ui/testing/TestingMap';
-import { AgentPage, BuildPicker, Live, LiveAgent, Report, Setup, Submit } from './screens';
+import { AgentPage, BuildPicker, Live, LiveAgent, Report, Setup, Submit, Videos } from './screens';
 
 function Screen() {
   return (
@@ -16,6 +16,7 @@ function Screen() {
       <Live />
       <LiveAgent />
       <Report />
+      <Videos />
       <AgentPage />
     </TestingScreen>
   );
@@ -46,6 +47,7 @@ export default defineGuide({
     { id: 'live-agent', label: 'A live agent' },
     { id: 'report', label: 'Report' },
     { id: 'finding', label: 'Findings' },
+    { id: 'videos', label: 'Session videos' },
     { id: 'video', label: 'Agent video' },
   ],
 
@@ -137,6 +139,14 @@ export default defineGuide({
       body: <>
         <p>This one hit <b>{AIB_FINDING.agents} of {AIB_RUN.sessions}</b> agents. The bars show who: {npHit} of {npOf} {np.name.toLowerCase()}s and {whHit} of {whOf} {wh.name.toLowerCase()}s.</p>
         <p>Each numbered clip opens that agent's video at the moment; its colour shows the persona. A <b>recommendation</b> says what to fix.</p>
+      </>,
+    },
+    {
+      id: 'videos', step: 'videos',
+      title: 'Every session it played, kept',
+      body: <>
+        <p>The <b>Videos</b> tab of a finished run holds all twenty sessions. You can come back to it any time — the footage does not go anywhere when the report is written.</p>
+        <p>This is the same grid you watched live, now that every agent has finished.</p>
       </>,
     },
     {

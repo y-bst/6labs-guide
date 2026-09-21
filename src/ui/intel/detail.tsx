@@ -1,9 +1,9 @@
 // A session opened full-page: big player, every detected event, and the player's playlist.
-import { EVENTS, PLAYLIST, SESSIONS, type Session } from '../../data/intel';
+import { EVENTS, PLAYLIST, SESSION_DETAIL, SESSIONS, type Session } from '../../data/intel';
 import { useScenes, type Toggle } from '../../shell/scenes';
 import { Icon } from '../Icon';
 import { ScreenBar } from './app';
-import { EventRow, PlayerControls, Timeline } from './panel';
+import { EventRow, PanelSection, PlayerControls, TileGrid, Timeline } from './panel';
 import { Duration, SourcePill } from './sessions';
 
 /** Other recordings by the same player, grouped by play session. The open one is marked. */
@@ -30,6 +30,7 @@ export function Playlist({ hl }: { hl?: Toggle }) {
 
 export function SessionDetail({ session, eventsHl, playlistHl }: { session: Session; eventsHl?: Toggle; playlistHl?: Toggle }) {
   const { cls } = useScenes();
+  const d = SESSION_DETAIL;
   return (
     <>
       <ScreenBar title={`Session #${session.id}`}><SourcePill source={session.source} /></ScreenBar>
@@ -38,10 +39,15 @@ export function SessionDetail({ session, eventsHl, playlistHl }: { session: Sess
           <div className="r-big"><Duration>{session.duration}</Duration></div>
           <Timeline />
           <PlayerControls duration={session.duration} />
-          <div {...cls('', { hl: eventsHl })} style={{ borderRadius: '10px' }}>
+          <div {...cls('r-devents', { hl: eventsHl })}>
             <div className="r-evh">Detected Events ({EVENTS.length})</div>
             {EVENTS.map(e => <EventRow key={e.type} event={e} />)}
           </div>
+        </div>
+        <div className="r-dm">
+          <PanelSection icon="sparkle" title="AI Summary"><p>{d.summary}</p></PanelSection>
+          <PanelSection icon="stats" title="Session Info"><TileGrid tiles={d.info} /></PanelSection>
+          <PanelSection icon="user" title="User Profile"><TileGrid tiles={d.profile.tiles} /></PanelSection>
         </div>
         <Playlist hl={playlistHl} />
       </div>

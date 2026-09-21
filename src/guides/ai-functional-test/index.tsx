@@ -38,7 +38,9 @@ export default defineGuide({
     { id: 'cases', label: 'Test cases' },
     { id: 'details', label: 'Name & instructions' },
     { id: 'submit', label: 'Run test' },
-    { id: 'report', label: 'Report' },
+    { id: 'report', label: 'Result' },
+    { id: 'coverage', label: 'Coverage' },
+    { id: 'list', label: 'Case list' },
     { id: 'case', label: 'Case detail' },
     { id: 'export', label: 'Export' },
   ],
@@ -89,13 +91,28 @@ export default defineGuide({
       id: 'report', step: 'report', focus: [717, 300, 1.28],
       title: 'Read the result',
       body: <>
-        <p><b>{VERIFY.passRate}%</b> of the {VERIFY.ran} cases that ran passed; the AI players reached <b>{VERIFY.coverage}%</b> of the sheet.</p>
+        <p><b>{VERIFY.passRate}%</b> of the cases that ran passed. Each one gets a single outcome:</p>
         <Bullets items={[
           <><b>Passed</b> — the AI player got the expected result</>,
           <><b>Failed</b> — the steps ran and the build didn't do what the case expects</>,
           <><b>Need review</b> — the case was reached, but the video doesn't settle it</>,
           <><b>Not verified</b> — the case wasn't reached, or the sheet lacks its details</>,
         ]} />
+      </>,
+    },
+    {
+      id: 'coverage', step: 'coverage', focus: [717, 300, 1.28],
+      title: 'See how much of the sheet was reached',
+      body: <>
+        <p><b>Coverage</b> is the share of the sheet the AI players actually got to: <b>{VERIFY.coverage}%</b> of {VERIFY.inFile}.</p>
+        <p>A case they never reached is <b>not verified</b>. It is not a failure — it means no session ever got there.</p>
+      </>,
+    },
+    {
+      id: 'list', step: 'list', focus: [717, 470, 1.28],
+      title: 'Find any case',
+      body: <>
+        <p>Under the scores is every case that ran, one row each: its ID, the case, its category, the <b>reason</b> for the outcome and the status.</p>
         <TextLink to="functional-test">The report, part by part, in Functional Test →</TextLink>
       </>,
     },

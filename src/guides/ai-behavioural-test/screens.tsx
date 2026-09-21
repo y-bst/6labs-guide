@@ -88,7 +88,7 @@ export function BuildPicker() {
 export function LiveAgent() {
   return (
     <PageLayer show="live-agent">
-      <Crumb back trail={`${r.name} ·`} name="New player · agent 1"><RunState state="progress" /></Crumb>
+      <Crumb back trail={`${r.name} ·`} name="New player · agent 5"><RunState state="progress" /></Crumb>
       <RunPageTabs on="videos" videos={r.sessions} clickReport="live-agent" />
       <AgentVideo persona={WHALE} build={r.build} length={r.length} live="4m so far" hlSaw="live-agent" />
     </PageLayer>
@@ -141,7 +141,7 @@ export function Live() {
       </div>
       <div className="s-vpanel">
         <div className="s-vpanel-h">All sessions <small>20 of 20</small></div>
-        <div className="s-sgrid">{LIVE.map(([p, n, t], i) => <SessionCard key={`${p.name}${n}`} persona={p} n={n} live={t} click={i === 0 ? 'live' : undefined} />)}</div>
+        <div className="s-sgrid">{LIVE.map(([p, n, t], i) => <SessionCard key={`${p.name}${n}`} persona={p} n={n} live={t} click={i === 4 ? 'live' : undefined} />)}</div>
       </div>
     </PageLayer>
   );
@@ -154,7 +154,7 @@ export function Report() {
     <PageLayer show="report..finding">
       <Crumb back trail="AI behavioural test ·" name={r.name}><RunState state="complete" /><GhostButton download>Export</GhostButton></Crumb>
       <Scroller stops={[['finding', 640]]}>
-        <RunPageTabs on="report" videos={r.sessions} />
+        <RunPageTabs on="report" videos={r.sessions} clickVideos="finding" />
         <div className="s-rep">
           <div className="s-rep-top">
             <div className="s-rep-row"><Label>AI behavioural report</Label><span className="s-rep-id">{r.id}</span></div>
@@ -183,7 +183,26 @@ export function Report() {
   );
 }
 
-/** One agent's session, opened from an evidence clip. */
+/** The finished run's Videos tab: every session it produced, ready to open. */
+export function Videos() {
+  return (
+    <PageLayer show="videos">
+      <Crumb back trail="AI behavioural test ·" name={r.name}><RunState state="complete" /><GhostButton download>Export</GhostButton></Crumb>
+      <RunPageTabs on="videos" videos={r.sessions} />
+      <div className="s-vfilters">
+        <Pill label="All" n={20} on />
+        <Pill label="New player" n={12} />
+        <Pill label="Whale" n={8} />
+      </div>
+      <div className="s-vpanel">
+        <div className="s-vpanel-h">All sessions <small>20 of 20</small></div>
+        <div className="s-sgrid">{LIVE.map(([p, n], i) => <SessionCard key={`${p.name}${n}`} persona={p} n={n} click={i === 0 ? 'videos' : undefined} />)}</div>
+      </div>
+    </PageLayer>
+  );
+}
+
+/** One agent's session, opened from the run's Videos tab. */
 export function AgentPage() {
   return (
     <PageLayer show="video">

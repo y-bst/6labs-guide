@@ -78,7 +78,9 @@
 .s-cfilters{margin-top:12px;display:flex;flex-direction:column;gap:10px;border-radius:12px}
 .s-otabs{align-self:flex-start}
 .s-otabs small{font:500 12px var(--body);color:var(--ink-4);margin-left:3px}
-.s-ctable{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.s-ctable{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.s-ctable>.s-crow:first-child{border-radius:13px 13px 0 0}
+.s-ctable>.s-pager{border-radius:0 0 13px 13px}
 .s-crow{display:grid;grid-template-columns:70px minmax(0,1.6fr) 140px minmax(0,1.5fr) 96px 14px;gap:12px;align-items:start;padding:11px 16px;border-top:1px solid var(--line);font-size:13px;line-height:1.45}
 .s-crow.head{border-top:0;padding-block:10px;font:600 10.5px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4)}
 .s-crow .mono{font:500 11.5px/1.7 var(--mono);color:var(--ink-4)}

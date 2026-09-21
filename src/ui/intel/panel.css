@@ -7,8 +7,8 @@
 .r-x{width:34px;height:34px;border:1px solid var(--line-2);border-radius:8px;display:grid;place-items:center;color:var(--ink-3)}
 .r-panel-b{position:relative;flex:1;overflow:hidden;min-height:0}
 .r-scroll{padding:16px 18px 60px;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
-.r-scroll.y1{transform:translateY(-330px)}
-.r-scroll.y2{transform:translateY(-620px)}
+.r-scroll.y1{transform:translateY(-150px)}
+.r-scroll.y2{transform:translateY(-290px)}
 .r-player .r-thumb{border-radius:10px;aspect-ratio:16/9}
 .r-tl{position:relative;height:4px;border-radius:4px;background:var(--line);margin:12px 0 10px}
 .r-tl i{position:absolute;top:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(3,13,45,.08)}

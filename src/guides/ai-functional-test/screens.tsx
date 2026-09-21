@@ -111,14 +111,14 @@ export function Report() {
   return (
     <PageLayer show="report..export">
       <Crumb back trail="AI functional test ·" name={AIF_RUN.name}><Click on="export"><GhostButton download hl="export">Export CSV</GhostButton></Click></Crumb>
-      <Scroller stops={[['case', 300]]}>
+      <Scroller stops={[['list..export', 380]]}>
         <div className="s-vcard">
           <VerifyHeader kind="AI functional test report" name={AIF_RUN.name} />
           <Scorecard hlResult="report" />
         </div>
         <VerifiedAgainst build={b.version} />
         <CaseFilters />
-        <CaseTable cases={CASES} open={{ id: CASE_AIF.id, when: 'report', click: 'report' }} />
+        <CaseTable cases={CASES} open={{ id: CASE_AIF.id, when: 'list', click: 'list' }} />
       </Scroller>
       <div className="toast" {...at('export')} style={{ top: '78px', right: '28px' }}>
         <TIcon name="check" stroke="#5BD08A" width={2.4} />CSV ready — {AIF_RUN.name.replace(' — ', '-').replace(/ /g, '-').toLowerCase()}.csv
