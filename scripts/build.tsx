@@ -9,7 +9,6 @@ import { fileURLToPath } from 'node:url';
 import type { ReactElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { guides } from '../src/guides';
-import { IndexPage } from '../src/pages/Index';
 import { GUIDES, guide as meta, guideFile, type AreaId } from '../src/registry';
 import { GuidePage } from '../src/shell/guide';
 
@@ -112,7 +111,11 @@ function build() {
     write(guideFile(m), <GuidePage guide={g} css={css} js={js} />);
     console.log(`  kit ${(full / 1024).toFixed(0)} KB → ${((full - cut) / 1024).toFixed(0)} KB (${((cut / full) * 100).toFixed(0)}% unused dropped)`);
   }
-  write('index.html', <IndexPage css={read('ui/tokens.css') + read('shell/story.css') + readIf('pages/index.css')} />);
+  // The landing page is hand-written, not rendered: index-new.html is the file to edit, and
+  // the build copies it to index.html so it ships the same way the guides do.
+  const landing = readFileSync(join(root, 'index-new.html'), 'utf8');
+  writeFileSync(join(root, 'index.html'), landing);
+  console.log(`built index.html (${(landing.length / 1024).toFixed(0)} KB, copied from index-new.html)`);
   // Remove pages left over from renamed or renumbered guides.
   const current = new Set(GUIDES.map(guideFile));
   for (const f of readdirSync(root)) if (/^\d\d-.+\.html$/.test(f) && !current.has(f)) { rmSync(join(root, f)); console.log(`removed ${f}`); }

@@ -8,6 +8,7 @@ to the browser.
 npm install
 npm run dev      # build, rebuild on change, serve on http://localhost:5178
 npm run build    # write index.html and 0X-*.html to the repo root (stale 0X-*.html are removed)
+                 # index.html is copied from index-new.html, not rendered — see below
 npm run check    # build, screenshot every scene, compare with .snap/base
 npm run typecheck
 ```
@@ -46,12 +47,22 @@ src/
       ai                    build picker, personas, agents, live sessions, agent video
       TestingMap.tsx        "Testing at a glance" diagram, this guide's flow in colour
   data/                 sample data shown on the screens (testing, verify, behavioural, intel)
-  pages/Index.tsx       the landing page, generated from the registry
+  pages/Index.tsx       the old landing page, no longer built (see "The landing page")
 scripts/
   build.tsx             renders everything
   snap.mjs              visual check (screenshots + pixel diff)
   html2jsx.mjs          converts prototype HTML into JSX
 ```
+
+## The landing page
+
+`index-new.html` is the landing page, and it is **hand-written** — one standalone file,
+no React and no generator. `npm run build` copies it to `index.html`, which is what
+GitHub Pages serves. Edit `index-new.html`; never edit `index.html`, it is overwritten.
+
+It introduces both modes up top, puts the Testing / Intelligence switcher below that
+intro, and lists the agents before the supporting material. `src/pages/Index.tsx` is the
+earlier registry-driven version, kept for reference but no longer built.
 
 ## How a guide works
 
