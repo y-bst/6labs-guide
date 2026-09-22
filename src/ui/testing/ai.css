@@ -73,8 +73,9 @@
 .s-vpanel-h small{font:400 12.5px var(--body);color:var(--ink-4)}
 .s-sgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:14px}
 .s-scard{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.s-scard-t{position:relative;aspect-ratio:4/3;background:linear-gradient(180deg,#1E2A55 0%,#2D3F78 100%)}
-.s-scard-t::before{content:"";position:absolute;left:32%;right:32%;top:0;bottom:0;background:rgba(255,255,255,.07)}
+/* the game is played in landscape, so every captured screen is 16:9 */
+.s-scard-t{position:relative;aspect-ratio:16/9;background:linear-gradient(180deg,#1E2A55 0%,#2D3F78 100%)}
+.s-scard-t::before{content:"";position:absolute;left:0;right:0;top:0;bottom:34%;background:rgba(255,255,255,.07)}
 .s-scard-t .s-dur{right:10px;bottom:10px;font-family:var(--mono)}
 .s-live{position:absolute;left:10px;top:10px;display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 7px;border-radius:5px;background:var(--red-2);color:#fff;font:700 10px/1 var(--body);letter-spacing:.08em;text-transform:uppercase}
 .s-live::before{content:"";width:6px;height:6px;border-radius:50%;background:#fff;animation:s-blink 1.2s steps(1) infinite}
@@ -98,10 +99,13 @@
 .s-kv{display:flex;flex-direction:column;gap:6px;margin-left:18px}
 .s-kv .s-label{font-size:10px}
 .s-kv b{font:600 14px/1 var(--display)}
-.s-avideo-b{display:grid;grid-template-columns:320px minmax(0,1fr)}
+.s-avideo-b{display:grid;grid-template-columns:440px minmax(0,1fr)}
 .s-phone{display:flex;flex-direction:column;border-right:1px solid var(--line)}
-.s-phone-scr{position:relative;height:350px;background:linear-gradient(180deg,#1B2A5C,#2B3E7A);overflow:hidden}
-.s-phone-scr::before{content:"";position:absolute;left:22%;right:22%;top:0;bottom:0;background:rgba(255,255,255,.06)}
+/* the game is played in landscape, so the captured frame is 16:9; the player fills the rest of
+   the column and letterboxes it, which keeps this side as tall as the panel next to it */
+.s-phone-scr{position:relative;flex:1;min-height:0;display:grid;align-content:center;background:#070C1C;overflow:hidden}
+.s-phone-game{position:relative;width:100%;aspect-ratio:16/9;background:linear-gradient(180deg,#1B2A5C,#2B3E7A);overflow:hidden}
+.s-phone-game::before{content:"";position:absolute;left:0;right:0;top:0;bottom:38%;background:rgba(255,255,255,.06)}
 .s-phone-scr .s-dur{top:12px;bottom:auto;font-family:var(--mono)}
 .s-phone-cap{position:absolute;left:0;right:0;bottom:0;padding:28px 16px 14px;background:linear-gradient(transparent,rgba(0,0,0,.55));font:600 14px/1.2 var(--display);color:#fff}
 .s-phone-ctl{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:12px;color:var(--ink-3)}
@@ -110,7 +114,7 @@
 .s-phone-bar{flex:1;height:4px;border-radius:4px;background:var(--subtle);overflow:hidden}
 .s-phone-bar i{display:block;width:36%;height:100%;background:var(--brand)}
 .s-frames{display:flex;gap:6px;padding:0 14px 14px}
-.s-frames span{position:relative;flex:1;height:46px;border-radius:6px;background:linear-gradient(180deg,#34477F,#4E62A2)}
+.s-frames span{position:relative;flex:1;aspect-ratio:16/9;border-radius:6px;background:linear-gradient(180deg,#34477F,#4E62A2)}
 .s-frames span.on{background:linear-gradient(180deg,#0E1530,#1B2A5C);box-shadow:0 0 0 2px var(--brand)}
 .s-frames i{position:absolute;left:4px;bottom:4px;font:600 9px/1 var(--mono);font-style:normal;color:#fff}
 .s-screenpanel{padding:16px 20px;display:flex;flex-direction:column;gap:8px}

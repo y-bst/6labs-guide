@@ -237,5 +237,16 @@
     reveals.forEach(el => seen.observe(el));
   }
 
+
+  /* ---------- back to top ---------- */
+  // Appears once the intro has scrolled away, so it never covers the top bar it returns to.
+  const toTop = document.querySelector('[data-totop]');
+  if (toTop) {
+    const sync = () => toTop.classList.toggle('on', scrollY > innerHeight * 0.8);
+    addEventListener('scroll', sync, { passive: true });
+    sync();
+    toTop.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
+  }
+
   window.Guide = { stories, $, $$ };
 })();

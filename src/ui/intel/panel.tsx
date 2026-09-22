@@ -4,7 +4,7 @@ import { EVENTS, type GameEvent, type Session, type Tile } from '../../data/inte
 import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
 import { Icon, type IconName } from '../Icon';
 import { Btn } from './app';
-import { Duration, SourceBadge } from './sessions';
+import { Duration } from './sessions';
 import { Click } from '../Click';
 
 /** Coloured dots on the progress bar, one per detected event. */
@@ -29,7 +29,7 @@ export function PlayerControls({ duration }: { duration: string }) {
 export function Player({ session, markersHl }: { session: Session; markersHl?: Toggle }) {
   return (
     <div className="r-player">
-      <div className="r-thumb"><SourceBadge source={session.source} /><Duration>{session.duration}</Duration></div>
+      <div className="r-thumb"><Duration>{session.duration}</Duration></div>
       <Timeline hl={markersHl} />
       <PlayerControls duration={session.duration} />
     </div>

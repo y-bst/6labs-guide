@@ -74,11 +74,8 @@ export const BOOYAH = {
 
 /* ---------- Radiologist sessions ---------- */
 
-export type SessionSource = 'ai' | 'upload' | 'live';
-
 export interface Session {
   id: string;
-  source: SessionSource;
   duration: string;
   date: string;
   desc?: string;
@@ -89,15 +86,15 @@ export interface Session {
 }
 
 export const SESSIONS: Record<string, Session> = {
-  '2851': { id: '2851', source: 'ai', duration: '4:05', date: '10/12/25' },
-  '2850': { id: '2850', source: 'live', duration: '6:12', date: '10/12/25', tags: ['Ranked'] },
-  '2849': { id: '2849', source: 'upload', duration: '3:48', date: '10/12/25' },
-  '2847': { id: '2847', source: 'ai', duration: '4:05', date: '10/11/25', desc: 'Player opened the Guild menu between matches and answered two help requests before queueing.', ai: ['items looted', 'shop opened'], tags: ['Smoke test'] },
-  '2846': { id: '2846', source: 'ai', duration: '4:05', date: '10/11/25', desc: 'A full guild loop in one session: guild page, then Help Requests, cleared one member at a time.', ai: ['menu hesitation', 'fast completion'], tags: ['Smoke test'] },
-  '2845': { id: '2845', source: 'upload', duration: '3:12', date: '10/11/25', desc: 'Player asked the guild for help after dying twice in the same spot, then tried again.', ai: ['repeated death'], tags: ['Manual', 'bug-repro'] },
-  '2844': { id: '2844', source: 'upload', duration: '5:40', date: '10/11/25', desc: 'A long lobby wait spent in the Guild tab, reading help requests without answering them.', ai: ['long queue', 'lobby idle'], tags: ['Manual'] },
-  '2843': { id: '2843', source: 'live', duration: '7:03', date: '10/11/25', desc: 'Squad match. The player checked guild requests mid-session, right before the game crashed.', ai: ['game crashed'], tags: ['Ranked', 'Squad'] },
-  '2842': { id: '2842', source: 'live', duration: '4:26', date: '10/11/25', desc: 'Solo match. The player cleared guild help requests in the lobby, then looted a supply crate.', ai: ['items looted'], tags: ['Ranked', 'Solo'] },
+  '2851': { id: '2851', duration: '4:05', date: '10/12/25' },
+  '2850': { id: '2850', duration: '6:12', date: '10/12/25', tags: ['Ranked'] },
+  '2849': { id: '2849', duration: '3:48', date: '10/12/25' },
+  '2847': { id: '2847', duration: '4:05', date: '10/11/25', desc: 'Player opened the Guild menu between matches and answered two help requests before queueing.', ai: ['items looted', 'shop opened'], tags: ['Smoke test'] },
+  '2846': { id: '2846', duration: '4:05', date: '10/11/25', desc: 'A full guild loop in one session: guild page, then Help Requests, cleared one member at a time.', ai: ['menu hesitation', 'fast completion'], tags: ['Smoke test'] },
+  '2845': { id: '2845', duration: '3:12', date: '10/11/25', desc: 'Player asked the guild for help after dying twice in the same spot, then tried again.', ai: ['repeated death'], tags: ['Manual', 'bug-repro'] },
+  '2844': { id: '2844', duration: '5:40', date: '10/11/25', desc: 'A long lobby wait spent in the Guild tab, reading help requests without answering them.', ai: ['long queue', 'lobby idle'], tags: ['Manual'] },
+  '2843': { id: '2843', duration: '7:03', date: '10/11/25', desc: 'Squad match. The player checked guild requests mid-session, right before the game crashed.', ai: ['game crashed'], tags: ['Ranked', 'Squad'] },
+  '2842': { id: '2842', duration: '4:26', date: '10/11/25', desc: 'Solo match. The player cleared guild help requests in the lobby, then looted a supply crate.', ai: ['items looted'], tags: ['Ranked', 'Solo'] },
 };
 
 export const sessions = (...ids: string[]) => ids.map(id => SESSIONS[id]);
@@ -134,7 +131,6 @@ export const SESSION_DETAIL = {
   summary: 'The AI player cleared six guild help requests, pausing on the Guild menu, then played one full match at a relaxed pace and won it.',
   instructions: { given: 'GIVEN TO AI PLAYER · CASUAL', text: 'Act as a returning casual player. Open the Guild menu and answer every pending help request, then play one full match at a relaxed pace.' },
   info: [
-    { label: 'Source', value: 'AI Player', wide: true },
     { label: 'Duration', value: '4:05' },
     { label: 'Region', value: 'USA' },
     { label: 'Platform', value: 'AI-Cloud' },

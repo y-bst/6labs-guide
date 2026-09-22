@@ -3,7 +3,7 @@ import type { ComponentType, ReactNode } from 'react';
 import { guide as meta } from '../registry';
 import { IconSprite } from '../ui/Icon';
 import { Recap, type RecapProps } from './content';
-import { Glance, Intro, Page, TopBar } from './layout';
+import { BackToTop, Glance, Intro, Page, TopBar } from './layout';
 import { Story, type Scene, type Step } from './Story';
 
 export interface GuideDef {
@@ -39,6 +39,7 @@ export function GuidePage({ guide, css, js }: { guide: GuideDef; css: string; js
       {guide.glance && <Glance title={guide.glance.title} note={guide.glance.note}>{guide.glance.map}</Glance>}
       <Story label={guide.storyLabel ?? `${m.title} walkthrough`} steps={guide.steps} scenes={guide.scenes} Screen={guide.Screen} />
       <Recap {...guide.recap} />
+      <BackToTop />
     </Page>
   );
 }

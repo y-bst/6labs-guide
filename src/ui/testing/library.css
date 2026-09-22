@@ -65,14 +65,15 @@
 
 
 /* library picker: the Gameplay Library inside a test */
-/* Never taller than the canvas: the grid gives way so the footer — and its "Use N videos"
-   button, which a cursor has to tap — stays on screen. */
-.s-picker{position:absolute;left:50%;top:28px;width:840px;margin-left:-420px;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:calc(100% - 56px)}
-.s-picker .s-grid{min-height:0;overflow:hidden}
-.s-picker-h{padding:22px 24px 14px}
-.s-picker .s-panel-top{padding:0 24px 14px}
-.s-picker .s-panel-bar{padding:12px 24px}
-.s-picker .s-grid{gap:12px;padding:16px 24px}
+/* Two full rows of cards and the footer have to fit the canvas, so the chrome is tighter here
+   than on the library page, and the cards keep their own height: grid-auto-rows stops a row
+   being squeezed to fit, which used to cut the cards through their own title. */
+.s-picker{position:absolute;left:50%;top:16px;width:840px;margin-left:-420px;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:calc(100% - 32px)}
+.s-picker .s-grid{min-height:0;overflow:hidden;grid-auto-rows:max-content;align-content:start}
+.s-picker-h{padding:18px 24px 12px}
+.s-picker .s-panel-top{padding:0 24px 12px}
+.s-picker .s-panel-bar{padding:10px 24px}
+.s-picker .s-grid{gap:12px;padding:12px 24px}
 .s-picker .s-card-body{padding:10px 12px 12px;gap:4px}
-.s-picker-f{display:flex;align-items:center;gap:10px;padding:14px 24px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-3)}
+.s-picker-f{display:flex;align-items:center;gap:10px;padding:12px 24px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-3)}
 .s-picker-f b{color:var(--ink)}

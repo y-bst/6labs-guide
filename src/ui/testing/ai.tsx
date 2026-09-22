@@ -247,9 +247,11 @@ export function AgentVideo({ persona, build, length, live, hlSaw, hlReasoning, h
       <div className="s-avideo-b">
         <div className="s-phone">
           <div className="s-phone-scr" style={{ ['--pc' as string]: persona.color }}>
-            {live && <span className="s-live s-playing">AI playing · Live</span>}
-            <span className="s-dur">{a.time}</span>
-            <span className="s-phone-cap">{a.did}</span>
+            <div className="s-phone-game">
+              {live && <span className="s-live s-playing">AI playing · Live</span>}
+              <span className="s-dur">{a.time}</span>
+              <span className="s-phone-cap">{a.did}</span>
+            </div>
           </div>
           <div className="s-phone-ctl"><span className="s-send sm"><TIcon name="play" size={12} /></span><span className="mono">{a.time} / 30:00</span><span className="s-phone-bar"><i /></span><small>Screen {a.screen} of {a.screens}</small></div>
           <div className="s-frames">{a.frames.map(t => <span key={t} className={t === a.time ? 'on' : undefined}><i>{t}</i></span>)}</div>

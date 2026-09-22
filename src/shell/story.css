@@ -87,11 +87,6 @@ p{text-wrap:pretty}
 .glance-map .f{font:500 14px var(--body);fill:var(--brand)}
 .glance-map .t2{font:700 17px var(--display);fill:var(--ink)}
 .glance-map .d2{font:400 13px var(--body);fill:var(--ink-3)}
-.recapmap{width:100%;margin-top:8px}
-.recapmap svg{min-width:960px}
-.legend{display:flex;align-items:center;justify-content:center;gap:10px;margin:4px 0 0;font:500 14px/1 var(--body);color:var(--ink-3)}
-.legend .lg{width:22px;height:4px;border-radius:4px;background:var(--brand)}
-.legend .lg.a{background:var(--violet);margin-left:14px}
 
 /* ---------- recap ---------- */
 .recap{max-width:1320px;margin:0 auto;padding:clamp(48px,7vw,96px) var(--gut) 0}
@@ -238,3 +233,10 @@ dialog.sheet::backdrop{background:rgba(3,13,45,.55);backdrop-filter:blur(3px)}
   .in-dialog .visual{height:42svh}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- back to top ---------- */
+/* Fixed bottom-right, and only once the top bar is well out of view (story.js adds .on). */
+.totop{position:fixed;right:clamp(16px,3vw,32px);bottom:clamp(16px,3vw,32px);z-index:90;display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid var(--line-2);border-radius:50%;background:var(--paper);color:var(--ink-2);box-shadow:0 10px 26px rgba(3,13,45,.16);cursor:pointer;opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .25s,transform .25s,color .2s,border-color .2s}
+.totop.on{opacity:1;transform:none;pointer-events:auto}
+.totop:hover{color:var(--brand);border-color:var(--brand)}
+@media (prefers-reduced-motion:reduce){.totop{transition:opacity .25s}}

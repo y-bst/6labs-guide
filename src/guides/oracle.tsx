@@ -17,7 +17,7 @@ function BooyahAnswer() {
       <AnswerSection n="01" kicker="What happened">
         <em>412</em> booyah finishes in the last 7 days — the top <em>3.1%</em> of matches played.
       </AnswerSection>
-      <AnswerMeta hl="answer" items={[['your warehouse'], ['BlueStacks sessions'], ['players', '2,365'], ['matches', '13,290']]} />
+      <AnswerMeta items={[['your warehouse'], ['BlueStacks sessions'], ['players', '2,365'], ['matches', '13,290']]} />
       <p>All figures cover ranked squad matches that reached the final circle, compared with the matches that placed but did not win.</p>
       <h4>What separates a win from a top-5 finish?</h4>
       <AnswerTable
@@ -28,8 +28,8 @@ function BooyahAnswer() {
         ]}
         footnote="% of matches in which the squad landed outside the three busiest drops, and held high ground entering the final circle. Counted per match."
       />
-      <AnswerSection n="02" kicker="What Oracle found">
-        Winners are separated by rotation, not by kills — and the gap opens before the final circle.
+      <AnswerSection n="02" kicker="What Oracle found" tone="amber">
+        Winners are separated by <em>rotation</em>, not by kills — and the gap opens before the final circle.
       </AnswerSection>
       <AnswerNote kind="anomaly" title="Early kill count barely differs between the two groups">
         Winning squads average 6.1 eliminations before the third circle; squads that placed without winning average 5.8. The measure most teams optimise for is almost flat across the outcome.
@@ -49,7 +49,6 @@ function BooyahAnswer() {
         ['Check what the utility slot is actually used for', 'The numbers show squads carried one. The sessions show whether it is thrown on rotation, held for the final fight, or never used.'],
         ['Compare who opens the final engagement', 'Winners open first in 7 of 10 finishes. Confirm whether that is position or initiative.'],
       ]} />
-      <AnswerCaveat>These figures come from ranked squad matches on BlueStacks sessions, not your full player base. No session recordings were read this turn, so the behaviour behind the rotation gap is still open.</AnswerCaveat>
     </>
   );
 }
@@ -68,8 +67,8 @@ function BooyahVideo() {
       <p>Squads that land off the hot drop spend the second circle moving, not looting <Cites ids={[5, 24]} />. Squads that placed without winning are still contesting their landing zone at the same point <Cites ids={[17, 55, 69]} />.</p>
       <h4>Pattern C · Revives happen mid-rotation, not mid-fight</h4>
       <p>Winning squads revive while moving between circles <Cites ids={[7, 12, 19]} />. The losing pattern is a revive attempted inside an active fight, which costs a second player <Cites ids={[56, 70, 95]} />.</p>
-      <AnswerSection n="02" kicker="What Oracle found">
-        The utility slot is a rotation tool, not a fighting one — which is why carrying it correlates with winning.
+      <AnswerSection n="02" kicker="What Oracle found" tone="amber">
+        The utility slot is a <em>rotation tool</em>, not a fighting one — which is why carrying it correlates with winning.
       </AnswerSection>
       <AnswerNote kind="insight" title="Smokes are thrown to move, not to fight">
         In the winning sessions the utility item is used crossing open ground between circles <Cites ids={[24, 41]} />. In the losing sessions it is thrown inside a fight already underway, where it hides both squads equally.
@@ -114,12 +113,13 @@ function Screen() {
         <Conversation scroll={{ handoff: 'footer', second: 'more', end: 'export..' }}>
           <QuestionBubble>{BOOYAH.question}</QuestionBubble>
           <ThinkingSteps steps={BOOYAH.steps} show="thinking..query" play="thinking..query" focus={{ steps: [3, 4], during: 'query' }} />
-          <AnswerCard show="answer.." agent={{ name: 'Oracle', did: "Queried your warehouse and 13,290 BlueStacks sessions from the last 7 days" }}>
+          <AnswerCard show="answer.." sources="1 connector · BlueStacks sessions" agent={{ name: 'Oracle', did: "Queried your warehouse and 13,290 BlueStacks sessions from the last 7 days" }}>
             <BooyahAnswer />
             <VideoAnalysisCta hl="footer" click="footer" />
-            <ExploreNext kicker="or explore the following directions" items={BOOYAH.related} />
+            <AnswerCaveat>These figures come from ranked squad matches on BlueStacks sessions, not your full player base. No session recordings were read this turn, so the behaviour behind the rotation gap is still open.</AnswerCaveat>
+            <ExploreNext or kicker="Explore the following directions" items={BOOYAH.related} />
           </AnswerCard>
-          <AnswerCard show="more.." agent={{ name: 'Oracle', did: 'Watched 200 sessions behind the rotation gap' }}>
+          <AnswerCard show="more.." sources="BlueStacks sessions" agent={{ name: 'Oracle', did: 'Watched 200 sessions behind the rotation gap' }}>
             <BooyahVideo />
             <ExploreNext kicker="What to explore next" items={[
               'Do squads that hold the second circle win more often on smaller maps?',

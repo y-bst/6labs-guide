@@ -67,10 +67,12 @@ export function ThinkingSteps({ steps, show, play, focus }: {
  * Oracle's answer, as the product writes it: numbered sections, the data it had to work with,
  * a table or two, and what to do next. There is no copy button, credit count or related list.
  */
-export function AnswerCard({ show, agent, children }: {
+export function AnswerCard({ show, agent, sources, children }: {
   show?: SceneSpec;
   /** Which agent answered, and what it did — the line the card opens with. */
   agent?: { name: string; did: string };
+  /** What the answer read, e.g. "1 connector". Shown as the row under the agent line. */
+  sources?: string;
   children: ReactNode;
 }) {
   const { at } = useScenes();
@@ -78,10 +80,11 @@ export function AnswerCard({ show, agent, children }: {
     <div className="i-card" {...at(show)}>
       {agent && (
         <div className="i-agent">
-          <Tile page="oracle" iconSize={18} />
+          <Tile page="oracle" iconSize={20} />
           <div><b>{agent.name}</b><span>{agent.did}</span></div>
         </div>
       )}
+      {sources && <div className="i-srcrow"><b>Sources</b><span>· {sources}</span><i /></div>}
       <div className="i-ans">{children}</div>
     </div>
   );
@@ -103,8 +106,8 @@ export function AnswerMeta({ items, hl }: { items: [label: string, value?: strin
 export function AnswerSection({ n, kicker, tone = 'blue', hl, children }: {
   n: string;
   kicker: string;
-  /** blue states what happened, green says what to do about it. */
-  tone?: 'blue' | 'green';
+  /** blue states what happened, amber what Oracle found in it, green what to do about it. */
+  tone?: 'blue' | 'amber' | 'green';
   hl?: Toggle;
   children: ReactNode;
 }) {
@@ -155,12 +158,13 @@ export const AnswerCaveat = ({ children }: { children: ReactNode }) => (
   <p className="i-caveat"><b>What this does not establish:</b> {children}</p>
 );
 
-/** Questions Oracle offers to take next. */
-export function ExploreNext({ kicker, items }: { kicker: string; items: string[] }) {
+/** Questions Oracle offers to take next. `or` puts the OR rule above them, as the other way on. */
+export function ExploreNext({ kicker, items, or }: { kicker: string; items: string[]; or?: boolean }) {
   return (
     <div className="i-explore">
+      {or && <div className="i-or"><span>or</span></div>}
       <span className="i-label">{kicker}</span>
-      {items.map(q => <span key={q} className="i-q">{q}</span>)}
+      {items.map(q => <span key={q} className="i-q"><i><Icon name="chev" size={13} /></i>{q}</span>)}
     </div>
   );
 }
@@ -168,9 +172,10 @@ export function ExploreNext({ kicker, items }: { kicker: string; items: string[]
 /** The offer to go and watch the sessions behind the numbers. */
 export function VideoAnalysisCta({ hl, click }: { hl?: Toggle; click?: SceneSpec }) {
   const { cls } = useScenes();
-  const btn = <span className="i-btn pri">Show me insights from videos</span>;
+  const btn = <span className="i-btn go">Show me insights from videos</span>;
   return (
     <div {...cls('i-vacta', { hl })}>
+      <i className="i-vacta-i"><Icon name="play" size={14} /></i>
       <div><b>This is as far as the numbers go.</b><span>The recorded sessions have not been watched yet.</span></div>
       {click ? <Click on={click}>{btn}</Click> : btn}
     </div>

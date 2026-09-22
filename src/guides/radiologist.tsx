@@ -16,7 +16,6 @@ const PICKED = SESSIONS['2846'];
 
 /** Numbered callouts for the session card diagram; `top` lines each number up with its part of the card. */
 const ANATOMY = [
-  { top: 158, title: 'Source', text: 'Live capture, manual upload, or a 6labs AI player' },
   { top: 337, title: 'Length', text: 'How long the recording runs' },
   { top: 383, title: 'Session and date', text: 'Its number, and when it was played' },
   { top: 422, title: 'Description', text: 'What happens in it, in two lines' },
@@ -28,14 +27,18 @@ function Screen() {
   return (
     <IntelScreen sidebar={{ active: { newQuery: 'home', radiologist: 'open..' }, highlight: { agents: 'home', radiologist: 'open' } }}>
       <Layer show="home" className="i-pg">
-        <HomeLauncher agent="radiologist" switchHl="home" />
+        <HomeLauncher agent="radiologist" switchHl="home" below={
+          <SessionGallery className="r-onhome">
+            {sessions('2847', '2846', '2845', '2844', '2843', '2842').map(s => <SessionCard key={s.id} session={s} />)}
+          </SessionGallery>
+        } />
       </Layer>
 
       <Layer show="open" className="i-pg">
         <PageHead page="radiologist" />
         <AskBox hl="open"><Query>{PLACEHOLDERS.radiologist}</Query></AskBox>
         <SessionGallery>
-          {sessions('2851', '2850', '2849').map(s => <SessionCard key={s.id} session={s} compact />)}
+          {sessions('2847', '2846', '2845', '2844', '2843', '2842').map(s => <SessionCard key={s.id} session={s} />)}
         </SessionGallery>
       </Layer>
 
@@ -49,19 +52,19 @@ function Screen() {
 
       <SidePanel show="panel..info" session={PICKED} detailHl="info" scroll={{ y2: 'info' }}>
         <Player session={PICKED} markersHl="panel" />
-        <PanelSection icon="sparkle" title="AI Summary" hl="summary">
+        <PanelSection icon="sparkle" title="AI Summary">
           <p>{d.summary}</p>
           <Tags ai={PICKED.ai} tags={PICKED.tags} style={{ marginTop: '12px' }} />
         </PanelSection>
-        <PanelSection icon="events" title="Detected Events" hl="info">
+        <PanelSection icon="events" title="Detected Events">
           {EVENTS.slice(0, 2).map(e => <EventRow key={e.type} event={e} />)}
           <div className="r-more">Show All Events ({EVENTS.length})</div>
         </PanelSection>
-        <PanelSection icon="stats" title="Session Info" hl="info"><TileGrid tiles={d.info} /></PanelSection>
+        <PanelSection icon="stats" title="Session Info"><TileGrid tiles={d.info} /></PanelSection>
       </SidePanel>
 
       <Layer show="detail..playlist">
-        <SessionDetail session={PICKED} eventsHl="detail" playlistHl="playlist" />
+        <SessionDetail session={PICKED} />
       </Layer>
 
     </IntelScreen>
@@ -147,7 +150,7 @@ export default defineGuide({
       title: 'Every moment it found',
       body: <>
         <p><b>Detected events</b> lists each moment Radiologist spotted, with its type and time — <b>Match start · 0:21</b>. Click one and the video jumps there.</p>
-        <p>Under it, <b>Session info</b>: where the session came from, how long it ran, and on what.</p>
+        <p>Under it, <b>Session info</b>: how long the session ran, where it was played and on what.</p>
       </>,
     },
     {
@@ -159,7 +162,9 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'playlist', step: 'detail', focus: [1030, 400, 1.25],
+      // No focus: zooming the camera onto the playlist cut the app's own top bar and sliced the
+      // player in half, which read as a broken screen rather than a close-up.
+      id: 'playlist', step: 'detail',
       title: "The player's other sessions",
       body: <>
         <p><b>User's playlist</b> on the right lists everything else this player recorded, grouped by play session with its date and length.</p>
@@ -180,7 +185,7 @@ export default defineGuide({
     ],
     faqs: [
       ['What can we search for?', 'Actions, objects and events in the game, in plain words: a guild help request, a shop visit, a repeated death.'],
-      ['Where do the sessions come from?', "The same sources as Oracle: BlueStacks, YouTube, the 6labs SDK or the Gameplay Library. Each card shows whether it's a live capture, a manual upload or an AI player run."],
+      ['Where do the sessions come from?', "The same sources as Oracle: BlueStacks, YouTube, the 6labs SDK or the Gameplay Library."],
       ['Do we have to watch whole videos?', 'No. Each session has a summary and a list of detected events. Click an event to jump straight to that moment.'],
       ['What are the tags with a ✦?', 'Tags added by AI after watching the video, like “menu hesitation” or “repeated death”. Grey tags come with the upload or run.'],
       ["What's an AI player session?", 'A session played by a 6labs AI player instead of a person. It shows the instructions the AI player was given.'],

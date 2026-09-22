@@ -9,9 +9,6 @@
 .r-card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:box-shadow .3s,border-color .3s}
 .r-card.pick{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand)}
 .r-thumb{position:relative;aspect-ratio:16/8.2;background:linear-gradient(180deg,#1C2340 0%,#0B1020 100%)}
-.r-badge{position:absolute;left:9px;top:9px;display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:6px;background:rgba(0,0,0,.6);font:600 10px/1 var(--display);color:#fff;white-space:nowrap}
-.r-badge.live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--red-2)}
-.r-badge.static{position:static}
 .r-dur{position:absolute;right:9px;bottom:8px;display:flex;align-items:center;gap:4px;font:600 11px/1 var(--display);color:#fff}
 .r-body{padding:11px 13px 13px}
 .r-t{display:flex;justify-content:space-between;align-items:center;gap:8px;font:600 14px/1.2 var(--display)}
@@ -39,3 +36,5 @@
 .shot .r-results.narrow{right:440px}
 .r-results.narrow .r-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .i-ask+.r-wrap{margin-top:26px}
+/* the gallery on the home screen, under the centred box: it spans the column */
+.r-onhome{align-self:stretch;width:100%;margin-top:26px;text-align:left}

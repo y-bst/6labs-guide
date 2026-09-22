@@ -90,7 +90,7 @@ export function LiveAgent() {
     <PageLayer show="live-agent">
       <Crumb back trail={`${r.name} ·`} name="New player · agent 5"><RunState state="progress" /></Crumb>
       <RunPageTabs on="videos" videos={r.sessions} clickReport="live-agent" />
-      <AgentVideo persona={WHALE} build={r.build} length={r.length} live="4m so far" hlSaw="live-agent" />
+      <AgentVideo persona={WHALE} build={r.build} length={r.length} live="4m so far" />
     </PageLayer>
   );
 }
@@ -211,7 +211,7 @@ export function AgentPage() {
   return (
     <PageLayer show="video">
       <Crumb back trail={`${r.name} ·`} name="New player · agent 1"><RunState state="finished" /></Crumb>
-      <AgentVideo persona={NEW_PLAYER} build={r.build} length={r.length} hlReasoning="video" />
+      <AgentVideo persona={NEW_PLAYER} build={r.build} length={r.length} />
       <div className="s-instr"><Label>Instructions to the players</Label><p>“{r.instructions}”</p></div>
     </PageLayer>
   );

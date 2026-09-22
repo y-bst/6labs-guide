@@ -1,9 +1,8 @@
 // Guide 02 · User Test: one run, from picking videos to the report and follow-up questions.
-import { Bullets, GuideLink, TextLink } from '../../shell/content';
+import { Bullets, GuideLink, RecapFlow, TextLink } from '../../shell/content';
 import { defineGuide } from '../../shell/guide';
 import { TestingScreen } from '../../ui/testing/app';
 import { TIcon } from '../../ui/testing/icons';
-import { RecapMap } from './maps';
 import { AskMode, Results } from './results';
 import { ExportPage, LibraryPage, NewRunPage, Picker, SubmitSequence } from './screens';
 import { TestingMap } from '../../ui/testing/TestingMap';
@@ -215,7 +214,7 @@ export default defineGuide({
 
   recap: {
     title: 'Two ways to use User Test: get a report, or just ask.',
-    head: <RecapMap />,
+    head: <RecapFlow items={['Gameplay Library', 'User Test', 'Pick videos', { strong: 'Choose mode' }, ['Generate report', 'Ask questions'], ['Summary, full report, follow-ups', 'Answers with clips']]} />,
     quotes: [
       'See where players struggle without watching hours of footage.',
       'Every problem comes with the clip that shows it.',

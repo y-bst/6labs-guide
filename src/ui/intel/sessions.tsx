@@ -1,31 +1,9 @@
 // Radiologist sessions: search bar, session cards and the gallery they sit in.
 import type { CSSProperties, ReactNode } from 'react';
-import type { Session, SessionSource } from '../../data/intel';
+import type { Session } from '../../data/intel';
 import { Layer, useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
 import { Icon, type IconName } from '../Icon';
 import { PlusButton, SendButton, SourceChip } from './ask';
-
-const SOURCE: Record<SessionSource, { label: string; icon?: IconName }> = {
-  ai: { label: 'AI Player', icon: 'robot' },
-  upload: { label: 'Manual upload', icon: 'upload' },
-  live: { label: 'Live capture' },
-};
-
-/** Where a recording came from, on the video thumbnail. Live capture shows a red dot. */
-export function SourceBadge({ source }: { source: SessionSource }) {
-  const s = SOURCE[source];
-  return <span className={s.icon ? 'r-badge' : 'r-badge live'}>{s.icon && <Icon name={s.icon} size={11} />}{s.label}</span>;
-}
-
-/** The same, as a blue pill for light backgrounds (e.g. the detail page top bar). */
-export function SourcePill({ source }: { source: SessionSource }) {
-  const s = SOURCE[source];
-  return (
-    <span className="c-perm shared" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', padding: '6px 9px' }}>
-      {s.icon && <Icon name={s.icon} size={12} />}{s.label}
-    </span>
-  );
-}
 
 export function Duration({ children }: { children: ReactNode }) {
   return <span className="r-dur"><Icon name="clock" size={12} />{children}</span>;
@@ -52,10 +30,7 @@ export function SessionCard({ session, compact, allTags, pick }: { session: Sess
   const { cls } = useScenes();
   return (
     <div {...cls('r-card', { pick })}>
-      <div className="r-thumb">
-        <SourceBadge source={session.source} />
-        <Duration>{session.duration}</Duration>
-      </div>
+      <div className="r-thumb"><Duration>{session.duration}</Duration></div>
       <div className="r-body">
         <div className="r-t">Session #{session.id}<small><Icon name="cal" size={13} />{session.date}</small></div>
         {!compact && <>

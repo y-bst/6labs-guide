@@ -35,6 +35,18 @@ export function Page({ title, css, js, fonts = 'full', layout = 'scroll', childr
   );
 }
 
+/**
+ * Back to the top bar, from anywhere down the page. story.js shows it once the intro has
+ * scrolled away; without JS it stays hidden, and the page reads the same.
+ */
+export const BackToTop = () => (
+  <button type="button" className="totop" data-totop aria-label="Back to top">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    </svg>
+  </button>
+);
+
 export function TopBar({ area, current }: { area: AreaId; current: string }) {
   return (
     <header className="topbar">

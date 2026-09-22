@@ -4,7 +4,7 @@ import { useScenes, type Toggle } from '../../shell/scenes';
 import { Icon } from '../Icon';
 import { ScreenBar } from './app';
 import { EventRow, PanelSection, PlayerControls, TileGrid, Timeline } from './panel';
-import { Duration, SourcePill } from './sessions';
+import { Duration } from './sessions';
 
 /** Other recordings by the same player, grouped by play session. The open one is marked. */
 export function Playlist({ hl }: { hl?: Toggle }) {
@@ -33,7 +33,7 @@ export function SessionDetail({ session, eventsHl, playlistHl }: { session: Sess
   const d = SESSION_DETAIL;
   return (
     <>
-      <ScreenBar title={`Session #${session.id}`}><SourcePill source={session.source} /></ScreenBar>
+      <ScreenBar title={`Session #${session.id}`} />
       <div className="r-detail">
         <div className="r-dl">
           <div className="r-big"><Duration>{session.duration}</Duration></div>

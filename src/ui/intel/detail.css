@@ -4,7 +4,6 @@
 .r-detail{position:absolute;left:0;right:0;top:52px;bottom:0;display:grid;grid-template-columns:minmax(0,1.42fr) minmax(0,1fr) 272px}
 .r-dm{padding:18px 16px;overflow:hidden;border-left:1px solid var(--line)}
 .r-dm .r-sec{padding:0 0 14px}
-/* the events list is scrolled, so its highlight ring needs room rather than a clip */
 .r-devents{border-radius:10px}
 .r-dl{padding:18px 20px;overflow:hidden}
 .r-big{position:relative;aspect-ratio:16/9;border-radius:10px;background:linear-gradient(180deg,#1C2340,#0B1020)}

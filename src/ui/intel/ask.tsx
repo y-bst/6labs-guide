@@ -134,7 +134,12 @@ export function SuggestedPrompts({ hl, prompts = PROMPTS }: { hl?: Toggle; promp
 }
 
 /** The home screen (New Query): headline, agent switch, question box, prompts. */
-export function HomeLauncher({ agent = 'oracle', switchHl }: { agent?: 'oracle' | 'radiologist'; switchHl?: Toggle }) {
+/**
+ * The home screen: the hero, the agent switch and the box. What sits under the box depends on
+ * the agent — Oracle offers prompts, Radiologist opens straight onto the gallery — so the
+ * caller passes it in (`below`), which also keeps this file clear of the sessions kit.
+ */
+export function HomeLauncher({ agent = 'oracle', switchHl, below }: { agent?: 'oracle' | 'radiologist'; switchHl?: Toggle; below?: ReactNode }) {
   const { cls } = useScenes();
   return (
     <div className="i-home">
@@ -148,7 +153,7 @@ export function HomeLauncher({ agent = 'oracle', switchHl }: { agent?: 'oracle' 
       <AskBox style={{ marginTop: '22px' }}>
         <Query>{agent === 'radiologist' ? PLACEHOLDERS.radiologist : PLACEHOLDERS.home}</Query>
       </AskBox>
-      <SuggestedPrompts prompts={agent === 'radiologist' ? PROMPTS_RADIOLOGIST : PROMPTS} />
+      {below ?? <SuggestedPrompts prompts={agent === 'radiologist' ? PROMPTS_RADIOLOGIST : PROMPTS} />}
     </div>
   );
 }

@@ -15,4 +15,5 @@
 .i-btn{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--line-2);background:#fff;font:500 13px/1 var(--body);color:var(--ink);white-space:nowrap}
 .i-btn.brand{border-color:var(--brand);color:var(--brand);font-weight:600}
 .i-btn.pri{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+.i-btn.go{background:var(--green);border-color:var(--green);color:#fff;font-weight:600}
 
