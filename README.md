@@ -129,11 +129,15 @@ screen looks like it jumped. Wrap the control that causes the next scene in `<Cl
 <Click on="drop" block>…</Click>              for a block control, e.g. a drop zone
 ```
 
-A cursor slides in, taps, and a ring spreads; both end invisible, so a frozen screenshot never
-catches one mid-flight. The wrapper is an inline-flex `<span>`, so it becomes the flex or grid
-item in its parent — if the control carried a margin or an `auto` offset, move that onto
-`.s-tap` too (see `.i-ctl>.s-tap`). It cannot wrap a control whose parent styles bare
-`span` children, such as the agent switch.
+A cursor slides in, taps, a ring spreads and fades, and the cursor then rests on the control for
+the rest of the scene — so a reader who arrives late still sees what was pressed.
+
+The wrapper is an inline-flex `<span>`, so it becomes the flex or grid item in its parent — if
+the control carried a margin or an `auto` offset, move that onto `.s-tap` too (see
+`.i-ctl>.s-tap`). It also brings two children of its own, so a parent that styles its
+children with `> *` will lay out the cursor and the ring as if they were controls: give the
+control its own class and style that instead (see `.s-mode-chip`). It cannot wrap a control
+whose parent styles bare `span` children, such as the agent switch.
 
 The long submit choreography (form → click → run history) is separate: `SubmitSequence` in
 `ui/testing/run.tsx`.

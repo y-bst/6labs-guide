@@ -85,10 +85,16 @@ export default defineGuide({
       </>,
     },
     {
+      id: 'add', step: 'pick', focus: [660, 430, 1.1],
+      title: 'Back on Generate report, add the videos',
+      body: <>
+        <p>Switch back to <b>Generate report</b> and click <b>+ Add videos</b> — the Gameplay Library opens right inside User Test.</p>
+      </>,
+    },
+    {
       id: 'pick', step: 'pick', focus: [706, 380, 1.08],
       title: 'Pick the sessions to analyse',
       body: <>
-        <p>Click <b>Add videos</b> and the Gameplay Library opens right inside User Test.</p>
         <p>Tap a tag to select every video with it — here, all 10 <b>Build V2.2</b> sessions. Click <b>Use 10 videos</b>, and the run name fills in from the tag and date.</p>
       </>,
     },

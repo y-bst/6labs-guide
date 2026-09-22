@@ -35,15 +35,15 @@ const CONTEXT_DOCS: [ext: string, name: string, note: string][] = [
 /** New run: mode, videos, name, game context. Report mode unless the "mode-ask" scene. */
 export function NewRunPage() {
   const { at, cls } = useScenes();
-  const reportForm = '..mode-report, pick..';
+  const reportForm = '..mode-report, add..';
   return (
-    <PageLayer show="open..mode-ask, context">
+    <PageLayer show="open..add, context">
       <PageHeader page="userTest" />
       <RunTabs runs={4} />
       <div className="s-runcard runwrap">
-        <ModeSwitch report="..mode-report, pick.." ask="mode-ask" clickAsk="mode-report" />
+        <ModeSwitch report="..mode-report, add.." ask="mode-ask" clickAsk="mode-report" clickReport="mode-ask" />
         <Divider />
-        <div className="s-dz" {...at('..mode-ask')}><Click on="mode-ask"><Button tone="primary" hl="open">+ Add videos</Button></Click>Select sessions from your Gameplay Library by tag, source, or date.</div>
+        <div className="s-dz" {...at('..add')}><Click on="add"><Button tone="primary" hl="open">+ Add videos</Button></Click>Select sessions from your Gameplay Library by tag, source, or date.</div>
         <SelectedVideos show="context.." />
         <Show when={reportForm}>
           <div className="s-col" style={{ gap: '8px', marginTop: '20px' }}>
