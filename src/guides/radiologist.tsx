@@ -167,7 +167,7 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'info', step: 'panel', focus: [960, 400, 1.15],
+      id: 'info', step: 'panel', focus: [960, 330, 1.15],
       title: 'Every moment it found',
       body: <>
         <p><b>Detected events</b> lists each moment Radiologist spotted, with its type and time — <b>Match start · 0:21</b>. Click one and the video jumps there.</p>

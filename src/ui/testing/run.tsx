@@ -17,20 +17,18 @@ export function RunTabs({ history, runs }: { history?: boolean; runs: number }) 
 }
 
 /** Report or ask. `report`/`ask` say when each is selected. */
-export function ModeSwitch({ report, ask, hl, clickAsk, clickReport }: {
+export function ModeSwitch({ report, ask, hl, clickAsk }: {
   report?: Toggle;
   ask?: Toggle;
   hl?: Toggle;
   /** Scenes in which a cursor taps "Ask questions", which swaps the form. */
   clickAsk?: SceneSpec;
-  /** Scenes in which a cursor taps "Generate report", which swaps it back. */
-  clickReport?: SceneSpec;
 }) {
   const { cls } = useScenes();
   const tap = (chip: ReactNode, on?: SceneSpec) => (on ? <Click on={on}>{chip}</Click> : chip);
   return (
     <div {...cls('s-mode', { hl })}>
-      {tap(<span {...cls('s-mode-chip', { on: report })}><TIcon name="report" />Generate report</span>, clickReport)}
+      <span {...cls('s-mode-chip', { on: report })}><TIcon name="report" />Generate report</span>
       {tap(<span {...cls('s-mode-chip', { on: ask })}><TIcon name="chat" />Ask questions</span>, clickAsk)}
     </div>
   );

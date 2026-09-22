@@ -153,32 +153,36 @@ export function Report() {
   return (
     <PageLayer show="report..finding">
       <Crumb back trail="AI behavioural test ·" name={r.name}><RunState state="complete" /><GhostButton download>Export</GhostButton></Crumb>
-      <Scroller stops={[['finding', 640]]}>
-        <RunPageTabs on="report" videos={r.sessions} clickVideos="finding" />
-        <div className="s-rep">
-          <div className="s-rep-top">
-            <div className="s-rep-row"><Label>AI behavioural report</Label><span className="s-rep-id">{r.id}</span></div>
-            <h3>{r.name}</h3>
-            <p>report generated {r.generated}</p>
-            <ReportTiles tiles={AIB_TILES} hl="report" />
-          </div>
-          <div className="s-rep-body">
-            <SectionHead n="01" title="Summary" />
-            <p className="s-para" style={{ margin: '0 0 18px' }}>{AIB_SUMMARY}</p>
-            <Label>Findings by category</Label>
-            <CategoryTable rows={AIB_CATEGORIES} />
-            <div className="s-rep-div" />
-            <SectionHead n="02" title="Findings" />
-            <Row style={{ gap: '8px', marginBottom: '16px' }}>
-              {groups.map(([k, n]) => <span key={k} className="s-pill">{k} <span className="n">{n}</span></span>)}
-            </Row>
-            <div className="s-agent">
-              <div className="s-band"><b>Stability &amp; functional defects</b><span>2 findings</span></div>
-              <AgentFindingCard finding={AIB_FINDING} of={r.sessions} hlSplit="finding" hlEvidence="finding" clipClick="finding" />
+      {/* The tabs stay put while the report scrolls under them, as they do in the product —
+          and so the cursor that taps Videos is on screen when it taps. */}
+      <RunPageTabs on="report" videos={r.sessions} clickVideos="finding" />
+      <div className="s-scrollport">
+        <Scroller stops={[['finding', 570]]}>
+          <div className="s-rep">
+            <div className="s-rep-top">
+              <div className="s-rep-row"><Label>AI behavioural report</Label><span className="s-rep-id">{r.id}</span></div>
+              <h3>{r.name}</h3>
+              <p>report generated {r.generated}</p>
+              <ReportTiles tiles={AIB_TILES} hl="report" />
+            </div>
+            <div className="s-rep-body">
+              <SectionHead n="01" title="Summary" />
+              <p className="s-para" style={{ margin: '0 0 18px' }}>{AIB_SUMMARY}</p>
+              <Label>Findings by category</Label>
+              <CategoryTable rows={AIB_CATEGORIES} />
+              <div className="s-rep-div" />
+              <SectionHead n="02" title="Findings" />
+              <Row style={{ gap: '8px', marginBottom: '16px' }}>
+                {groups.map(([k, n]) => <span key={k} className="s-pill">{k} <span className="n">{n}</span></span>)}
+              </Row>
+              <div className="s-agent">
+                <div className="s-band"><b>Stability &amp; functional defects</b><span>2 findings</span></div>
+                <AgentFindingCard finding={AIB_FINDING} of={r.sessions} hlSplit="finding" hlEvidence="finding" clipClick="finding" />
+              </div>
             </div>
           </div>
-        </div>
-      </Scroller>
+        </Scroller>
+      </div>
     </PageLayer>
   );
 }

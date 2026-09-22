@@ -92,7 +92,7 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'pick', step: 'pick', focus: [706, 380, 1.08],
+      id: 'pick', step: 'pick',
       title: 'Pick the sessions to analyse',
       body: <>
         <p>Tap a tag to select every video with it — here, all 10 <b>Build V2.2</b> sessions. Click <b>Use 10 videos</b>, and the run name fills in from the tag and date.</p>

@@ -46,6 +46,9 @@
 .s-state.done{background:var(--subtle);color:var(--ink-3);font-weight:600}
 
 /* the page scrolling under a scene */
+/* A viewport for a Scroller on a page that keeps something above it, such as tabs: content
+   scrolling past the top is clipped here instead of painting over what is meant to stay put. */
+.s-scrollport{overflow:hidden}
 .s-scroller{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
 .s-scroller.y1{transform:translateY(var(--y1))}
 .s-scroller.y2{transform:translateY(var(--y2))}

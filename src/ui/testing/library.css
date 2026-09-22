@@ -65,7 +65,10 @@
 
 
 /* library picker: the Gameplay Library inside a test */
-.s-picker{position:absolute;left:50%;top:28px;width:840px;margin-left:-420px;padding:0;overflow:hidden}
+/* Never taller than the canvas: the grid gives way so the footer — and its "Use N videos"
+   button, which a cursor has to tap — stays on screen. */
+.s-picker{position:absolute;left:50%;top:28px;width:840px;margin-left:-420px;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:calc(100% - 56px)}
+.s-picker .s-grid{min-height:0;overflow:hidden}
 .s-picker-h{padding:22px 24px 14px}
 .s-picker .s-panel-top{padding:0 24px 14px}
 .s-picker .s-panel-bar{padding:12px 24px}

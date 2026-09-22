@@ -117,7 +117,7 @@ export default defineGuide({
       </>,
     },
     {
-      id: 'case', step: 'case', focus: [717, 300, 1.28],
+      id: 'case', step: 'case',
       title: 'Watch what the AI player did',
       body: <>
         <p>Open any case. The video is marked <b>Played by an AI player</b>. <b>Specified</b> shows what your sheet expects; <b>Observed</b> shows what happened.</p>

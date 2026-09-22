@@ -41,7 +41,7 @@ export function NewRunPage() {
       <PageHeader page="userTest" />
       <RunTabs runs={4} />
       <div className="s-runcard runwrap">
-        <ModeSwitch report="..mode-report, add.." ask="mode-ask" clickAsk="mode-report" clickReport="mode-ask" />
+        <ModeSwitch report="..mode-report, add.." ask="mode-ask" clickAsk="mode-ask" />
         <Divider />
         <div className="s-dz" {...at('..add')}><Click on="add"><Button tone="primary" hl="open">+ Add videos</Button></Click>Select sessions from your Gameplay Library by tag, source, or date.</div>
         <SelectedVideos show="context.." />
