@@ -5,7 +5,10 @@ import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
 import { Click } from '../Click';
 import { Icon } from '../Icon';
 
-const FORMATS: [string, string][] = [['PDF', 'var(--red-2)'], ['DOC', 'var(--brand)'], ['CSV', 'var(--green)'], ['Images', 'var(--violet)'], ['TXT', 'var(--ink-4)']];
+const FORMATS: [label: string, icon: 'file' | 'sheet' | 'img', colour: string][] = [
+  ['PDF', 'file', 'var(--red-2)'], ['DOC', 'file', 'var(--brand)'], ['CSV', 'sheet', 'var(--green)'],
+  ['Images', 'img', 'var(--violet)'], ['TXT', 'file', 'var(--ink-4)'],
+];
 
 /** Wraps the zone in a cursor tap when the guide asks for one. */
 const Tap = ({ click, children }: { click?: SceneSpec; children: ReactNode }) =>
@@ -26,7 +29,9 @@ export function DropZone({ hl, click }: {
         <div {...cls('d-drop', { hl })}>
         <b>Drop files here or click to upload</b>
         <p>Any format our agents can learn from</p>
-        <div className="d-fmts">{FORMATS.map(([f, c]) => <span key={f}><i style={{ '--c': c } as CSSProperties} />{f}</span>)}</div>
+        <div className="d-fmts">{FORMATS.map(([f, icon, c]) => (
+          <span key={f} style={{ '--c': c } as CSSProperties}><Icon name={icon} size={14} />{f}</span>
+        ))}</div>
         <div className="d-max">MAX 30MB</div>
         </div>
       </Tap>

@@ -99,11 +99,6 @@ export function AnswerMeta({ items, hl }: { items: [label: string, value?: strin
   );
 }
 
-/** The notice Oracle shows when it had to answer without your own data. */
-export const AnswerBI = ({ children }: { children: ReactNode }) => (
-  <div className="i-bi"><Icon name="info" size={15} /><span>{children}</span></div>
-);
-
 /** A numbered section of an answer: 01 WHAT HAPPENED, 03 WHAT TO DO NEXT. */
 export function AnswerSection({ n, kicker, tone = 'blue', hl, children }: {
   n: string;

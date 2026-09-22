@@ -6,7 +6,7 @@
 .d-drop p{margin:4px 0 0;font-size:13px;color:var(--ink-2)}
 .d-fmts{display:flex;justify-content:center;gap:8px;margin-top:16px}
 .d-fmts span{height:26px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);background:#fff;font-size:12px;display:inline-flex;align-items:center;gap:6px}
-.d-fmts i{width:10px;height:12px;border-radius:2px;background:var(--c,var(--line-2))}
+.d-fmts svg{color:var(--c,var(--ink-4))}
 .d-max{margin-top:16px;font:600 9.5px/1 var(--body);letter-spacing:.14em;color:var(--ink-4)}
 .d-add{display:flex;align-items:center;gap:16px;border:1.5px dashed var(--line-2);border-radius:12px;background:rgba(255,255,255,.6);padding:12px 18px}
 .d-add svg{color:var(--brand)}

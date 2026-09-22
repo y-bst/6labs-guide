@@ -6,7 +6,7 @@ import { Layer } from '../shell/scenes';
 import { Icon } from '../ui/Icon';
 import { IntelScreen, PageHead, ScreenBar } from '../ui/intel/app';
 import { AddMenu, AskBox, HomeLauncher, Query, SourceMenu, SuggestedPrompts } from '../ui/intel/ask';
-import { AnswerActions, AnswerBI, AnswerCard, AnswerCaveat, AnswerMeta, AnswerNote, AnswerSection, AnswerTable, Cites, Conversation, ExploreNext, ExportButton, ExportMenu, FollowUpBox, QuestionBubble, ThinkingSteps, VideoAnalysisCta } from '../ui/intel/chat';
+import { AnswerActions, AnswerCard, AnswerCaveat, AnswerMeta, AnswerNote, AnswerSection, AnswerTable, Cites, Conversation, ExploreNext, ExportButton, ExportMenu, FollowUpBox, QuestionBubble, ThinkingSteps, VideoAnalysisCta } from '../ui/intel/chat';
 import { IntelMap } from '../ui/intel/IntelMap';
 import { Click } from '../ui/Click';
 
@@ -17,8 +17,7 @@ function BooyahAnswer() {
       <AnswerSection n="01" kicker="What happened">
         <em>412</em> booyah finishes in the last 7 days — the top <em>3.1%</em> of matches played.
       </AnswerSection>
-      <AnswerMeta hl="answer" items={[['BlueStacks sessions'], ['your data warehouse — not connected'], ['players', '2,365'], ['matches', '13,290']]} />
-      <AnswerBI>No BI connection found, so Oracle answered from BlueStacks gameplay. Some figures may not cover your whole player base. <b>Connect your BI source</b> to re-run this on your own data.</AnswerBI>
+      <AnswerMeta hl="answer" items={[['your warehouse'], ['BlueStacks sessions'], ['players', '2,365'], ['matches', '13,290']]} />
       <p>All figures cover ranked squad matches that reached the final circle, compared with the matches that placed but did not win.</p>
       <h4>What separates a win from a top-5 finish?</h4>
       <AnswerTable
@@ -114,8 +113,8 @@ function Screen() {
         <ScreenBar title={BOOYAH.question}><Click on="export"><ExportButton hl="export" /></Click></ScreenBar>
         <Conversation scroll={{ handoff: 'footer', second: 'more', end: 'export..' }}>
           <QuestionBubble>{BOOYAH.question}</QuestionBubble>
-          <ThinkingSteps steps={BOOYAH.steps} show="thinking..radiologist" play="thinking..radiologist" focus={{ steps: [3, 4], during: 'radiologist' }} />
-          <AnswerCard show="answer.." agent={{ name: 'Oracle', did: "Analysed 13,290 ranked squad matches from the last 7 days" }}>
+          <ThinkingSteps steps={BOOYAH.steps} show="thinking..query" play="thinking..query" focus={{ steps: [3, 4], during: 'query' }} />
+          <AnswerCard show="answer.." agent={{ name: 'Oracle', did: "Queried your warehouse and 13,290 BlueStacks sessions from the last 7 days" }}>
             <BooyahAnswer />
             <VideoAnalysisCta hl="footer" click="footer" />
             <ExploreNext kicker="or explore the following directions" items={BOOYAH.related} />
@@ -209,7 +208,8 @@ export default defineGuide({
       title: 'Ask in plain words',
       body: <>
         <p>Type the question and press the arrow. No filters, no query language.</p>
-        <p>This example asks: <b>“Show me players who got <Term def="Free Fire's word for winning a match: the last player or squad standing.">booyah</Term>”</b>.</p>
+        <p>What comes back depends on the question. Ask something only footage can answer — “summarise this session” — and Oracle goes straight to <b>video analysis</b>. Ask something the data can answer — “where are players churning” — and it answers from the numbers first, then offers the footage.</p>
+        <p>This example asks: <b>“Show me players who got <Term def="Free Fire's word for winning a match: the last player or squad standing.">booyah</Term>”</b>, which takes the second route.</p>
       </>,
     },
     {
@@ -219,25 +219,24 @@ export default defineGuide({
         <p>While it works, Oracle lists each step and how long it took. In short, it:</p>
         <Bullets items={[
           <>works out what you're asking, and checks earlier messages in this conversation</>,
-          <>plans how to answer, then finds the matching gameplay</>,
+          <>plans how to answer, then queries your warehouse and the session records</>,
           <>writes the insights and <b>checks them against the source data</b> before showing them</>,
         ]} />
       </>,
     },
     {
-      id: 'radiologist', step: 'think', focus: [712, 400, 1.2],
-      title: 'It asks Radiologist for the evidence',
+      id: 'query', step: 'think', focus: [712, 400, 1.2],
+      title: 'Where the numbers come from',
       body: <>
-        <p>To find the right gameplay, Oracle consults <b>Radiologist</b>, the agent that reads videos moment by moment.</p>
-        <p>Here it scanned 13,290 matches, found the 412 booyah finishes, and compared them with the matches that didn't win. The answer is built from that comparison.</p>
-        <TextLink to="radiologist">How Radiologist works →</TextLink>
+        <p>Oracle queries the data first: your own <b>warehouse</b> tables and the <b>BlueStacks session</b> records, joined and counted the way an analyst would.</p>
+        <p>Here that found 412 booyah finishes across 13,290 ranked matches, and compared them with the matches that didn't win. No video has been watched yet.</p>
       </>,
     },
     {
       id: 'answer', step: 'answer',
       title: 'An answer you can check',
       body: <>
-        <p>The answer opens with what it had to work with — which sessions, how many players, and whether your own data warehouse was connected.</p>
+        <p>The answer opens with what it had to work with — which sessions it read, and how many players and matches they cover.</p>
         <p>Every answer comes in the same three sections:</p>
         <Bullets items={[
           <><b>01 What happened</b> — the headline figure, and the table behind it</>,
@@ -251,7 +250,7 @@ export default defineGuide({
       title: 'Then watch the sessions',
       body: <>
         <p>Oracle says plainly when the figures stop: <b>“This is as far as the numbers go.”</b></p>
-        <p><b>Show me insights from videos</b> sends it to the footage. Under it are the questions it offers to take next.</p>
+        <p>The numbers say what happened, not why. <b>Show me insights from videos</b> sends the same question to the footage to find the reason behind them. Under it are the questions it offers to take next.</p>
       </>,
     },
     {
@@ -289,10 +288,10 @@ export default defineGuide({
 
   recap: {
     title: 'Ask in plain words. Get answers backed by gameplay.',
-    head: <RecapFlow items={[['Home', 'Sidebar'], 'Pick the data', 'Ask', { strong: 'Oracle + Radiologist' }, ['Answer + videos', 'Follow up', 'Export']]} />,
+    head: <RecapFlow items={[['Home', 'Sidebar'], 'Pick the data', 'Ask', { strong: 'Answer from the data' }, ['Video analysis', 'Follow up', 'Export']]} />,
     quotes: [
       "Ask about your players the way you'd ask an analyst. No dashboards, no SQL.",
-      'Every answer shows the gameplay videos behind it.',
+      'Answer from the numbers first, then send the same question to the footage.',
       'Turn an answer into a PDF, an infographic or slides in one click.',
     ],
     faqs: [

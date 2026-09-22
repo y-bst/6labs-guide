@@ -8,6 +8,14 @@ export const HISTORY = [
   'Show me players with the best squad win rate',
 ];
 
+/** Radiologist searches for a moment, so its prompts are things to look for, not questions. */
+export const PROMPTS_RADIOLOGIST = [
+  'Players asking their guild for help.',
+  'Shop visits that end without a purchase.',
+  'Repeated deaths in the same place.',
+  'Long waits in the lobby before a match.',
+];
+
 export const PROMPTS = [
   'Show the top five most intense close-range fights.',
   "Summarize the player's rotations: drop spot, key moves, final zone path.",
@@ -50,7 +58,7 @@ export const BOOYAH = {
     { title: 'Understanding your question', time: '1.8s', text: 'Booyah finishes, and what the winners did differently' },
     { title: 'Recalling context', time: '1.0s', text: 'No prior context found in this thread' },
     { title: 'Building reasoning plan', time: '0.7s', text: '3 reasoning paths: landing and rotation, squad play, final circle' },
-    { title: 'Consulting Radiologist', time: '1.3s', text: '13,290 matches scanned', hit: ['412 booyah finishes found', ' — across the last 7 days'] },
+    { title: 'Querying your data', time: '1.3s', text: 'Your warehouse tables, joined with BlueStacks session records', hit: ['412 booyah finishes found', ' — across 13,290 ranked matches'] },
     { title: 'Evaluating relevance', time: '1.0s', text: "Each finish compared with the matches that didn't win", hit: ['412 winning matches', " vs. 12,878 that didn't win"] },
     { title: 'Generating insights', time: '1.0s', text: 'What winners share, ranked by how often it happens' },
     { title: 'Validating response', time: '2.4s', text: 'Confirming accuracy against source data…', running: true },

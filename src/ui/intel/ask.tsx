@@ -1,6 +1,6 @@
 // The question box and everything around it: controls, menus, suggested prompts, home launcher.
 import type { CSSProperties, ReactNode } from 'react';
-import { PLACEHOLDERS, PROMPTS } from '../../data/intel';
+import { PLACEHOLDERS, PROMPTS, PROMPTS_RADIOLOGIST } from '../../data/intel';
 import { useScenes, type SceneSpec, type Toggle } from '../../shell/scenes';
 import { Click } from '../Click';
 import { Icon } from '../Icon';
@@ -121,13 +121,13 @@ export function AddMenu({ show }: { show?: SceneSpec }) {
 
 /* ---------- prompts & home ---------- */
 
-export function SuggestedPrompts({ hl }: { hl?: Toggle }) {
+export function SuggestedPrompts({ hl, prompts = PROMPTS }: { hl?: Toggle; prompts?: readonly string[] }) {
   const { cls } = useScenes();
   return (
     <>
       <div className="i-prompts-l">Try our suggested prompts</div>
       <div {...cls('i-prompts', { hl })}>
-        {PROMPTS.map(p => <span key={p}><Icon name="bulb" size={16} />{p}</span>)}
+        {prompts.map(p => <span key={p}><Icon name="bulb" size={16} />{p}</span>)}
       </div>
     </>
   );
@@ -146,9 +146,9 @@ export function HomeLauncher({ agent = 'oracle', switchHl }: { agent?: 'oracle' 
         <span className={agent === 'radiologist' ? 'on' : undefined}><Icon name="radio" />Radiologist</span>
       </div>
       <AskBox style={{ marginTop: '22px' }}>
-        <Query>{PLACEHOLDERS.home}</Query>
+        <Query>{agent === 'radiologist' ? PLACEHOLDERS.radiologist : PLACEHOLDERS.home}</Query>
       </AskBox>
-      <SuggestedPrompts />
+      <SuggestedPrompts prompts={agent === 'radiologist' ? PROMPTS_RADIOLOGIST : PROMPTS} />
     </div>
   );
 }

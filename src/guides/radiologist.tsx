@@ -1,13 +1,11 @@
 // Guide 04 · Radiologist: one search, from results to a single session in detail.
-import { BOOYAH, EVENTS, PLACEHOLDERS, SESSION_DETAIL, SESSIONS, sessions } from '../data/intel';
-import { Bullets, GuideLink, NextButton, RecapFlow } from '../shell/content';
+import { EVENTS, PLACEHOLDERS, SESSION_DETAIL, SESSIONS, sessions } from '../data/intel';
+import { Bullets, GuideLink, RecapFlow } from '../shell/content';
 import { defineGuide } from '../shell/guide';
 import { Layer } from '../shell/scenes';
 import { Icon } from '../ui/Icon';
-import { IntelScreen, PageHead, Tile } from '../ui/intel/app';
+import { IntelScreen, PageHead } from '../ui/intel/app';
 import { AskBox, HomeLauncher, Query } from '../ui/intel/ask';
-import { QuestionBubble, Step } from '../ui/intel/chat';
-import { BoxTitle, ConceptBox, ConceptScene } from '../ui/intel/concept';
 import { SessionDetail } from '../ui/intel/detail';
 import { FiltersDialog } from '../ui/intel/filters';
 import { IntelMap } from '../ui/intel/IntelMap';
@@ -66,27 +64,6 @@ function Screen() {
         <SessionDetail session={PICKED} eventsHl="detail" playlistHl="playlist" />
       </Layer>
 
-      <ConceptScene show="oracle" title="Two agents, one flow">
-        <ConceptBox className="link-o">
-          <BoxTitle page="oracle">Oracle</BoxTitle>
-          <QuestionBubble style={{ marginTop: '16px' }}>{BOOYAH.question}</QuestionBubble>
-          <Step step={BOOYAH.steps[3]} accent="#7B4CFF" style={{ marginTop: '16px', paddingBottom: '0' }} />
-        </ConceptBox>
-        <div className="link-arrow">
-          <svg width="80" height="24" viewBox="0 0 80 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M2 12h72m-9-9l9 9-9 9" /></svg>
-          asks for the evidence
-        </div>
-        <ConceptBox className="link-r">
-          <BoxTitle page="radiologist">Radiologist</BoxTitle>
-          <div className="r-found" style={{ margin: '16px 0 0', fontSize: '15px' }}>Found 412 sessions</div>
-          <div className="mini-vids"><i /><i /><i /></div>
-          <Tags ai={['clutch win', 'items looted']} tags={['Ranked', 'Squad']} style={{ marginTop: '12px' }} />
-        </ConceptBox>
-        <div className="link-cap">
-          <div><Tile page="radiologist" iconSize={20} /><span>Use <b>Radiologist</b> to see the exact moments.</span></div>
-          <div><Tile page="oracle" iconSize={20} /><span>Use <b>Oracle</b> to get an answer across all of them.</span></div>
-        </div>
-      </ConceptScene>
     </IntelScreen>
   );
 }
@@ -109,7 +86,6 @@ export default defineGuide({
     { id: 'filters', label: 'Filters' },
     { id: 'panel', label: 'Side panel' },
     { id: 'detail', label: 'Full detail' },
-    { id: 'oracle', label: 'With Oracle' },
   ],
 
   scenes: [
@@ -188,18 +164,6 @@ export default defineGuide({
       body: <>
         <p><b>User's playlist</b> on the right lists everything else this player recorded, grouped by play session with its date and length.</p>
         <p>Useful to see what happened before and after the moment you found.</p>
-      </>,
-    },
-    {
-      id: 'oracle', step: 'oracle',
-      title: 'Radiologist also works for Oracle',
-      body: <>
-        <p>When you ask Oracle a question, it consults Radiologist to find the sessions it needs.</p>
-        <Bullets items={[
-          <>Use <b>Radiologist</b> to see the exact moments</>,
-          <>Use <b>Oracle</b> to get an answer across all of them</>,
-        ]} />
-        <NextButton to="context" />
       </>,
     },
   ],
